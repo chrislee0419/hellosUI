@@ -128,6 +128,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\SinglePlayerManagerBase.cs" />
     <Compile Include="Utilities\CoroutineUtilities.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginConfig.cs" />

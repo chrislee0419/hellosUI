@@ -165,6 +165,8 @@ namespace HUI.UI.Screens
 
         protected override void OnSinglePlayerLevelSelectionStarting()
         {
+            base.OnSinglePlayerLevelSelectionStarting();
+
             if (_scroller == null)
             {
                 _screen.StartCoroutine(CoroutineUtilities.DelayedActionCoroutine(RefreshPageButtons));

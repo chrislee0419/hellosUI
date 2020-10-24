@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Zenject;
 using VRUIControls;
 using IPA.Utilities;
 using BeatSaberMarkupLanguage;
@@ -14,15 +13,11 @@ using BSMLUtilities = BeatSaberMarkupLanguage.Utilities;
 
 namespace HUI.UI.Screens
 {
-    public abstract class ScreenManagerBase : IInitializable, IDisposable, INotifyPropertyChanged
+    public abstract class ScreenManagerBase : SinglePlayerManagerBase, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual string AssociatedBSMLResource => null;
-
-        private MainMenuViewController _mainMenuVC;
-        private SoloFreePlayFlowCoordinator _soloFC;
-        private PartyFreePlayFlowCoordinator _partyFC;
 
         protected FloatingScreen _screen;
         protected ScreenAnimationHandler _animationHandler;
@@ -34,13 +29,9 @@ namespace HUI.UI.Screens
             PhysicsRaycasterWithCache physicsRaycaster,
             Vector2 screenSize,
             Vector3 screenPosition,
-            Quaternion screenRotation)
+            Quaternion screenRotation) : base(mainMenuVC, soloFC, partyFC)
         {
             Plugin.Log.Debug($"Creating {GetType().Name}");
-
-            _mainMenuVC = mainMenuVC;
-            _soloFC = soloFC;
-            _partyFC = partyFC;
 
             _screen = FloatingScreen.CreateFloatingScreen(screenSize, false, screenPosition, screenRotation);
 
@@ -56,65 +47,23 @@ namespace HUI.UI.Screens
                 BSMLParser.instance.Parse(BSMLUtilities.GetResourceContent(Assembly.GetExecutingAssembly(), AssociatedBSMLResource), _screen.gameObject, this);
         }
 
-        public virtual void Initialize()
+        public override void Initialize()
         {
-            _mainMenuVC.didFinishEvent += OnMainMenuViewControllerDidFinish;
-            _soloFC.didFinishEvent += OnSinglePlayerLevelSelectionFlowCoordinatorDidFinish;
-            _partyFC.didFinishEvent += OnSinglePlayerLevelSelectionFlowCoordinatorDidFinish;
+            base.Initialize();
 
             _screen.gameObject.SetActive(false);
         }
 
-        public virtual void Dispose()
+        protected override void OnSinglePlayerLevelSelectionStarting()
         {
-            _mainMenuVC.didFinishEvent -= OnMainMenuViewControllerDidFinish;
-            _soloFC.didFinishEvent -= OnSinglePlayerLevelSelectionFlowCoordinatorDidFinish;
-            _partyFC.didFinishEvent -= OnSinglePlayerLevelSelectionFlowCoordinatorDidFinish;
+            if (_animationHandler != null)
+                _animationHandler.PlayRevealAnimation();
         }
 
-        private void OnMainMenuViewControllerDidFinish(MainMenuViewController _, MainMenuViewController.MenuButton buttonType)
-        {
-            if (buttonType == MainMenuViewController.MenuButton.SoloFreePlay || buttonType == MainMenuViewController.MenuButton.Party)
-            {
-                if (_animationHandler != null)
-                    _animationHandler.PlayRevealAnimation();
-
-                try
-                {
-                    OnSinglePlayerLevelSelectionStarting();
-                }
-                catch (Exception e)
-                {
-                    Plugin.Log.Warn($"Unexpected exception occurred in {GetType().Name}:{nameof(OnSinglePlayerLevelSelectionStarting)}");
-                    Plugin.Log.Debug(e);
-                }
-            }
-        }
-
-        protected virtual void OnSinglePlayerLevelSelectionStarting()
-        {
-
-        }
-
-        private void OnSinglePlayerLevelSelectionFlowCoordinatorDidFinish(SinglePlayerLevelSelectionFlowCoordinator _)
+        protected override void OnSinglePlayerLevelSelectionFinished()
         {
             if (_animationHandler != null)
                 _animationHandler.PlayConcealAnimation();
-
-            try
-            {
-                OnSinglePlayerLevelSelectionFinished();
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {GetType().Name}:{nameof(OnSinglePlayerLevelSelectionFinished)}");
-                Plugin.Log.Debug(e);
-            }
-        }
-
-        protected virtual void OnSinglePlayerLevelSelectionFinished()
-        {
-
         }
 
         protected void NotifyPropertyChanged([CallerMemberName] string propertyName = null)

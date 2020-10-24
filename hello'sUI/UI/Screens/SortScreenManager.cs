@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using VRUIControls;
-using IPA.Utilities;
 
 namespace HUI.UI.Screens
 {
     public class SortScreenManager : ScreenManagerBase
     {
+        protected override string AssociatedBSMLResource => "";
+
         private static readonly Vector2 DefaultSize = new Vector2(50f, 10f);
         private static readonly Vector2 ExpandedSize = new Vector2(50f, 60f);
 
