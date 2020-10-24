@@ -17,12 +17,12 @@
               overflow-mode='Overflow'
               word-wrapping='true' />
       </vertical>
-      <horizontal preferred-width='80' preferred-height='12'
+      <horizontal preferred-width='80' preferred-height='14'
                   spacing='6'
                   pad-bottom='4' pad-left='4' pad-right='4'>
-        <button text='Delete'
+        <button id='confirm-delete-button'
+                text='Delete'
                 font-size='3.4'
-                stroke-color='#FF5555'
                 preferred-width='30'
                 on-click='confirm-delete-button-clicked' />
         <button text='Cancel'

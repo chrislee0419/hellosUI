@@ -38,6 +38,11 @@ namespace HUI.UI
             }
         }
 
+#pragma warning disable CS0649
+        [UIObject("confirm-delete-button")]
+        private GameObject _confirmDeleteButton;
+#pragma warning restore CS0649
+
         private Button _deleteButton;
         private bool _deleteButtonInitialized = false;
         private BSMLParserParams _parserParams;
@@ -94,7 +99,17 @@ namespace HUI.UI
                 // initialize modal on first click
                 // the modal doesn't like to be created during DI
                 if (_parserParams == null)
+                {
                     _parserParams = BSMLParser.instance.Parse(BSMLUtilities.GetResourceContent(Assembly.GetExecutingAssembly(), "HUI.UI.Views.DeleteButtonModalView.bsml"), _levelCollectionNavigationController.gameObject, this);
+
+                    Object.Destroy(_confirmDeleteButton.GetComponent<ButtonStaticAnimations>());
+
+                    var btnAnims = _confirmDeleteButton.AddComponent<CustomButtonAnimations>();
+                    btnAnims.NormalSelectionUseTranslucentColour = true;
+                    btnAnims.NormalBackgroundColour = Color.red;
+                    btnAnims.HighlightedBGColour = new Color(1f, 0.375f, 0f);
+                    btnAnims.PressedBGColour = new Color(1f, 0.375f, 0f);
+                }
 
                 var level = LevelAccessor.Invoke(ref detailView);
 
