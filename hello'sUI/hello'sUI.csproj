@@ -57,6 +57,11 @@
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Core.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="Polyglot, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Polyglot.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="SiraUtil, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
       <HintPath>$(BeatSaberDir)\Plugins\SiraUtil.dll</HintPath>
@@ -128,6 +133,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\DeleteButtonManager.cs" />
     <Compile Include="UI\SinglePlayerManagerBase.cs" />
     <Compile Include="Utilities\CoroutineUtilities.cs" />
     <Compile Include="Plugin.cs" />
@@ -150,6 +156,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\Views\ScrollerScreenView.bsml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\garbagecan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\Views\DeleteButtonModalView.bsml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
