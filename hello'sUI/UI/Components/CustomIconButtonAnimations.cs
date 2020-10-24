@@ -15,7 +15,8 @@ namespace HUI.UI.Components
                     return;
 
                 _normalBGColour = value;
-                OnSelectionStateChanged(_button.selectionState);
+                if (_button != null)
+                    OnSelectionStateChanged(_button.selectionState);
             }
         }
 
@@ -29,7 +30,8 @@ namespace HUI.UI.Components
                     return;
 
                 _disabledBGColour = value;
-                OnSelectionStateChanged(_button.selectionState);
+                if (_button != null)
+                    OnSelectionStateChanged(_button.selectionState);
             }
         }
 
@@ -43,7 +45,8 @@ namespace HUI.UI.Components
                     return;
 
                 _highlightedBGColour = value;
-                OnSelectionStateChanged(_button.selectionState);
+                if (_button != null)
+                    OnSelectionStateChanged(_button.selectionState);
             }
         }
 
@@ -57,7 +60,8 @@ namespace HUI.UI.Components
                     return;
 
                 _pressedBGColour = value;
-                OnSelectionStateChanged(_button.selectionState);
+                if (_button != null)
+                    OnSelectionStateChanged(_button.selectionState);
             }
         }
 
