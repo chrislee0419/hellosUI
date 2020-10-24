@@ -139,7 +139,7 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\Components\CustomIconButtonAnimations.cs" />
+    <Compile Include="UI\Components\CustomButtonAnimations.cs" />
     <Compile Include="UI\Screens\ScreenManagerBase.cs" />
     <Compile Include="UI\Screens\SearchScreenManager.cs" />
     <Compile Include="UI\Screens\SortScreenManager.cs" />
