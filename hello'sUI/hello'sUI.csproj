@@ -145,6 +145,7 @@
     <Compile Include="UI\Screens\SortScreenManager.cs" />
     <Compile Include="UI\Screens\ScrollerScreenManager.cs" />
     <Compile Include="UI\UIInstaller.cs" />
+    <Compile Include="Utilities\StringUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
