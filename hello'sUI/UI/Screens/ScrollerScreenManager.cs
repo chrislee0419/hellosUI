@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using HMUI;
@@ -84,14 +83,14 @@ namespace HUI.UI.Screens
             // so load images here using BS Utils
             Sprite chevronSprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.doublechevron.png");
 
-            Image buttonImage = _upButton.GetComponentsInChildren<Image>().First(x => x.name == "Icon");
+            Image buttonImage = _upButton.transform.Find("Content/Icon").GetComponent<ImageView>();
             buttonImage.rectTransform.Rotate(0f, 0f, 180f, Space.Self);
             buttonImage.sprite = chevronSprite;
 
-            buttonImage = _downButton.GetComponentsInChildren<Image>().First(x => x.name == "Icon");
+            buttonImage = _downButton.transform.Find("Content/Icon").GetComponent<ImageView>();
             buttonImage.sprite = chevronSprite;
 
-            buttonImage = _randomButton.GetComponentsInChildren<Image>().First(x => x.name == "Icon");
+            buttonImage = _randomButton.transform.Find("Content/Icon").GetComponent<ImageView>();
             buttonImage.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.shuffle.png");
 
             // destroy ContentSizeFitter so the anchors are used
@@ -100,20 +99,20 @@ namespace HUI.UI.Screens
             Object.Destroy(_randomButton.GetComponent<ContentSizeFitter>());
 
             // remove underline
-            Object.Destroy(_upButton.GetComponentsInChildren<ImageView>().First(x => x.name == "Underline"));
-            Object.Destroy(_downButton.GetComponentsInChildren<ImageView>().First(x => x.name == "Underline"));
-            Object.Destroy(_randomButton.GetComponentsInChildren<ImageView>().First(x => x.name == "Underline"));
+            Object.Destroy(_upButton.transform.Find("Underline").gameObject);
+            Object.Destroy(_downButton.transform.Find("Underline").gameObject);
+            Object.Destroy(_randomButton.transform.Find("Underline").gameObject);
 
             // remove skew
             var skewAccessor = FieldAccessor<ImageView, float>.GetAccessor("_skew");
 
-            ImageView bg = _upButton.GetComponentsInChildren<ImageView>().First(x => x.name == "BG");
+            ImageView bg = _upButton.transform.Find("BG").GetComponent<ImageView>();
             skewAccessor.Invoke(ref bg) = 0f;
             bg.SetVerticesDirty();
-            bg = _downButton.GetComponentsInChildren<ImageView>().First(x => x.name == "BG");
+            bg = _downButton.transform.Find("BG").GetComponent<ImageView>();
             skewAccessor.Invoke(ref bg) = 0f;
             bg.SetVerticesDirty();
-            bg = _randomButton.GetComponentsInChildren<ImageView>().First(x => x.name == "BG");
+            bg = _randomButton.transform.Find("BG").GetComponent<ImageView>();
             skewAccessor.Invoke(ref bg) = 0f;
             bg.SetVerticesDirty();
 
