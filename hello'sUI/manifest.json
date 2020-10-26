@@ -7,6 +7,10 @@
   "description": "hello's assorted UI additions",
   "gameVersion": "1.12.2",
   "dependsOn": {
-    "BSIPA": "^4.1.3"
+    "BSIPA": "^4.1.3",
+    "SongCore": "^3.0.0",
+    "BS Utils": "^1.6.1",
+    "BeatSaberMarkupLanguage": "^1.4.0",
+    "SiraUtil": "^2.0.0"
   }
 }
