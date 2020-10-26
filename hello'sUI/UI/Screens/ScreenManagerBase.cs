@@ -22,16 +22,21 @@ namespace HUI.UI.Screens
         protected FloatingScreen _screen;
         protected ScreenAnimationHandler _animationHandler;
 
+        private LevelCollectionNavigationController _levelCollectionNavigationController;
+
         public ScreenManagerBase(
             MainMenuViewController mainMenuVC,
             SoloFreePlayFlowCoordinator soloFC,
             PartyFreePlayFlowCoordinator partyFC,
+            LevelCollectionNavigationController levelCollectionNC,
             PhysicsRaycasterWithCache physicsRaycaster,
             Vector2 screenSize,
             Vector3 screenPosition,
             Quaternion screenRotation) : base(mainMenuVC, soloFC, partyFC)
         {
             Plugin.Log.Debug($"Creating {GetType().Name}");
+
+            _levelCollectionNavigationController = levelCollectionNC;
 
             _screen = FloatingScreen.CreateFloatingScreen(screenSize, false, screenPosition, screenRotation);
 
@@ -54,17 +59,33 @@ namespace HUI.UI.Screens
             _screen.gameObject.SetActive(false);
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _levelCollectionNavigationController.didActivateEvent -= OnLevelCollectionNavigationControllerActivated;
+            _levelCollectionNavigationController.didDeactivateEvent -= OnLevelCollectionNavigationControllerDeactivated;
+        }
+
         protected override void OnSinglePlayerLevelSelectionStarting()
         {
-            if (_animationHandler != null)
-                _animationHandler.PlayRevealAnimation();
+            _animationHandler.PlayRevealAnimation();
+
+            _levelCollectionNavigationController.didActivateEvent += OnLevelCollectionNavigationControllerActivated;
+            _levelCollectionNavigationController.didDeactivateEvent += OnLevelCollectionNavigationControllerDeactivated;
         }
 
         protected override void OnSinglePlayerLevelSelectionFinished()
         {
-            if (_animationHandler != null)
-                _animationHandler.PlayConcealAnimation();
+            _animationHandler.PlayConcealAnimation();
+
+            _levelCollectionNavigationController.didActivateEvent -= OnLevelCollectionNavigationControllerActivated;
+            _levelCollectionNavigationController.didDeactivateEvent -= OnLevelCollectionNavigationControllerDeactivated;
         }
+
+        protected virtual void OnLevelCollectionNavigationControllerActivated(bool unused, bool unused2, bool unused3) => _animationHandler.PlayRevealAnimation();
+
+        protected virtual void OnLevelCollectionNavigationControllerDeactivated(bool unused, bool unused2) => _animationHandler.PlayConcealAnimation();
 
         protected void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
         {
