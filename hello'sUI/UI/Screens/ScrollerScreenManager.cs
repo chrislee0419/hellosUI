@@ -71,9 +71,10 @@ namespace HUI.UI.Screens
             MainMenuViewController mainMenuVC,
             SoloFreePlayFlowCoordinator soloFC,
             PartyFreePlayFlowCoordinator partyFC,
+            LevelCollectionNavigationController levelCollectionNC,
             PhysicsRaycasterWithCache physicsRaycaster,
             LevelCollectionViewController levelCollectionViewController)
-            : base(mainMenuVC, soloFC, partyFC, physicsRaycaster, new Vector2(7f, 50f), new Vector3(-1.5f, 1.2f, 2.05f), Quaternion.Euler(0f, 330f, 0f))
+            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(7f, 50f), new Vector3(-1.5f, 1.2f, 2.05f), Quaternion.Euler(0f, 330f, 0f))
         {
             this._screen.name = "HUISongUIScreen";
 
@@ -169,7 +170,7 @@ namespace HUI.UI.Screens
 
             if (_scroller == null)
             {
-                _screen.StartCoroutine(CoroutineUtilities.DelayedActionCoroutine(RefreshPageButtons));
+                CoroutineUtilities.StartDelayedAction(RefreshPageButtons);
                 return;
             }
 
