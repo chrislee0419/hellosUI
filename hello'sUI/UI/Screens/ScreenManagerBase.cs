@@ -102,6 +102,10 @@ namespace HUI.UI.Screens
 
         protected class ScreenAnimationHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
+            public event Action PointerEntered;
+            public event Action PointerExited;
+            public event Action<AnimationType> AnimationFinished;
+
             public Vector2 DefaultSize { get; set; } = Vector2.zero;
             public virtual Vector2 ExpandedSize { get; set; } = Vector2.zero;
             public virtual bool UsePointerAnimations { get; set; } = true;
@@ -114,40 +118,42 @@ namespace HUI.UI.Screens
 
             protected const float StopAnimationEpsilon = 0.0001f;
             protected const float LocalScale = 0.02f;
-            protected static readonly WaitForSeconds CollapseAnimationDelay = new WaitForSeconds(1.2f);
+            protected static readonly WaitForSeconds CollapseAnimationDelay = new WaitForSeconds(0.8f);
 
             public void OnPointerEnter(PointerEventData eventData)
             {
                 IsPointedAt = true;
 
-                if (!UsePointerAnimations || _revealAnimation != null)
-                    return;
+                if (UsePointerAnimations)
+                    PlayExpandAnimation();
 
-                if (_contractAnimation != null)
+                try
                 {
-                    StopCoroutine(_contractAnimation);
-                    _contractAnimation = null;
+                    PointerEntered?.Invoke();
                 }
-
-                _expandAnimation = StartCoroutine(ExpandAnimationCoroutine());
+                catch (Exception e)
+                {
+                    Plugin.Log.Warn($"Unexpected exception occurred in {nameof(ScreenAnimationHandler)}:{nameof(PointerEntered)}");
+                    Plugin.Log.Debug(e);
+                }
             }
 
             public void OnPointerExit(PointerEventData eventData)
             {
                 IsPointedAt = false;
 
-                if (!UsePointerAnimations || _revealAnimation != null)
-                    return;
+                if (UsePointerAnimations)
+                    PlayContractAnimation();
 
-                bool immediate = false;
-                if (_expandAnimation != null)
+                try
                 {
-                    StopCoroutine(_expandAnimation);
-                    _expandAnimation = null;
-                    immediate = true;
+                    PointerExited?.Invoke();
                 }
-
-                _contractAnimation = StartCoroutine(ContractAnimationCoroutine(immediate));
+                catch (Exception e)
+                {
+                    Plugin.Log.Warn($"Unexpected exception occurred in {nameof(ScreenAnimationHandler)}:{nameof(PointerExited)}");
+                    Plugin.Log.Debug(e);
+                }
             }
 
             public void PlayRevealAnimation()
@@ -162,6 +168,35 @@ namespace HUI.UI.Screens
             {
                 StopAllAnimations();
                 _revealAnimation = StartCoroutine(RevealAnimationCoroutine(0f, false));
+            }
+
+            public void PlayExpandAnimation()
+            {
+                if (_revealAnimation != null || _expandAnimation != null)
+                    return;
+
+                if (_contractAnimation != null)
+                {
+                    StopCoroutine(_contractAnimation);
+                    _contractAnimation = null;
+                }
+
+                _expandAnimation = StartCoroutine(ExpandAnimationCoroutine());
+            }
+
+            public void PlayContractAnimation(bool immediate = false)
+            {
+                if (_revealAnimation != null || _contractAnimation != null)
+                    return;
+
+                if (_expandAnimation != null)
+                {
+                    StopCoroutine(_expandAnimation);
+                    _expandAnimation = null;
+                    immediate = true;
+                }
+
+                _contractAnimation = StartCoroutine(ContractAnimationCoroutine(immediate));
             }
 
             protected virtual void StopAllAnimations()
@@ -180,6 +215,19 @@ namespace HUI.UI.Screens
                 {
                     StopCoroutine(_contractAnimation);
                     _contractAnimation = null;
+                }
+            }
+
+            private void OnAnimationFinished(AnimationType animationType)
+            {
+                try
+                {
+                    AnimationFinished?.Invoke(animationType);
+                }
+                catch (Exception e)
+                {
+                    Plugin.Log.Warn($"Unexpected exception occurred in {nameof(ScreenAnimationHandler)}:{nameof(OnAnimationFinished)}");
+                    Plugin.Log.Debug(e);
                 }
             }
 
@@ -206,6 +254,7 @@ namespace HUI.UI.Screens
 
                 this.gameObject.SetActive(activateOnFinish);
                 _revealAnimation = null;
+                OnAnimationFinished(activateOnFinish ? AnimationType.Reveal : AnimationType.Conceal);
             }
 
             protected IEnumerator ExpandAnimationCoroutine()
@@ -230,6 +279,7 @@ namespace HUI.UI.Screens
                 rt.sizeDelta = ExpandedSize;
 
                 _expandAnimation = null;
+                OnAnimationFinished(AnimationType.Expand);
             }
 
             protected IEnumerator ContractAnimationCoroutine(bool immediate = false)
@@ -261,7 +311,16 @@ namespace HUI.UI.Screens
                 rt.sizeDelta = DefaultSize;
 
                 _contractAnimation = null;
+                OnAnimationFinished(AnimationType.Contract);
             }
+        }
+
+        public enum AnimationType
+        {
+            Reveal,
+            Conceal,
+            Expand,
+            Contract
         }
     }
 }
