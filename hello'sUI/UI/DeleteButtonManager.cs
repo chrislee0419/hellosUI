@@ -106,7 +106,7 @@ namespace HUI.UI
 
                     var btnAnims = _confirmDeleteButton.AddComponent<CustomButtonAnimations>();
                     btnAnims.NormalSelectionUseTranslucentColour = true;
-                    btnAnims.NormalBackgroundColour = Color.red;
+                    btnAnims.NormalBGColour = Color.red;
                     btnAnims.HighlightedBGColour = new Color(1f, 0.375f, 0f);
                     btnAnims.PressedBGColour = new Color(1f, 0.375f, 0f);
                 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using Zenject;
 
-namespace HUI.UI
+namespace HUI
 {
     public class SinglePlayerManagerBase : IInitializable, IDisposable
     {

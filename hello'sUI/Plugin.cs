@@ -5,7 +5,7 @@ using IPA.Config;
 using IPA.Config.Stores;
 using HarmonyLib;
 using SiraUtil.Zenject;
-using HUI.UI;
+using HUI.Installers;
 using IPALogger = IPA.Logging.Logger;
 
 namespace HUI
@@ -28,6 +28,7 @@ namespace HUI
 
             PluginConfig.Instance = config.Generated<PluginConfig>();
 
+            zenjector.OnMenu<SortModeInstaller>();
             zenjector.OnMenu<UIInstaller>();
         }
 

@@ -133,8 +133,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Installers\SortModeInstaller.cs" />
+    <Compile Include="Sort\BuiltIn\DefaultSortMode.cs" />
+    <Compile Include="Sort\ISortMode.cs" />
+    <Compile Include="Sort\BuiltIn\NewestSortMode.cs" />
+    <Compile Include="Sort\BuiltIn\PlayCountSortMode.cs" />
+    <Compile Include="Sort\SongSortManager.cs" />
+    <Compile Include="Sort\SortedBeatmapLevelPack.cs" />
     <Compile Include="UI\DeleteButtonManager.cs" />
-    <Compile Include="UI\SinglePlayerManagerBase.cs" />
+    <Compile Include="SinglePlayerManagerBase.cs" />
+    <Compile Include="Utilities\BeatmapUtilities.cs" />
     <Compile Include="Utilities\CoroutineUtilities.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginConfig.cs" />
@@ -144,13 +152,15 @@
     <Compile Include="UI\Screens\SearchScreenManager.cs" />
     <Compile Include="UI\Screens\SortScreenManager.cs" />
     <Compile Include="UI\Screens\ScrollerScreenManager.cs" />
-    <Compile Include="UI\UIInstaller.cs" />
+    <Compile Include="Installers\UIInstaller.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="UI\Views\SortScreenView.bsml" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\doublechevron.png" />
     <EmbeddedResource Include="Assets\shuffle.png" />
@@ -163,6 +173,16 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\Views\DeleteButtonModalView.bsml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\ascending.png" />
+    <EmbeddedResource Include="Assets\descending.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\cross.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\chevron.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

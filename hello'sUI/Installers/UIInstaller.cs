@@ -1,7 +1,8 @@
 ﻿using Zenject;
+using HUI.UI;
 using HUI.UI.Screens;
 
-namespace HUI.UI
+namespace HUI.Installers
 {
     public class UIInstaller : Installer
     {

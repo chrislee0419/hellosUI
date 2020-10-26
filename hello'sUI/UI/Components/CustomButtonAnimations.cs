@@ -6,7 +6,7 @@ namespace HUI.UI.Components
     internal class CustomButtonAnimations : MonoBehaviour
     {
         protected Color _normalBGColour = new Color(0f, 0f, 0f, 0.5f);
-        public Color NormalBackgroundColour
+        public Color NormalBGColour
         {
             get => _normalBGColour;
             set
@@ -21,7 +21,7 @@ namespace HUI.UI.Components
         }
 
         protected Color _disabledBGColour = new Color(0f, 0f, 0f, 0.25f);
-        public Color DisabledBackgroundColour
+        public Color DisabledBGColour
         {
             get => _disabledBGColour;
             set
@@ -139,6 +139,81 @@ namespace HUI.UI.Components
 
     internal class CustomIconButtonAnimations : CustomButtonAnimations
     {
+        private Color _normalIconColour = Color.grey;
+        public Color NormalIconColour
+        {
+            get => _normalIconColour;
+            set
+            {
+                if (_normalIconColour == value)
+                    return;
+
+                _normalIconColour = value;
+                if (_button != null)
+                    OnSelectionStateChanged(_button.selectionState);
+            }
+        }
+
+        private Color _disabledIconColour = new Color(0.25f, 0.25f, 0.25f, 0.5f);
+        public Color DisabledIconColour
+        {
+            get => _disabledIconColour;
+            set
+            {
+                if (_disabledIconColour == value)
+                    return;
+
+                _disabledIconColour = value;
+                if (_button != null)
+                    OnSelectionStateChanged(_button.selectionState);
+            }
+        }
+
+        protected Color _highlightedIconColour = Color.white;
+        public Color HighlightedIconColour
+        {
+            get => _highlightedIconColour;
+            set
+            {
+                if (_highlightedIconColour == value)
+                    return;
+
+                _highlightedIconColour = value;
+                if (_button != null)
+                    OnSelectionStateChanged(_button.selectionState);
+            }
+        }
+
+        protected Color _pressedIconColour = Color.grey;
+        public Color PressedIconColour
+        {
+            get => _pressedIconColour;
+            set
+            {
+                if (_pressedIconColour == value)
+                    return;
+
+                _pressedIconColour = value;
+                if (_button != null)
+                    OnSelectionStateChanged(_button.selectionState);
+            }
+        }
+
+        protected Vector3 _highlightScale = new Vector3(1.5f, 1.5f, 1.5f);
+        public Vector3 HighlightedLocalScale
+        {
+            get => _highlightScale;
+            set
+            {
+                if (_highlightScale == value)
+                    return;
+
+                _highlightScale = value;
+                if (_button != null)
+                    OnSelectionStateChanged(_button.selectionState);
+            }
+        }
+
         private ImageView _icon;
 
         protected override void Awake()
@@ -155,23 +230,23 @@ namespace HUI.UI.Components
             switch (selectionState)
             {
                 case NoTransitionsButton.SelectionState.Disabled:
-                    _icon.transform.localScale = new Vector3(1f, 1f, 1f);
-                    _icon.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+                    _icon.transform.localScale = Vector3.one;
+                    _icon.color = _disabledIconColour;
                     break;
 
                 case NoTransitionsButton.SelectionState.Normal:
-                    _icon.transform.localScale = new Vector3(1f, 1f, 1f);
-                    _icon.color = Color.grey;
+                    _icon.transform.localScale = Vector3.one;
+                    _icon.color = _normalIconColour;
                     break;
 
                 case NoTransitionsButton.SelectionState.Highlighted:
-                    _icon.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-                    _icon.color = Color.white;
+                    _icon.transform.localScale = _highlightScale;
+                    _icon.color = _highlightedIconColour;
                     break;
 
                 case NoTransitionsButton.SelectionState.Pressed:
-                    _icon.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-                    _icon.color = Color.grey;
+                    _icon.transform.localScale = _highlightScale;
+                    _icon.color = _pressedIconColour;
                     break;
             }
         }
