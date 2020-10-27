@@ -15,7 +15,8 @@ namespace HUI.Sort
         public event Action SortModeAvailabilityChanged;
 
         // expose instance to mods that don't use SiraUtil
-        public SongSortManager Instance { get; private set; }
+        public static SongSortManager Instance { get; private set; }
+
         public IReadOnlyList<ISortMode> SortModes { get; private set; }
         public ISortMode CurrentSortMode { get; private set; }
         public bool SortAscending { get; private set; }
