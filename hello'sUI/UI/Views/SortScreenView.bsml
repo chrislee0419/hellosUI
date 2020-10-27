@@ -33,7 +33,8 @@
                on-click='cancel-sort-button-clicked' />
   
   <!-- sort mode list -->
-  <bg anchor-min-x='0' anchor-min-y='1'
+  <bg active='~list-bg-active'
+      anchor-min-x='0' anchor-min-y='1'
       anchor-max-x='1' anchor-max-y='1'
       anchor-pos-x='0' anchor-pos-y='-10'
       pivot-x='0.5' pivot-y='1'

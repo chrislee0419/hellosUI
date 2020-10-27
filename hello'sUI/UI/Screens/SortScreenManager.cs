@@ -16,6 +16,22 @@ namespace HUI.UI.Screens
     {
         protected override string AssociatedBSMLResource => "HUI.UI.Views.SortScreenView.bsml";
 
+        // necessary to prevent buttons/list from being interactable while hidden
+        private bool _listBGActive = false;
+        [UIValue("list-bg-active")]
+        public bool ListBGActive
+        {
+            get => _listBGActive;
+            set
+            {
+                if (_listBGActive == value)
+                    return;
+
+                _listBGActive = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         private string _sortText = "Default";
         [UIValue("sort-text")]
         public string SortText
@@ -238,7 +254,11 @@ namespace HUI.UI.Screens
         private void OnAnimationHandlerAnimationFinished(AnimationType animationType)
         {
             if (animationType == AnimationType.Contract)
+            {
                 _animationHandler.UsePointerAnimations = false;
+
+                ListBGActive = false;
+            }
         }
 
         private void RefreshSortModeList()
@@ -277,6 +297,7 @@ namespace HUI.UI.Screens
             {
                 _animationHandler.PlayExpandAnimation();
                 _animationHandler.UsePointerAnimations = true;
+                ListBGActive = true;
             }
         }
 
