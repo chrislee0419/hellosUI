@@ -96,7 +96,7 @@ namespace HUI.UI.Screens
             LevelCollectionNavigationController levelCollectionNC,
             SongSortManager songSortManager,
             PhysicsRaycasterWithCache physicsRaycaster)
-            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, DefaultSize, new Vector3(-1.05f, 0.5f, 2.3f), Quaternion.Euler(75f, 335f, 0f))
+            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, DefaultSize, new Vector3(-1.1f, 0.5f, 2.3f), Quaternion.Euler(65f, 345f, 0f))
         {
             _songSortManager = songSortManager;
 
