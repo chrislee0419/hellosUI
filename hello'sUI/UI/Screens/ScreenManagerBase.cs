@@ -10,6 +10,7 @@ using IPA.Utilities;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.FloatingScreen;
 using BSMLUtilities = BeatSaberMarkupLanguage.Utilities;
+using Object = UnityEngine.Object;
 
 namespace HUI.UI.Screens
 {
@@ -65,6 +66,8 @@ namespace HUI.UI.Screens
 
             _levelCollectionNavigationController.didActivateEvent -= OnLevelCollectionNavigationControllerActivated;
             _levelCollectionNavigationController.didDeactivateEvent -= OnLevelCollectionNavigationControllerDeactivated;
+
+            Object.Destroy(_screen.gameObject);
         }
 
         protected override void OnSinglePlayerLevelSelectionStarting()
