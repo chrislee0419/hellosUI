@@ -14,9 +14,6 @@ namespace HUI.Installers
         public override void InstallBindings()
         {
             Container.BindInterfacesAndSelfTo<SongSortManager>().AsSingle();
-
-            Container.Bind<DefaultSortMode>().AsSingle();
-            Container.Bind<NewestSortMode>().AsSingle();
             Container.Bind<PlayCountSortMode>().AsSingle();
 
             // get external sort modes

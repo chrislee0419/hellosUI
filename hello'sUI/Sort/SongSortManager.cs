@@ -22,7 +22,7 @@ namespace HUI.Sort
         public bool SortAscending { get; private set; }
 
         private DefaultSortMode _defaultSortMode;
-        private List<ISortMode> _builtInSortModes;
+        private ISortMode[] _builtInSortModes;
         private List<ISortMode> _externalSortModes;
 
         private IAnnotatedBeatmapLevelCollection _originalLevelCollection;
@@ -46,8 +46,6 @@ namespace HUI.Sort
             LevelFilteringNavigationController levelFilteringNavigationController,
             LevelCollectionNavigationController levelCollectionNavigationController,
             LevelSelectionNavigationController levelSelectionNavigationController,
-            DefaultSortMode defaultSort,
-            NewestSortMode newestSort,
             PlayCountSortMode playCountSort,
             List<ISortMode> externalSortModes)
             : base(mainMenuVC, soloFC, partyFC)
@@ -56,8 +54,16 @@ namespace HUI.Sort
             _levelCollectionNavigationController = levelCollectionNavigationController;
             _levelSelectionNavigationController = levelSelectionNavigationController;
 
-            _defaultSortMode = defaultSort;
-            _builtInSortModes = new List<ISortMode> { defaultSort, newestSort, playCountSort };
+            _defaultSortMode = new DefaultSortMode();
+            _builtInSortModes = new ISortMode[]
+            {
+                _defaultSortMode,
+                new NewestSortMode(),
+                playCountSort,
+                new SongLengthSortMode(),
+                new PPSortMode(),
+                new StarRatingSortMode()
+            };
             _externalSortModes = externalSortModes;
 
             RefreshSortModeAvailablity();
