@@ -39,13 +39,6 @@
       anchor-pos-x='0' anchor-pos-y='-10'
       pivot-x='0.5' pivot-y='1'
       size-delta-x='0' size-delta-y='44'> <!-- note: size delta y is derived from SortScreenManager.ExpandedSize -->
-    <icon-button id='page-up-button'
-                  anchor-min-x='0' anchor-min-y='1'
-                  anchor-max-x='1' anchor-max-y='1'
-                  anchor-pos-x='0' anchor-pos-y='-1'
-                  pivot-x='0.5' pivot-y='1'
-                  size-delta-x='-14' size-delta-y='7'
-                  click-event='sort-mode-list#PageUp' />
     <bg bg='round-rect-panel'
         bg-color='#80808040'
         anchor-min-x='0' anchor-min-y='0'
@@ -62,6 +55,21 @@
             align-to-center='true'
             select-cell='sort-mode-list-cell-selected' />
     </bg>
+    
+    <!--
+         note: the list cells can be hovered over even when they are masked off,
+         which leads to the cells receiving and handling the pointer raycast before
+         the page button IF the page button's child index is less than the
+         list's bg child index
+         hence, both page buttons have to be defined AFTER the list
+    -->
+    <icon-button id='page-up-button'
+                  anchor-min-x='0' anchor-min-y='1'
+                  anchor-max-x='1' anchor-max-y='1'
+                  anchor-pos-x='0' anchor-pos-y='-1'
+                  pivot-x='0.5' pivot-y='1'
+                  size-delta-x='-14' size-delta-y='7'
+                  click-event='sort-mode-list#PageUp' />
     <icon-button id='page-down-button'
                   anchor-min-x='0' anchor-min-y='0'
                   anchor-max-x='1' anchor-max-y='0'
