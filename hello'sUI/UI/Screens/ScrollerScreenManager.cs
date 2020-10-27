@@ -147,7 +147,9 @@ namespace HUI.UI.Screens
         {
             base.Initialize();
 
-            _buttonListener = new UnityAction(RefreshPageButtons);
+            // page buttons need to be refreshed on the next frame, since it isn't guaranteed that
+            // the game's callback to change the targetPosition would happen before the refresh occurs
+            _buttonListener = new UnityAction(() => CoroutineUtilities.StartDelayedAction(RefreshPageButtons));
 
             _originalUpButton.onClick.AddListener(_buttonListener);
             _originalDownButton.onClick.AddListener(_buttonListener);
