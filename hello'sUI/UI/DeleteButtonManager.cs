@@ -152,6 +152,8 @@ namespace HUI.UI
         protected override void OnSinglePlayerLevelSelectionFinished()
         {
             _levelCollectionViewController.didSelectLevelEvent -= OnLevelSelected;
+
+            _parserParams.EmitEvent("hide-delete-confirmation-modal");
         }
 
         private void OnLevelSelected(LevelCollectionViewController _, IPreviewBeatmapLevel level) => _deleteButton.interactable = level is CustomPreviewBeatmapLevel;
