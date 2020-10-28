@@ -6,9 +6,9 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using VRUIControls;
-using IPA.Utilities;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.FloatingScreen;
+using HUI.Utilities;
 using BSMLUtilities = BeatSaberMarkupLanguage.Utilities;
 using Object = UnityEngine.Object;
 
@@ -33,18 +33,15 @@ namespace HUI.UI.Screens
             PhysicsRaycasterWithCache physicsRaycaster,
             Vector2 screenSize,
             Vector3 screenPosition,
-            Quaternion screenRotation) : base(mainMenuVC, soloFC, partyFC)
+            Quaternion screenRotation)
+            : base(mainMenuVC, soloFC, partyFC)
         {
             Plugin.Log.Debug($"Creating {GetType().Name}");
 
             _levelCollectionNavigationController = levelCollectionNC;
 
             _screen = FloatingScreen.CreateFloatingScreen(screenSize, false, screenPosition, screenRotation);
-
-            // fix for null exceptions during raycast
-            // most likely, the FloatingScreen is created too "early", so BSML can't find PhysicsRaycaster
-            var vrGraphicRaycaster = this._screen.GetComponent<VRGraphicRaycaster>();
-            FieldAccessor<VRGraphicRaycaster, PhysicsRaycasterWithCache>.Set(ref vrGraphicRaycaster, "_physicsRaycaster", physicsRaycaster);
+            _screen.gameObject.FixRaycaster(physicsRaycaster);
 
             _animationHandler = _screen.gameObject.AddComponent<ScreenAnimationHandler>();
             _animationHandler.DefaultSize = screenSize;

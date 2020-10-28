@@ -161,6 +161,7 @@
     <Compile Include="UI\Screens\SortScreenManager.cs" />
     <Compile Include="UI\Screens\ScrollerScreenManager.cs" />
     <Compile Include="Installers\UIInstaller.cs" />
+    <Compile Include="Utilities\GameObjectUtilities.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
   </ItemGroup>
   <ItemGroup>

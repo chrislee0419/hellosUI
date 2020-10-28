@@ -123,9 +123,8 @@ namespace HUI.UI.Screens
             this._animationHandler.AnimationFinished += OnAnimationHandlerAnimationFinished;
 
             // BSMLList needs a VRGraphicRaycaster, so we need to fix the PhysicsRaycaster,
-            // like what is done for FloatingScreen in ScreenManagerBase
-            var vrGraphicRaycaster = _sortModeList.GetComponentInChildren<VRGraphicRaycaster>();
-            FieldAccessor<VRGraphicRaycaster, PhysicsRaycasterWithCache>.Set(ref vrGraphicRaycaster, "_physicsRaycaster", physicsRaycaster);
+            // just like what is done for FloatingScreen in ScreenManagerBase
+            _sortModeList.gameObject.FixRaycaster(physicsRaycaster);
 
             // move pivot so the screen expands downwards
             var rt = this._screen.transform as RectTransform;
