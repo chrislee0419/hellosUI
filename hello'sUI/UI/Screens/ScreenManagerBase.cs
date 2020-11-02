@@ -87,9 +87,9 @@ namespace HUI.UI.Screens
             _levelCollectionNavigationController.didDeactivateEvent -= OnLevelCollectionNavigationControllerDeactivated;
         }
 
-        protected virtual void OnLevelCollectionNavigationControllerActivated(bool unused, bool unused2, bool unused3) => _animationHandler.PlayRevealAnimation();
+        protected virtual void OnLevelCollectionNavigationControllerActivated(bool firstActivation, bool addToHierarchy, bool screenSystemEnabling) => _animationHandler.PlayRevealAnimation();
 
-        protected virtual void OnLevelCollectionNavigationControllerDeactivated(bool unused, bool unused2) => _animationHandler.PlayConcealAnimation();
+        protected virtual void OnLevelCollectionNavigationControllerDeactivated(bool removedFromHierarchy, bool screenSystemDisabling) => _animationHandler.PlayConcealAnimation();
 
         protected void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
         {
