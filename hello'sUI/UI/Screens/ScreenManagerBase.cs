@@ -61,10 +61,14 @@ namespace HUI.UI.Screens
         {
             base.Dispose();
 
-            _levelCollectionNavigationController.didActivateEvent -= OnLevelCollectionNavigationControllerActivated;
-            _levelCollectionNavigationController.didDeactivateEvent -= OnLevelCollectionNavigationControllerDeactivated;
+            if (_levelCollectionNavigationController != null)
+            {
+                _levelCollectionNavigationController.didActivateEvent -= OnLevelCollectionNavigationControllerActivated;
+                _levelCollectionNavigationController.didDeactivateEvent -= OnLevelCollectionNavigationControllerDeactivated;
+            }
 
-            Object.Destroy(_screen.gameObject);
+            if (_screen != null)
+                Object.Destroy(_screen.gameObject);
         }
 
         protected override void OnSinglePlayerLevelSelectionStarting()

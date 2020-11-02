@@ -25,9 +25,12 @@ namespace HUI
 
         public virtual void Dispose()
         {
-            _mainMenuVC.didFinishEvent -= OnMainMenuViewControllerDidFinish;
-            _soloFC.didFinishEvent -= OnSinglePlayerLevelSelectionFlowCoordinatorDidFinish;
-            _partyFC.didFinishEvent -= OnSinglePlayerLevelSelectionFlowCoordinatorDidFinish;
+            if (_mainMenuVC != null)
+                _mainMenuVC.didFinishEvent -= OnMainMenuViewControllerDidFinish;
+            if (_soloFC != null)
+                _soloFC.didFinishEvent -= OnSinglePlayerLevelSelectionFlowCoordinatorDidFinish;
+            if (_partyFC != null)
+                _partyFC.didFinishEvent -= OnSinglePlayerLevelSelectionFlowCoordinatorDidFinish;
         }
 
         private void OnMainMenuViewControllerDidFinish(MainMenuViewController _, MainMenuViewController.MenuButton buttonType)
