@@ -144,7 +144,7 @@ namespace HUI.UI.Screens
             _sortIcon.sprite = AscendingIconSprite;
 
             var icon = _cancelButton.transform.Find("Content/Icon").GetComponent<ImageView>();
-            icon.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.cross.png");
+            icon.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.refresh.png");
 
             Sprite chevronSprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.chevron.png");
             icon = _pageUpButton.transform.Find("Content/Icon").GetComponent<ImageView>();
