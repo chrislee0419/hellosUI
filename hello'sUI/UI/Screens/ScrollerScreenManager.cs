@@ -104,17 +104,9 @@ namespace HUI.UI.Screens
             Object.Destroy(_randomButton.transform.Find("Underline").gameObject);
 
             // remove skew
-            var skewAccessor = FieldAccessor<ImageView, float>.GetAccessor("_skew");
-
-            ImageView bg = _upButton.transform.Find("BG").GetComponent<ImageView>();
-            skewAccessor.Invoke(ref bg) = 0f;
-            bg.SetVerticesDirty();
-            bg = _downButton.transform.Find("BG").GetComponent<ImageView>();
-            skewAccessor.Invoke(ref bg) = 0f;
-            bg.SetVerticesDirty();
-            bg = _randomButton.transform.Find("BG").GetComponent<ImageView>();
-            skewAccessor.Invoke(ref bg) = 0f;
-            bg.SetVerticesDirty();
+            _upButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
+            _downButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
+            _randomButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
 
             // add custom animations
             Object.Destroy(_upButton.GetComponent<ButtonStaticAnimations>());

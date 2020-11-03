@@ -2,7 +2,6 @@
 using UnityEngine.UI;
 using VRUIControls;
 using HMUI;
-using IPA.Utilities;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BS_Utils.Utilities;
@@ -165,37 +164,17 @@ namespace HUI.UI.Screens
             Object.Destroy(_pageDownButton.transform.Find("Underline").gameObject);
 
             // remove skew
-            ImageView bg = _sortDirectionButton.transform.Find("BG").GetComponent<ImageView>();
-            FieldAccessor<ImageView, float>.Set(ref bg, "_skew", 0f);
-            bg.SetVerticesDirty();
+            _sortDirectionButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
+            _sortDirectionButton.transform.Find("Underline").GetComponent<ImageView>().SetSkew(0f);
 
-            bg = _sortDirectionButton.transform.Find("Underline").GetComponent<ImageView>();
-            FieldAccessor<ImageView, float>.Set(ref bg, "_skew", 0f);
-            bg.SetVerticesDirty();
+            _cancelButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
+            _cancelButton.transform.Find("Underline").GetComponent<ImageView>().SetSkew(0f);
 
-            bg = _cancelButton.transform.Find("BG").GetComponent<ImageView>();
-            FieldAccessor<ImageView, float>.Set(ref bg, "_skew", 0f);
-            bg.SetVerticesDirty();
+            _sortButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
+            _sortButton.transform.Find("Underline").GetComponent<ImageView>().SetSkew(0f);
 
-            bg = _cancelButton.transform.Find("Underline").GetComponent<ImageView>();
-            FieldAccessor<ImageView, float>.Set(ref bg, "_skew", 0f);
-            bg.SetVerticesDirty();
-
-            bg = _sortButton.transform.Find("BG").GetComponent<ImageView>();
-            FieldAccessor<ImageView, float>.Set(ref bg, "_skew", 0f);
-            bg.SetVerticesDirty();
-
-            bg = _sortButton.transform.Find("Underline").GetComponent<ImageView>();
-            FieldAccessor<ImageView, float>.Set(ref bg, "_skew", 0f);
-            bg.SetVerticesDirty();
-
-            bg = _pageUpButton.transform.Find("BG").GetComponent<ImageView>();
-            FieldAccessor<ImageView, float>.Set(ref bg, "_skew", 0f);
-            bg.SetVerticesDirty();
-
-            bg = _pageDownButton.transform.Find("BG").GetComponent<ImageView>();
-            FieldAccessor<ImageView, float>.Set(ref bg, "_skew", 0f);
-            bg.SetVerticesDirty();
+            _pageUpButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
+            _pageDownButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
 
             // custom animations
             Object.Destroy(_sortDirectionButton.GetComponent<ButtonStaticAnimations>());

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using HMUI;
 using VRUIControls;
 using IPA.Utilities;
 
@@ -16,6 +17,12 @@ namespace HUI.Utilities
                 vrGraphicRaycaster = go.GetComponentInChildren<VRGraphicRaycaster>();
 
             FieldAccessor<VRGraphicRaycaster, PhysicsRaycasterWithCache>.Set(ref vrGraphicRaycaster, "_physicsRaycaster", physicsRaycaster);
+        }
+
+        public static void SetSkew(this ImageView image, float skew)
+        {
+            FieldAccessor<ImageView, float>.Set(ref image, "_skew", skew);
+            image.SetVerticesDirty();
         }
     }
 }
