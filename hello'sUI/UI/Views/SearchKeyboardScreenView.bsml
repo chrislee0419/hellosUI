@@ -1,0 +1,33 @@
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
+    anchor-min-x='0' anchor-min-y='0'
+    anchor-max-x='1' anchor-max-y='1'
+    bg='round-rect-panel'
+    bg-color='#00000040'>
+  
+  <bg id='keyboard-view'
+      anchor-min-x='0' anchor-min-y='0'
+      anchor-max-x='1' anchor-max-y='1'>
+    <text text='~search-text'
+          anchor-min-x='0' anchor-min-y='1'
+          anchor-max-x='1' anchor-max-y='1'
+          size-delta-x='-4' size-delta-y='0'
+          anchor-pos-x='0' anchor-pos-y='-5'
+          font-size='3.8'
+          font-align='Center' />
+    
+    <bg id='keyboard-container'
+        anchor-min-x='0' anchor-min-y='0'
+        anchor-max-x='1' anchor-max-y='0'
+        pivot-x='0.5' pivot-y='0'
+        anchor-pos-x='0' anchor-pos-y='2'
+        size-delta-x='-4' size-delta-y='~keyboard-height' />
+  </bg>
+  
+  <bg id='settings-view'
+      active='false'
+      anchor-min-x='0' anchor-min-y='0'
+      anchor-max-x='1' anchor-max-y='1'>
+    
+  </bg>
+</bg>

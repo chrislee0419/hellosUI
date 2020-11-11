@@ -18,7 +18,7 @@ namespace HUI
         internal static Plugin Instance { get; private set; }
         internal static IPALogger Log { get; private set; }
 
-        internal const string HarmonyId = "com.chrislee0419.BeatSaber.UIAdditions";
+        internal const string HarmonyId = "com.chrislee0419.BeatSaber.HUI";
 
         [Init]
         public Plugin(IPALogger logger, Config config, Zenjector zenjector)
@@ -28,7 +28,9 @@ namespace HUI
 
             PluginConfig.Instance = config.Generated<PluginConfig>();
 
+            zenjector.OnMenu<DataFlowInstaller>();
             zenjector.OnMenu<SortModeInstaller>();
+            zenjector.OnMenu<SearchInstaller>();
             zenjector.OnMenu<UIInstaller>();
         }
 

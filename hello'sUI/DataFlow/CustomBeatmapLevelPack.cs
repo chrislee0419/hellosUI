@@ -5,9 +5,9 @@ using UnityEngine;
 using IPA.Utilities;
 using SongCore;
 
-namespace HUI.Sort
+namespace HUI.DataFlow
 {
-    internal class SortedBeatmapLevelPack : IBeatmapLevelPack
+    internal class CustomBeatmapLevelPack : IBeatmapLevelPack
     {
         public string packID { get; private set; }
         public string packName { get; private set; }
@@ -19,15 +19,15 @@ namespace HUI.Sort
         private BeatmapLevelCollection _beatmapLevelCollection = new BeatmapLevelCollection(Array.Empty<IPreviewBeatmapLevel>());
         public IBeatmapLevelCollection beatmapLevelCollection => _beatmapLevelCollection;
 
-        private const string SortedLevelPackID = CustomLevelLoader.kCustomLevelPackPrefixId + "HUISortedLevelPack";
+        public const string LevelPackID = CustomLevelLoader.kCustomLevelPackPrefixId + "HUICustomLevelPack";
 
         private static readonly FieldAccessor<BeatmapLevelCollection, IPreviewBeatmapLevel[]>.Accessor LevelsAccessor = FieldAccessor<BeatmapLevelCollection, IPreviewBeatmapLevel[]>.GetAccessor("_levels");
 
         public IBeatmapLevelPack SetupFromLevels(IAnnotatedBeatmapLevelCollection originalLevelCollection, IEnumerable<IPreviewBeatmapLevel> levels)
         {
-            packID = SortedLevelPackID;
+            packID = LevelPackID;
             packName = originalLevelCollection.collectionName;
-            shortPackName = SortedLevelPackID;
+            shortPackName = LevelPackID;
             coverImage = originalLevelCollection.coverImage ?? Loader.defaultCoverImage;
 
             LevelsAccessor(ref _beatmapLevelCollection) = levels is IPreviewBeatmapLevel[] array ? array : levels.ToArray();

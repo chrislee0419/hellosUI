@@ -1,5 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using IPA.Config.Stores;
+using IPA.Config.Stores.Attributes;
+using IPA.Config.Stores.Converters;
+using static HUI.Search.WordSearchEngine;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
 namespace HUI
@@ -9,6 +12,9 @@ namespace HUI
         public static PluginConfig Instance { get; set; }
 
         public virtual int FastScrollSpeed { get; set; } = 5;
+
+        [NonNullable]
+        public virtual SearchSettings Search { get; set; } = new SearchSettings();
 
         ///// <summary>
         ///// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
@@ -33,5 +39,19 @@ namespace HUI
         //{
         //    // This instance's members populated from other
         //}
+
+        public class SearchSettings
+        {
+            public virtual bool StripSymbols { get; set; } = StripSymbolsDefaultValue;
+            public const bool StripSymbolsDefaultValue = false;
+
+            public virtual bool SplitQueryByWords { get; set; } = SplitQueryByWordsDefaultValue;
+            public const bool SplitQueryByWordsDefaultValue = true;
+
+            [UseConverter(typeof(EnumConverter<SearchableSongFields>))]
+            public virtual SearchableSongFields SongFieldsToSearch { get; set; } = SongFieldsToSearchDefaultValue;
+            public const SearchableSongFields SongFieldsToSearchDefaultValue =
+                SearchableSongFields.SongName | SearchableSongFields.SongAuthor | SearchableSongFields.LevelAuthor | SearchableSongFields.Contributors;
+        }
     }
 }

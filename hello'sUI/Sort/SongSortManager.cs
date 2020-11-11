@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Zenject;
-using IPA.Utilities;
-using SongCore;
 using HUI.Interfaces;
 using HUI.Sort.BuiltIn;
+using HUI.UI.Screens;
 using HUI.Utilities;
 
 namespace HUI.Sort
 {
-    public class SongSortManager : SinglePlayerManagerBase
+    public class SongSortManager : IInitializable, IDisposable, ILevelCollectionModifier
     {
-        public event Action SortModeAvailabilityChanged;
+        public event Action LevelCollectionRefreshRequested;
 
         // expose instance to mods that don't use SiraUtil
         public static SongSortManager Instance { get; private set; }
@@ -22,38 +20,21 @@ namespace HUI.Sort
         public ISortMode CurrentSortMode { get; private set; }
         public bool SortAscending { get; private set; }
 
+        private bool IsDefaultSort => CurrentSortMode == _defaultSortMode && SortAscending == _defaultSortMode.DefaultSortByAscending;
+
+        private SortScreenManager _sortScreenManager;
+
         private DefaultSortMode _defaultSortMode;
         private ISortMode[] _builtInSortModes;
         private List<ISortMode> _externalSortModes;
 
-        private IAnnotatedBeatmapLevelCollection _originalLevelCollection;
-        private SortedBeatmapLevelPack _sortedLevelPack = new SortedBeatmapLevelPack();
-
-        private LevelFilteringNavigationController _levelFilteringNavigationController;
-        private LevelCollectionNavigationController _levelCollectionNavigationController;
-        private LevelSelectionNavigationController _levelSelectionNavigationController;
-
-        private static readonly FieldAccessor<LevelCollectionNavigationController, bool>.Accessor ShowPlayerStatsAccessor = FieldAccessor<LevelCollectionNavigationController, bool>.GetAccessor("_showPlayerStatsInDetailView");
-        private static readonly FieldAccessor<LevelCollectionNavigationController, bool>.Accessor ShowPracticeButtonAccessor = FieldAccessor<LevelCollectionNavigationController, bool>.GetAccessor("_showPracticeButtonInDetailView");
-        private static readonly FieldAccessor<LevelCollectionNavigationController, string>.Accessor ActionButtonTextAccessor = FieldAccessor<LevelCollectionNavigationController, string>.GetAccessor("_actionButtonTextInDetailView");
-        private static readonly FieldAccessor<LevelSelectionNavigationController, BeatmapDifficultyMask>.Accessor AllowedBeatmapDifficultyMaskAccessor = FieldAccessor<LevelSelectionNavigationController, BeatmapDifficultyMask>.GetAccessor("_allowedBeatmapDifficultyMask");
-        private static readonly FieldAccessor<LevelSelectionNavigationController, BeatmapCharacteristicSO[]>.Accessor NotAllowedCharacteristicsAccessor = FieldAccessor<LevelSelectionNavigationController, BeatmapCharacteristicSO[]>.GetAccessor("_notAllowedCharacteristics");
-
         [Inject]
         public SongSortManager(
-            MainMenuViewController mainMenuVC,
-            SoloFreePlayFlowCoordinator soloFC,
-            PartyFreePlayFlowCoordinator partyFC,
-            LevelFilteringNavigationController levelFilteringNavigationController,
-            LevelCollectionNavigationController levelCollectionNavigationController,
-            LevelSelectionNavigationController levelSelectionNavigationController,
+            SortScreenManager sortScreenManager,
             PlayCountSortMode playCountSort,
             List<ISortMode> externalSortModes)
-            : base(mainMenuVC, soloFC, partyFC)
         {
-            _levelFilteringNavigationController = levelFilteringNavigationController;
-            _levelCollectionNavigationController = levelCollectionNavigationController;
-            _levelSelectionNavigationController = levelSelectionNavigationController;
+            _sortScreenManager = sortScreenManager;
 
             _defaultSortMode = new DefaultSortMode();
             _builtInSortModes = new ISortMode[]
@@ -67,9 +48,45 @@ namespace HUI.Sort
             };
             _externalSortModes = externalSortModes;
 
+            Instance = this;
+        }
+
+        public void Initialize()
+        {
             RefreshSortModeAvailablity();
 
-            Instance = this;
+            _sortScreenManager.SortDirectionChanged += OnSortDirectionChanged;
+            _sortScreenManager.SortCancelled += OnSortCancelled;
+            _sortScreenManager.SortModeListCellSelected += OnSortModeListCellSelected;
+        }
+
+        public void Dispose()
+        {
+            if (_sortScreenManager != null)
+            {
+                _sortScreenManager.SortDirectionChanged -= OnSortDirectionChanged;
+                _sortScreenManager.SortCancelled -= OnSortCancelled;
+                _sortScreenManager.SortModeListCellSelected -= OnSortModeListCellSelected;
+            }
+        }
+
+        public void OnLevelCollectionSelected(IAnnotatedBeatmapLevelCollection annotatedBeatmaplevelCollection)
+        {
+            // no action needed
+        }
+
+        public bool ApplyModifications(IEnumerable<IPreviewBeatmapLevel> levelCollection, out IEnumerable<IPreviewBeatmapLevel> modifiedLevelCollection)
+        {
+            if (IsDefaultSort)
+            {
+                modifiedLevelCollection = levelCollection;
+                return false;
+            }
+            else
+            {
+                modifiedLevelCollection = CurrentSortMode.SortSongs(levelCollection, SortAscending);
+                return true;
+            }
         }
 
         public void RefreshSortModeAvailablity()
@@ -80,57 +97,57 @@ namespace HUI.Sort
                 .ToList()
                 .AsReadOnly();
 
+            _sortScreenManager.RefreshSortModeList(SortModes);
+
             ApplyDefaultSort();
-
-            try
-            {
-                SortModeAvailabilityChanged?.Invoke();
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SongSortManager)}:{nameof(SortModeAvailabilityChanged)} event");
-                Plugin.Log.Debug(e);
-            }
         }
 
-        public override void Dispose()
+        //protected override void OnSinglePlayerLevelSelectionStarting()
+        //{
+        //    _levelFilteringNavigationController.didSelectAnnotatedBeatmapLevelCollectionEvent += OnAnnotatedBeatmapLevelCollectionSelected;
+        //    Loader.OnLevelPacksRefreshed += OnLevelPacksRefreshed;
+
+        //    // apply sort mode on next frame
+        //    ApplySortedLevelPackDelayed();
+        //}
+
+        //protected override void OnSinglePlayerLevelSelectionFinished()
+        //{
+        //    _levelFilteringNavigationController.didSelectAnnotatedBeatmapLevelCollectionEvent -= OnAnnotatedBeatmapLevelCollectionSelected;
+        //    Loader.OnLevelPacksRefreshed -= OnLevelPacksRefreshed;
+        //}
+
+        //private void OnAnnotatedBeatmapLevelCollectionSelected(LevelFilteringNavigationController unused, IAnnotatedBeatmapLevelCollection levelCollection, GameObject unused2, BeatmapCharacteristicSO unused3)
+        //{
+        //    _originalLevelCollection = levelCollection;
+        //    Plugin.Log.Debug($"SongSortManager storing level collection \"{levelCollection.collectionName}\"");
+
+        //    // reapply sort mode on next frame
+        //    ApplySortedLevelPackDelayed();
+        //}
+
+        //private void OnLevelPacksRefreshed() => ApplySortedLevelPackDelayed();
+
+        private void OnSortDirectionChanged() => ApplySortMode(CurrentSortMode, !SortAscending);
+
+        private void OnSortCancelled() => ApplyDefaultSort();
+
+        private void OnSortModeListCellSelected(int index)
         {
-            base.Dispose();
+            ISortMode newSortMode = SortModes[index];
+            bool ascending = newSortMode.DefaultSortByAscending;
 
-            OnSinglePlayerLevelSelectionFinished();
+            if (newSortMode == CurrentSortMode)
+                ascending = !SortAscending;
+
+            ApplySortMode(newSortMode, ascending);
         }
 
-        protected override void OnSinglePlayerLevelSelectionStarting()
-        {
-            _levelFilteringNavigationController.didSelectAnnotatedBeatmapLevelCollectionEvent += OnAnnotatedBeatmapLevelCollectionSelected;
-            Loader.OnLevelPacksRefreshed += OnLevelPacksRefreshed;
-
-            // apply sort mode on next frame
-            ApplySortedLevelPackDelayed();
-        }
-
-        protected override void OnSinglePlayerLevelSelectionFinished()
-        {
-            _levelFilteringNavigationController.didSelectAnnotatedBeatmapLevelCollectionEvent -= OnAnnotatedBeatmapLevelCollectionSelected;
-            Loader.OnLevelPacksRefreshed -= OnLevelPacksRefreshed;
-        }
-
-        private void OnAnnotatedBeatmapLevelCollectionSelected(LevelFilteringNavigationController unused, IAnnotatedBeatmapLevelCollection levelCollection, GameObject unused2, BeatmapCharacteristicSO unused3)
-        {
-            _originalLevelCollection = levelCollection;
-            Plugin.Log.Debug($"SongSortManager storing level collection \"{levelCollection.collectionName}\"");
-
-            // reapply sort mode on next frame
-            ApplySortedLevelPackDelayed();
-        }
-
-        private void OnLevelPacksRefreshed() => ApplySortedLevelPackDelayed();
-
-        private void ApplySortedLevelPackDelayed(int framesToWait = 1, bool waitForEndOfFrame = true)
-        {
-            if (!(CurrentSortMode is DefaultSortMode) || !SortAscending)
-                CoroutineUtilities.StartDelayedAction(ApplySortedLevelPack, framesToWait, waitForEndOfFrame);
-        }
+        //private void ApplySortedLevelPackDelayed(int framesToWait = 1, bool waitForEndOfFrame = true)
+        //{
+        //    if (!(CurrentSortMode is DefaultSortMode) || !SortAscending)
+        //        CoroutineUtilities.StartDelayedAction(ApplySortedLevelPack, framesToWait, waitForEndOfFrame);
+        //}
 
         internal void ApplySortMode(ISortMode sortMode, bool ascending)
         {
@@ -143,7 +160,11 @@ namespace HUI.Sort
                 CurrentSortMode = sortMode;
                 SortAscending = ascending;
 
-                ApplySortedLevelPack();
+                _sortScreenManager.SelectSortMode(SortModes.IndexOf(CurrentSortMode));
+                _sortScreenManager.SortText = CurrentSortMode.Name.EscapeTextMeshProTags();
+                _sortScreenManager.SortAscending = SortAscending;
+
+                RequestLevelCollectionRefresh();
             }
         }
 
@@ -152,30 +173,49 @@ namespace HUI.Sort
             CurrentSortMode = _defaultSortMode;
             SortAscending = true;
 
-            if (_levelCollectionNavigationController.isActiveAndEnabled)
-            {
-                _levelCollectionNavigationController.SetData(
-                    _originalLevelCollection,
-                    true,
-                    ShowPlayerStatsAccessor(ref _levelCollectionNavigationController),
-                    ShowPracticeButtonAccessor(ref _levelCollectionNavigationController),
-                    ActionButtonTextAccessor(ref _levelCollectionNavigationController),
-                    null,
-                    AllowedBeatmapDifficultyMaskAccessor(ref _levelSelectionNavigationController),
-                    NotAllowedCharacteristicsAccessor(ref _levelSelectionNavigationController));
-            }
+            _sortScreenManager.SelectSortMode(0);
+            _sortScreenManager.SortText = _defaultSortMode.Name;
+            _sortScreenManager.SortAscending = _defaultSortMode.DefaultSortByAscending;
+
+            RequestLevelCollectionRefresh();
+
+            //if (_levelCollectionNavigationController.isActiveAndEnabled)
+            //{
+            //    _levelCollectionNavigationController.SetData(
+            //        _originalLevelCollection,
+            //        true,
+            //        ShowPlayerStatsAccessor(ref _levelCollectionNavigationController),
+            //        ShowPracticeButtonAccessor(ref _levelCollectionNavigationController),
+            //        ActionButtonTextAccessor(ref _levelCollectionNavigationController),
+            //        null,
+            //        AllowedBeatmapDifficultyMaskAccessor(ref _levelSelectionNavigationController),
+            //        NotAllowedCharacteristicsAccessor(ref _levelSelectionNavigationController));
+            //}
         }
 
-        private void ApplySortedLevelPack()
-        {
-            var sortedLevels = CurrentSortMode.SortSongs(_originalLevelCollection.beatmapLevelCollection.beatmapLevels, SortAscending);
+        //private void ApplySortedLevelPack()
+        //{
+        //    var sortedLevels = CurrentSortMode.SortSongs(_originalLevelCollection.beatmapLevelCollection.beatmapLevels, SortAscending);
 
-            _levelCollectionNavigationController.SetDataForPack(
-                _sortedLevelPack.SetupFromLevels(_originalLevelCollection, sortedLevels),
-                true,
-                ShowPlayerStatsAccessor(ref _levelCollectionNavigationController),
-                ShowPracticeButtonAccessor(ref _levelCollectionNavigationController),
-                ActionButtonTextAccessor(ref _levelCollectionNavigationController));
+        //    _levelCollectionNavigationController.SetDataForPack(
+        //        _sortedLevelPack.SetupFromLevels(_originalLevelCollection, sortedLevels),
+        //        true,
+        //        ShowPlayerStatsAccessor(ref _levelCollectionNavigationController),
+        //        ShowPracticeButtonAccessor(ref _levelCollectionNavigationController),
+        //        ActionButtonTextAccessor(ref _levelCollectionNavigationController));
+        //}
+
+        private void RequestLevelCollectionRefresh()
+        {
+            try
+            {
+                LevelCollectionRefreshRequested?.Invoke();
+            }
+            catch (Exception e)
+            {
+                Plugin.Log.Warn($"Unexpected error occurred in {nameof(SongSortManager)}:{nameof(LevelCollectionRefreshRequested)} event");
+                Plugin.Log.Warn(e);
+            }
         }
     }
 }

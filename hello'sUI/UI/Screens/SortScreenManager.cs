@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 using VRUIControls;
 using HMUI;
@@ -6,14 +8,18 @@ using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BS_Utils.Utilities;
 using HUI.UI.Components;
-using HUI.Sort;
 using HUI.Interfaces;
 using HUI.Utilities;
+using Object = UnityEngine.Object;
 
 namespace HUI.UI.Screens
 {
     public class SortScreenManager : ScreenManagerBase
     {
+        public event Action SortDirectionChanged;
+        public event Action SortCancelled;
+        public event Action<int> SortModeListCellSelected;
+
         protected override string AssociatedBSMLResource => "HUI.UI.Views.SortScreenView.bsml";
 
         // necessary to prevent buttons/list from being interactable while hidden
@@ -48,7 +54,7 @@ namespace HUI.UI.Screens
         }
 
         private bool _ascending = true;
-        private bool SortAscending
+        public bool SortAscending
         {
             get => _ascending;
             set
@@ -92,8 +98,6 @@ namespace HUI.UI.Screens
         private GameObject _pageDownButton;
 #pragma warning restore CS0649
 
-        private SongSortManager _songSortManager;
-
         private ImageView _sortIcon;
         private CustomIconButtonAnimations _sortDirectionButtonAnimations;
 
@@ -110,12 +114,9 @@ namespace HUI.UI.Screens
             SoloFreePlayFlowCoordinator soloFC,
             PartyFreePlayFlowCoordinator partyFC,
             LevelCollectionNavigationController levelCollectionNC,
-            SongSortManager songSortManager,
             PhysicsRaycasterWithCache physicsRaycaster)
             : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, DefaultSize, new Vector3(-1.1f, 0.5f, 2.3f), Quaternion.Euler(65f, 345f, 0f))
         {
-            _songSortManager = songSortManager;
-
             this._screen.name = "HUISortScreen";
 
             this._animationHandler.ExpandedSize = ExpandedSize;
@@ -224,10 +225,6 @@ namespace HUI.UI.Screens
 
             slg = _pageDownButton.transform.Find("Content").GetComponent<StackLayoutGroup>();
             slg.padding = new RectOffset(0, 0, 1, 1);
-
-            // populate sort mode list
-            RefreshSortModeList();
-            _songSortManager.SortModeAvailabilityChanged += RefreshSortModeList;
         }
 
         private void OnAnimationHandlerAnimationFinished(AnimationType animationType)
@@ -240,28 +237,35 @@ namespace HUI.UI.Screens
             }
         }
 
-        private void RefreshSortModeList()
+        public void RefreshSortModeList(IEnumerable<ISortMode> sortModes)
         {
             _sortModeList.data.Clear();
 
-            foreach (ISortMode sortMode in _songSortManager.SortModes)
+            foreach (ISortMode sortMode in sortModes)
                 _sortModeList.data.Add(new CustomListTableData.CustomCellInfo(sortMode.Name.EscapeTextMeshProTags()));
 
             _sortModeList.tableView.ReloadData();
-            _sortModeList.tableView.SelectCellWithIdx(_songSortManager.SortModes.IndexOf(_songSortManager.CurrentSortMode));
+        }
 
-            SortText = _songSortManager.CurrentSortMode.Name.EscapeTextMeshProTags();
-            SortAscending = _songSortManager.SortAscending;
+        public void SelectSortMode(int index, bool fireCallback = false)
+        {
+            _sortModeList.tableView.SelectCellWithIdx(index, fireCallback);
         }
 
         [UIAction("sort-direction-button-clicked")]
         private void OnSortDirectionButtonClicked()
         {
-            SortAscending = !_ascending;
-
-            _songSortManager.ApplySortMode(_songSortManager.CurrentSortMode, SortAscending);
-
             _animationHandler.PlayContractAnimation(true);
+
+            try
+            {
+                SortDirectionChanged?.Invoke();
+            }
+            catch (Exception e)
+            {
+                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SortScreenManager)}:{nameof(SortDirectionChanged)} event");
+                Plugin.Log.Debug(e);
+            }
         }
 
         [UIAction("sort-button-clicked")]
@@ -283,32 +287,31 @@ namespace HUI.UI.Screens
         [UIAction("cancel-sort-button-clicked")]
         private void OnCancelSortButtonClicked()
         {
-            SortText = "Default";
-            SortAscending = true;
-
-            _songSortManager.ApplyDefaultSort();
-
             _animationHandler.PlayContractAnimation(true);
+
+            try
+            {
+                SortCancelled?.Invoke();
+            }
+            catch (Exception e)
+            {
+                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SortScreenManager)}:{nameof(SortCancelled)} event");
+                Plugin.Log.Debug(e);
+            }
         }
 
         [UIAction("sort-mode-list-cell-selected")]
         private void OnSortModeListCellSelected(TableView tableView, int index)
         {
-            var newSortMode = _songSortManager.SortModes[index];
-            if (_songSortManager.CurrentSortMode == newSortMode)
+            try
             {
-                // note: this currently doesn't actually work,
-                // since TableViews can't reselect the same element
-                // _canSelectSelectedCell exists, but isn't even used
-                SortAscending = !SortAscending;
+                SortModeListCellSelected?.Invoke(index);
             }
-            else
+            catch (Exception e)
             {
-                SortText = newSortMode.Name.EscapeTextMeshProTags();
-                SortAscending = newSortMode.DefaultSortByAscending;
+                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SortScreenManager)}:{nameof(SortModeListCellSelected)} event");
+                Plugin.Log.Debug(e);
             }
-
-            _songSortManager.ApplySortMode(newSortMode, SortAscending);
         }
     }
 }
