@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using HMUI;
 
 namespace HUI.UI.Components
@@ -89,6 +90,8 @@ namespace HUI.UI.Components
         {
             _button = this.GetComponent<NoTransitionsButton>();
             _bg = this.transform.Find("BG").GetComponent<ImageView>();
+
+            _bg.enabled = true;
 
             _button.selectionStateDidChangeEvent += OnSelectionStateChanged;
 
@@ -214,11 +217,11 @@ namespace HUI.UI.Components
             }
         }
 
-        private ImageView _icon;
+        private Image _icon;
 
         protected override void Awake()
         {
-            _icon = this.transform.Find("Content/Icon").GetComponent<ImageView>();
+            _icon = this.transform.Find("Content/Icon").GetComponent<Image>();
 
             base.Awake();
         }
