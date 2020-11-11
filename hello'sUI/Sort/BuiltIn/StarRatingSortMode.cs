@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using IPA.Loader;
+using HUI.Interfaces;
 using HUI.Utilities;
 using SDCPlugin = SongDataCore.Plugin;
 

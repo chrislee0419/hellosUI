@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Zenject;
 using IPA.Loader;
+using HUI.Interfaces;
 using HUI.Sort;
 using HUI.Sort.BuiltIn;
 

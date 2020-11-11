@@ -5,6 +5,7 @@ using UnityEngine;
 using Zenject;
 using IPA.Utilities;
 using SongCore;
+using HUI.Interfaces;
 using HUI.Sort.BuiltIn;
 using HUI.Utilities;
 

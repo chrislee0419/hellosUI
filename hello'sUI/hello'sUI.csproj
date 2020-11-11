@@ -143,7 +143,7 @@
     <Compile Include="Sort\BuiltIn\LengthSortMode.cs" />
     <Compile Include="Sort\BuiltIn\StarRatingSortMode.cs" />
     <Compile Include="Sort\BuiltIn\PPSortMode.cs" />
-    <Compile Include="Sort\ISortMode.cs" />
+    <Compile Include="Interfaces\ISortMode.cs" />
     <Compile Include="Sort\BuiltIn\NewestSortMode.cs" />
     <Compile Include="Sort\BuiltIn\PlayCountSortMode.cs" />
     <Compile Include="Sort\SongSortManager.cs" />

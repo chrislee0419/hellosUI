@@ -7,6 +7,7 @@ using BeatSaberMarkupLanguage.Components;
 using BS_Utils.Utilities;
 using HUI.UI.Components;
 using HUI.Sort;
+using HUI.Interfaces;
 using HUI.Utilities;
 
 namespace HUI.UI.Screens
