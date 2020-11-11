@@ -8,11 +8,12 @@ namespace HUI.Installers
     {
         public override void InstallBindings()
         {
-            Container.BindInterfacesAndSelfTo<DeleteButtonManager>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<DeleteButtonManager>().AsSingle();
 
-            Container.BindInterfacesAndSelfTo<SortScreenManager>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<SearchScreenManager>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<ScrollerScreenManager>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<SortScreenManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<SearchScreenManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<SearchKeyboardScreenManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ScrollerScreenManager>().AsSingle();
         }
     }
 }
