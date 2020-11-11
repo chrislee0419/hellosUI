@@ -1,12 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Globalization;
 
 namespace HUI.Utilities
 {
     public static class StringUtilities
     {
+        public static readonly Regex RemoveSymbolsRegex = new Regex("[^a-zA-Z0-9 ']");
+        public static readonly char[] SpaceCharArray = new char[] { ' ' };
+
         public static string InvariantToString(this object obj)
         {
             if (obj is float floatValue)
@@ -80,6 +84,14 @@ namespace HUI.Utilities
                     sb.Remove(i, 1);
                 }
             }
+
+            return sb;
+        }
+
+        public static StringBuilder ToLower(this StringBuilder sb)
+        {
+            for (int i = 0; i < sb.Length; ++i)
+                sb[i] = char.ToLower(sb[i]);
 
             return sb;
         }
