@@ -21,7 +21,7 @@ namespace HUI.UI.Screens
         public event Action<SuggestedWord> PredictionButtonPressed;
 
         protected override string AssociatedBSMLResource => "HUI.UI.Views.SearchKeyboardScreenView.bsml";
-        protected override bool ShowScreenInSinglePlayerLevelSelection => false;
+        protected override bool ShowScreenOnSinglePlayerLevelSelectionStarting => false;
 
         public bool IsVisible => _screen.gameObject.activeSelf;
 

@@ -19,7 +19,8 @@ namespace HUI.UI.Screens
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual string AssociatedBSMLResource => null;
-        protected virtual bool ShowScreenInSinglePlayerLevelSelection => true;
+        protected virtual bool ShowScreenOnSinglePlayerLevelSelectionStarting => true;
+        protected virtual bool HideScreenOnSinglePlayerLevelSelectionFinished => true;
 
         protected FloatingScreen _screen;
         protected ScreenAnimationHandler _animationHandler;
@@ -74,7 +75,7 @@ namespace HUI.UI.Screens
 
         protected override void OnSinglePlayerLevelSelectionStarting()
         {
-            if (ShowScreenInSinglePlayerLevelSelection)
+            if (ShowScreenOnSinglePlayerLevelSelectionStarting)
                 _animationHandler.PlayRevealAnimation();
 
             _levelCollectionNavigationController.didActivateEvent += OnLevelCollectionNavigationControllerActivated;
@@ -83,7 +84,7 @@ namespace HUI.UI.Screens
 
         protected override void OnSinglePlayerLevelSelectionFinished()
         {
-            if (ShowScreenInSinglePlayerLevelSelection)
+            if (HideScreenOnSinglePlayerLevelSelectionFinished)
                 _animationHandler.PlayConcealAnimation();
 
             _levelCollectionNavigationController.didActivateEvent -= OnLevelCollectionNavigationControllerActivated;
