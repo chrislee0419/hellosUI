@@ -128,7 +128,6 @@ namespace HUI.Search
 
                 if (!keep)
                     _searchSpace.Remove(node);
-                Plugin.Log.Notice($"search: {node.Value.songName} => keep?={keep}, count={_searchSpace.Count}");
 
                 node = nextNode;
             }

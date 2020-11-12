@@ -110,8 +110,6 @@ namespace HUI.UI.Components
             // force rebuild needed, otherwise the layout gets messed up for some reason
             // (it acts like the preferred widths lag behind one layout pass)
             LayoutRebuilder.ForceRebuildLayoutImmediate(RectTransform);
-
-            Plugin.Log.Notice($"setting prediction buttons: width={RectTransform.rect.width}, kindaEstimatedWidth={estimatedWidth}, predictedWords={predictedWords.Count()}");
         }
 
         private class PredictionButton

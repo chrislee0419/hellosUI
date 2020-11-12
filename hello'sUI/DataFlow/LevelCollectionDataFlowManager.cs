@@ -140,8 +140,6 @@ namespace HUI.DataFlow
 
         private void ApplyCustomLevelCollection()
         {
-            Plugin.Log.Notice("Applying custom level collection");
-
             _levelCollectionRefreshing = false;
 
             IEnumerable<IPreviewBeatmapLevel> levelCollection = _originalLevelCollection.beatmapLevelCollection.beatmapLevels;

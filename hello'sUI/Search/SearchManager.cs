@@ -80,21 +80,18 @@ namespace HUI.Search
         {
             if (_searchText.Length == 0)
             {
-                Plugin.Log.Notice("search: no changes");
                 modifiedLevelCollection = levelCollection;
                 return false;
             }
             else if (_wordSearchEngine.SearchFinished)
             {
                 modifiedLevelCollection = levelCollection.Where(x => _wordSearchEngine.CachedResult.Contains(x));
-                Plugin.Log.Notice($"search: search finished, resultCount={_wordSearchEngine.CachedResult.Count()}, levelCollectionCount={modifiedLevelCollection.Count()}");
                 return true;
             }
             else
             {
                 // search results are not ready yet
                 // show an empty list first and show the results later
-                Plugin.Log.Notice("search: no results, show empty");
                 modifiedLevelCollection = Array.Empty<IPreviewBeatmapLevel>();
                 return true;
             }

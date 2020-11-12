@@ -102,32 +102,6 @@ namespace HUI.Sort
             ApplyDefaultSort();
         }
 
-        //protected override void OnSinglePlayerLevelSelectionStarting()
-        //{
-        //    _levelFilteringNavigationController.didSelectAnnotatedBeatmapLevelCollectionEvent += OnAnnotatedBeatmapLevelCollectionSelected;
-        //    Loader.OnLevelPacksRefreshed += OnLevelPacksRefreshed;
-
-        //    // apply sort mode on next frame
-        //    ApplySortedLevelPackDelayed();
-        //}
-
-        //protected override void OnSinglePlayerLevelSelectionFinished()
-        //{
-        //    _levelFilteringNavigationController.didSelectAnnotatedBeatmapLevelCollectionEvent -= OnAnnotatedBeatmapLevelCollectionSelected;
-        //    Loader.OnLevelPacksRefreshed -= OnLevelPacksRefreshed;
-        //}
-
-        //private void OnAnnotatedBeatmapLevelCollectionSelected(LevelFilteringNavigationController unused, IAnnotatedBeatmapLevelCollection levelCollection, GameObject unused2, BeatmapCharacteristicSO unused3)
-        //{
-        //    _originalLevelCollection = levelCollection;
-        //    Plugin.Log.Debug($"SongSortManager storing level collection \"{levelCollection.collectionName}\"");
-
-        //    // reapply sort mode on next frame
-        //    ApplySortedLevelPackDelayed();
-        //}
-
-        //private void OnLevelPacksRefreshed() => ApplySortedLevelPackDelayed();
-
         private void OnSortDirectionChanged() => ApplySortMode(CurrentSortMode, !SortAscending);
 
         private void OnSortCancelled() => ApplyDefaultSort();
@@ -142,12 +116,6 @@ namespace HUI.Sort
 
             ApplySortMode(newSortMode, ascending);
         }
-
-        //private void ApplySortedLevelPackDelayed(int framesToWait = 1, bool waitForEndOfFrame = true)
-        //{
-        //    if (!(CurrentSortMode is DefaultSortMode) || !SortAscending)
-        //        CoroutineUtilities.StartDelayedAction(ApplySortedLevelPack, framesToWait, waitForEndOfFrame);
-        //}
 
         internal void ApplySortMode(ISortMode sortMode, bool ascending)
         {
@@ -178,32 +146,7 @@ namespace HUI.Sort
             _sortScreenManager.SortAscending = _defaultSortMode.DefaultSortByAscending;
 
             RequestLevelCollectionRefresh();
-
-            //if (_levelCollectionNavigationController.isActiveAndEnabled)
-            //{
-            //    _levelCollectionNavigationController.SetData(
-            //        _originalLevelCollection,
-            //        true,
-            //        ShowPlayerStatsAccessor(ref _levelCollectionNavigationController),
-            //        ShowPracticeButtonAccessor(ref _levelCollectionNavigationController),
-            //        ActionButtonTextAccessor(ref _levelCollectionNavigationController),
-            //        null,
-            //        AllowedBeatmapDifficultyMaskAccessor(ref _levelSelectionNavigationController),
-            //        NotAllowedCharacteristicsAccessor(ref _levelSelectionNavigationController));
-            //}
         }
-
-        //private void ApplySortedLevelPack()
-        //{
-        //    var sortedLevels = CurrentSortMode.SortSongs(_originalLevelCollection.beatmapLevelCollection.beatmapLevels, SortAscending);
-
-        //    _levelCollectionNavigationController.SetDataForPack(
-        //        _sortedLevelPack.SetupFromLevels(_originalLevelCollection, sortedLevels),
-        //        true,
-        //        ShowPlayerStatsAccessor(ref _levelCollectionNavigationController),
-        //        ShowPracticeButtonAccessor(ref _levelCollectionNavigationController),
-        //        ActionButtonTextAccessor(ref _levelCollectionNavigationController));
-        //}
 
         private void RequestLevelCollectionRefresh()
         {
