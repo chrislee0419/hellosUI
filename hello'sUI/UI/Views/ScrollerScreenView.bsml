@@ -16,6 +16,7 @@
                size-delta-x='0' size-delta-y='22'
                pad='2'
                stroke-type='Clean'
+               interactable='~random-button-interactable'
                on-click='random-button-clicked' />
   <icon-button id='down-button'
                anchor-min-x='0' anchor-min-y='0'

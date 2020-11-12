@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using IPA.Utilities;
@@ -12,6 +13,8 @@ namespace HUI.DataFlow
 {
     public class LevelCollectionDataFlowManager : SinglePlayerManagerBase
     {
+        public event Action<IEnumerable<IPreviewBeatmapLevel>> LevelCollectionApplied;
+
         private IAnnotatedBeatmapLevelCollection _originalLevelCollection;
         private CustomBeatmapLevelPack _customLevelPack = new CustomBeatmapLevelPack();
 
@@ -198,6 +201,18 @@ namespace HUI.DataFlow
                     null,
                     AllowedBeatmapDifficultyMaskAccessor(ref _levelSelectionNavigationController),
                     NotAllowedCharacteristicsAccessor(ref _levelSelectionNavigationController));
+
+                levelCollection = _originalLevelCollection.beatmapLevelCollection.beatmapLevels;
+            }
+
+            try
+            {
+                LevelCollectionApplied?.Invoke(levelCollection);
+            }
+            catch (Exception e)
+            {
+                Plugin.Log.Warn($"Unexpected error occurred in {nameof(LevelCollectionDataFlowManager)}:{nameof(LevelCollectionApplied)} event");
+                Plugin.Log.Debug(e);
             }
         }
     }

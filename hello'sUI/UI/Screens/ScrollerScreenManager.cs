@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using HMUI;
@@ -7,6 +9,7 @@ using IPA.Utilities;
 using BeatSaberMarkupLanguage.Attributes;
 using BS_Utils.Utilities;
 using HUI.UI.Components;
+using HUI.DataFlow;
 using HUI.Utilities;
 using Random = System.Random;
 
@@ -27,6 +30,21 @@ namespace HUI.UI.Screens
                     return;
 
                 _upButtonInteractable = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private bool _randomButtonInteractable = false;
+        [UIValue("random-button-interactable")]
+        public bool RandomButtonInteractable
+        {
+            get => _randomButtonInteractable;
+            set
+            {
+                if (_randomButtonInteractable == value)
+                    return;
+
+                _randomButtonInteractable = value;
                 NotifyPropertyChanged();
             }
         }
@@ -61,6 +79,8 @@ namespace HUI.UI.Screens
         private TableView _levelsTableView;
         private TableViewScroller _scroller;
 
+        private LevelCollectionDataFlowManager _levelCollectionDataFlowManager;
+
         private Random _rng = new Random();
 
         private static readonly FieldAccessor<TableViewScroller, float>.Accessor TargetPositionAccessor = FieldAccessor<TableViewScroller, float>.GetAccessor("_targetPosition");
@@ -72,9 +92,12 @@ namespace HUI.UI.Screens
             PartyFreePlayFlowCoordinator partyFC,
             LevelCollectionNavigationController levelCollectionNC,
             PhysicsRaycasterWithCache physicsRaycaster,
-            LevelCollectionViewController levelCollectionViewController)
+            LevelCollectionViewController levelCollectionViewController,
+            LevelCollectionDataFlowManager levelCollectionDataFlowManager)
             : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(7f, 50f), new Vector3(-1.5f, 1.2f, 2.05f), Quaternion.Euler(0f, 330f, 0f))
         {
+            _levelCollectionDataFlowManager = levelCollectionDataFlowManager;
+
             this._screen.name = "HUISongUIScreen";
 
             this._animationHandler.UsePointerAnimations = false;
@@ -145,16 +168,23 @@ namespace HUI.UI.Screens
 
             _originalUpButton.onClick.AddListener(_buttonListener);
             _originalDownButton.onClick.AddListener(_buttonListener);
+
+            _levelCollectionDataFlowManager.LevelCollectionApplied += OnLevelCollectionApplied;
         }
 
         public override void Dispose()
         {
             base.Dispose();
 
-            _originalUpButton.onClick.RemoveListener(_buttonListener);
-            _originalDownButton.onClick.RemoveListener(_buttonListener);
+            if (_originalUpButton != null)
+                _originalUpButton.onClick.RemoveListener(_buttonListener);
+            if (_originalDownButton != null)
+                _originalDownButton.onClick.RemoveListener(_buttonListener);
 
             _buttonListener = null;
+
+            if (_levelCollectionDataFlowManager != null)
+                _levelCollectionDataFlowManager.LevelCollectionApplied -= OnLevelCollectionApplied;
         }
 
         protected override void OnSinglePlayerLevelSelectionStarting()
@@ -177,6 +207,13 @@ namespace HUI.UI.Screens
                 DownButtonInteractable = _scroller.targetPosition < _scroller.scrollableSize - 0.01f;
                 UpButtonInteractable = _scroller.targetPosition > 0.01f;
             }
+        }
+
+        private void OnLevelCollectionApplied(IEnumerable<IPreviewBeatmapLevel> levels)
+        {
+            RefreshPageButtons();
+
+            RandomButtonInteractable = levels.Count() > 0;
         }
 
         private bool ScrollerExists()
