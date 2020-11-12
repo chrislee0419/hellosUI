@@ -214,7 +214,7 @@ namespace HUI.Sort
             catch (Exception e)
             {
                 Plugin.Log.Warn($"Unexpected error occurred in {nameof(SongSortManager)}:{nameof(LevelCollectionRefreshRequested)} event");
-                Plugin.Log.Warn(e);
+                Plugin.Log.Debug(e);
             }
         }
     }

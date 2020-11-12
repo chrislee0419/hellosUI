@@ -168,7 +168,7 @@ namespace HUI.UI.Components
                     catch (Exception e)
                     {
                         Plugin.Log.Warn($"Unexpected error occurred in {nameof(PredictionButton)}:{nameof(Pressed)} event");
-                        Plugin.Log.Warn(e);
+                        Plugin.Log.Debug(e);
                     }
                 });
 
