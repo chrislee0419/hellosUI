@@ -287,6 +287,8 @@ namespace HUI.UI.Screens
             clearButton.Text = "CLEAR";
             clearButton.ButtonPressed += delegate ()
             {
+                string oldSearchText = SearchText.ToLower().Trim();
+
                 try
                 {
                     ClearButtonPressed?.Invoke();
@@ -296,6 +298,10 @@ namespace HUI.UI.Screens
                     Plugin.Log.Warn($"Unexpected error occurred in {nameof(SearchKeyboardScreenManager)}:{nameof(ClearButtonPressed)} event");
                     Plugin.Log.Debug(e);
                 }
+
+                // show cleared search text as a predicted word to serve as an undo
+                if (!string.IsNullOrWhiteSpace(oldSearchText) && oldSearchText != DefaultSearchText)
+                    SetSuggestedWords(new SuggestedWord[] { new SuggestedWord(oldSearchText, SuggestionType.FuzzyMatch) });
             };
             clearButton.SelectedColour = new Color(1f, 0.216f, 0.067f);
 

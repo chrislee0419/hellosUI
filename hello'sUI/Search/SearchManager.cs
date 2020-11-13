@@ -165,29 +165,23 @@ namespace HUI.Search
 
         private void OnSearchKeyboardScreenPredictionButtonPressed(SuggestedWord suggestedWord)
         {
-            string searchText = _searchText.ToString();
-            string[] searchTextWords = StringUtilities.RemoveSymbolsRegex.Replace(searchText, " ").Split(StringUtilities.SpaceCharArray);
-
-            if (searchTextWords.Length == 0)
+            if (_searchText.Length == 0)
             {
-                // this should never be able to happen
-                // implies we got a suggested word from an empty search query
-                _searchText.Clear();
                 _searchText.Append(suggestedWord.Word);
             }
             else
             {
-                char lastChar = searchText[searchText.Length - 1];
-                string lastSearchWord = searchTextWords[searchTextWords.Length - 1];
+                string searchText = _searchText.ToString();
+                string[] searchTextWords = StringUtilities.RemoveSymbolsRegex.Replace(searchText, " ").Split(StringUtilities.SpaceCharArray);
 
                 if (suggestedWord.Type == SuggestionType.Prefixed || suggestedWord.Type == SuggestionType.FuzzyMatch)
                 {
-                    int index = searchText.LastIndexOf(lastSearchWord);
+                    int index = searchText.LastIndexOf(searchTextWords[searchTextWords.Length - 1]);
                     _searchText.Remove(index, _searchText.Length - index);
                 }
                 else if (suggestedWord.Type == SuggestionType.FollowUp)
                 {
-                    _searchText.Append(lastChar == ' ' ? "" : " ");
+                    _searchText.Append(searchText[searchText.Length - 1] == ' ' ? "" : " ");
                 }
                 else
                 {
