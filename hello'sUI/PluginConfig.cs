@@ -1,7 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
+using UnityEngine;
 using IPA.Config.Stores;
 using IPA.Config.Stores.Attributes;
 using IPA.Config.Stores.Converters;
+using SiraUtil.Converters;
+using HUI.Converters;
+using HUI.UI.Screens;
 using static HUI.Search.WordSearchEngine;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
@@ -52,6 +56,12 @@ namespace HUI
             public virtual SearchableSongFields SongFieldsToSearch { get; set; } = SongFieldsToSearchDefaultValue;
             public const SearchableSongFields SongFieldsToSearchDefaultValue =
                 SearchableSongFields.SongName | SearchableSongFields.SongAuthor | SearchableSongFields.LevelAuthor | SearchableSongFields.Contributors;
+
+            [UseConverter(typeof(Vector3Converter))]
+            public virtual Vector3 KeyboardPosition { get; set; } = SearchKeyboardScreenManager.DefaultKeyboardPosition;
+
+            [UseConverter(typeof(QuaternionConverter))]
+            public virtual Quaternion KeyboardRotation { get; set; } = SearchKeyboardScreenManager.DefaultKeyboardRotation;
         }
     }
 }

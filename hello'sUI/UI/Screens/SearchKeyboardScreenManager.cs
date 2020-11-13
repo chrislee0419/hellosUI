@@ -5,7 +5,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using HMUI;
 using VRUIControls;
+using BS_Utils.Utilities;
 using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.Components;
+using BeatSaberMarkupLanguage.FloatingScreen;
 using HUI.Search;
 using HUI.UI.Components;
 using static HUI.Search.WordPredictionEngine;
@@ -56,6 +59,16 @@ namespace HUI.UI.Screens
 
         [UIObject("keyboard-container")]
         private GameObject _keyboardContainer;
+
+        [UIComponent("settings-image")]
+        private ClickableImage _settingsImage;
+        [UIComponent("close-image")]
+        private ClickableImage _closeImage;
+
+        [UIComponent("movement-lock-image")]
+        private ClickableImage _lockImage;
+        [UIComponent("movement-reset-image")]
+        private ClickableImage _resetImage;
 #pragma warning restore CS0649
 
         private WordPredictionEngine _wordPredictionEngine;
@@ -65,6 +78,15 @@ namespace HUI.UI.Screens
 
         private bool _symbolMode = false;
         private CustomKeyboardActionButton _symbolButton;
+
+        public static readonly Vector3 DefaultKeyboardPosition = new Vector3(0f, 0.5f, 1.4f);
+        public static readonly Quaternion DefaultKeyboardRotation = Quaternion.Euler(75f, 0f, 0f);
+
+        private static Sprite _lockSprite;
+        private static Sprite _unlockSprite;
+
+        private static readonly Color LockDefaultColour = new Color(0.47f, 0.47f, 0.47f);
+        private static readonly Color UnlockDefaultColour = new Color(0.67f, 0.67f, 0.67f);
 
         private const float KeyWidth = 5.5f;
         private const float KeyHeight = 4.5f;
@@ -81,11 +103,14 @@ namespace HUI.UI.Screens
             PhysicsRaycasterWithCache physicsRaycaster,
             UIKeyboardManager uiKeyboardManager,
             WordPredictionEngine wordPredictionEngine)
-            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(ScreenWidth, 40f), new Vector3(0f, 0.5f, 1.4f), Quaternion.Euler(75f, 0f, 0f))
+            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(ScreenWidth, 40f), DefaultKeyboardPosition, DefaultKeyboardRotation)
         {
             _wordPredictionEngine = wordPredictionEngine;
 
             this._screen.name = "HUISearchKeyboardScreen";
+            this._screen.HandleSide = FloatingScreen.Side.Bottom;
+            this._screen.ScreenPosition = PluginConfig.Instance.Search.KeyboardPosition;
+            this._screen.ScreenRotation = PluginConfig.Instance.Search.KeyboardRotation;
             this._animationHandler.UsePointerAnimations = false;
 
             // prediction bar creation
@@ -306,6 +331,18 @@ namespace HUI.UI.Screens
             clearButton.SelectedColour = new Color(1f, 0.216f, 0.067f);
 
             Object.Destroy(keyPrefab.gameObject);
+
+            // button sprites
+            _settingsImage.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.settings.png");
+            _closeImage.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.cross.png");
+            _resetImage.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.refresh.png");
+
+            if (_lockSprite == null)
+                _lockSprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.lock.png");
+            if (_unlockSprite == null)
+                _unlockSprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.unlock.png");
+
+            _lockImage.sprite = _lockSprite;
         }
 
         public override void Initialize()
@@ -343,6 +380,65 @@ namespace HUI.UI.Screens
             _predictionBar.ClearAndSetPredictionButtons(suggestedWords);
         }
 
+        private void AllowScreenMovement(bool allowMovement)
+        {
+            if (allowMovement)
+            {
+                _lockImage.sprite = _unlockSprite;
+                _lockImage.DefaultColor = UnlockDefaultColour;
+
+                _screen.ShowHandle = true;
+                _resetImage.gameObject.SetActive(true);
+            }
+            else
+            {
+                _lockImage.sprite = _lockSprite;
+                _lockImage.DefaultColor = LockDefaultColour;
+
+                _screen.ShowHandle = false;
+                _resetImage.gameObject.SetActive(false);
+
+                PluginConfig.Instance.Search.KeyboardPosition = _screen.ScreenPosition;
+                PluginConfig.Instance.Search.KeyboardRotation = _screen.ScreenRotation;
+            }
+        }
+
         private void OnPredictionButtonPressed(SuggestedWord suggestedWord) => PredictionButtonPressed?.Invoke(suggestedWord);
+
+        [UIAction("settings-clicked")]
+        private void OnSettingsClicked()
+        {
+            OnResetClicked();
+            AllowScreenMovement(false);
+
+            if (_keyboardView.activeSelf)
+            {
+                _keyboardView.SetActive(false);
+                _settingsView.SetActive(true);
+            }
+            else
+            {
+                _keyboardView.SetActive(true);
+                _settingsView.SetActive(false);
+            }
+        }
+
+        [UIAction("close-clicked")]
+        private void OnCloseClicked()
+        {
+            AllowScreenMovement(false);
+
+            HideScreen();
+        }
+
+        [UIAction("lock-clicked")]
+        private void OnLockClicked() => AllowScreenMovement(!_screen.ShowHandle);
+
+        [UIAction("reset-clicked")]
+        private void OnResetClicked()
+        {
+            _screen.ScreenPosition = PluginConfig.Instance.Search.KeyboardPosition;
+            _screen.ScreenRotation = PluginConfig.Instance.Search.KeyboardRotation;
+        }
     }
 }

@@ -4,6 +4,27 @@
     anchor-max-x='1' anchor-max-y='1'
     bg='round-rect-panel'
     bg-color='#00000040'>
+  <!-- persistent top buttons -->
+  <clickable-image id='settings-image'
+                   anchor-min-x='0' anchor-min-y='1'
+                   anchor-max-x='0' anchor-max-y='1'
+                   size-delta-x='3' size-delta-y='3'
+                   anchor-pos-x='1.5' anchor-pos-y='-1.5'
+                   pivot-x='0' pivot-y='1'
+                   on-click='settings-clicked'
+                   preserve-aspect='true'
+                   default-color='#777777'
+                   highlight-color='#FFFFFF' />
+  <clickable-image id='close-image'
+                   anchor-min-x='1' anchor-min-y='1'
+                   anchor-max-x='1' anchor-max-y='1'
+                   size-delta-x='3' size-delta-y='3'
+                   anchor-pos-x='-1.5' anchor-pos-y='-1.5'
+                   pivot-x='1' pivot-y='1'
+                   on-click='close-clicked'
+                   preserve-aspect='true'
+                   default-color='#777777'
+                   highlight-color='#FF8888' />
   
   <bg id='keyboard-view'
       anchor-min-x='0' anchor-min-y='0'
@@ -28,6 +49,26 @@
       active='false'
       anchor-min-x='0' anchor-min-y='0'
       anchor-max-x='1' anchor-max-y='1'>
-    
+    <clickable-image id='movement-lock-image'
+                     anchor-min-x='0' anchor-min-y='0'
+                     anchor-max-x='0' anchor-max-y='0'
+                     size-delta-x='3' size-delta-y='3'
+                     anchor-pos-x='1.5' anchor-pos-y='1.5'
+                     pivot-x='0' pivot-y='0'
+                     on-click='lock-clicked'
+                     preserve-aspect='true'
+                     default-color='#777777'
+                     highlight-color='#FFFFFF' />
+    <clickable-image id='movement-reset-image'
+                     active='false'
+                     anchor-min-x='1' anchor-min-y='0'
+                     anchor-max-x='1' anchor-max-y='0'
+                     size-delta-x='3' size-delta-y='3'
+                     anchor-pos-x='-1.5' anchor-pos-y='1.5'
+                     pivot-x='1' pivot-y='0'
+                     on-click='reset-clicked'
+                     preserve-aspect='true'
+                     default-color='#AAAAAA'
+                     highlight-color='#FFFFFF' />
   </bg>
 </bg>

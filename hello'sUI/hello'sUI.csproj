@@ -143,6 +143,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\QuaternionConverter.cs" />
     <Compile Include="DataFlow\CustomBeatmapLevelPack.cs" />
     <Compile Include="Interfaces\ILevelCollectionModifier.cs" />
     <Compile Include="Installers\DataFlowInstaller.cs" />
@@ -222,6 +223,14 @@
   <ItemGroup>
     <EmbeddedResource Include="UI\Views\SearchKeyboardScreenView.bsml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\lock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\unlock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\settings.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
