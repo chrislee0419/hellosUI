@@ -232,5 +232,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\settings.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\Views\DelayedSearchKeyboardScreenView.bsml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

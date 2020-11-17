@@ -49,6 +49,7 @@
       active='false'
       anchor-min-x='0' anchor-min-y='0'
       anchor-max-x='1' anchor-max-y='1'>
+    <!-- movement buttons -->
     <clickable-image id='movement-lock-image'
                      anchor-min-x='0' anchor-min-y='0'
                      anchor-max-x='0' anchor-max-y='0'
@@ -70,5 +71,7 @@
                      preserve-aspect='true'
                      default-color='#AAAAAA'
                      highlight-color='#FFFFFF' />
+
+    <!-- settings need to be loaded later, since the resources for creating toggles aren't available -->
   </bg>
 </bg>

@@ -40,6 +40,8 @@ namespace HUI.Search
 
         public void Initialize()
         {
+            PluginConfig.Instance.ConfigReloaded += OnSearchOptionChanged;
+
             _searchScreenManager.SearchButtonPressed += OnSearchScreenSearchButtonPressed;
             _searchScreenManager.CancelButtonPressed += OnSearchScreenCancelButtonPressed;
 
@@ -47,10 +49,14 @@ namespace HUI.Search
             _searchKeyboardScreenManager.DeleteButtonPressed += OnSearchKeyboardScreenDeleteButtonPressed;
             _searchKeyboardScreenManager.ClearButtonPressed += ClearSearchText;
             _searchKeyboardScreenManager.PredictionButtonPressed += OnSearchKeyboardScreenPredictionButtonPressed;
+            _searchKeyboardScreenManager.SearchOptionChanged += OnSearchOptionChanged;
         }
 
         public void Dispose()
         {
+            if (PluginConfig.Instance != null)
+                PluginConfig.Instance.ConfigReloaded -= OnSearchOptionChanged;
+
             if (_searchScreenManager != null)
             {
                 _searchScreenManager.SearchButtonPressed -= OnSearchScreenSearchButtonPressed;
@@ -63,6 +69,7 @@ namespace HUI.Search
                 _searchKeyboardScreenManager.DeleteButtonPressed -= OnSearchKeyboardScreenDeleteButtonPressed;
                 _searchKeyboardScreenManager.ClearButtonPressed -= ClearSearchText;
                 _searchKeyboardScreenManager.PredictionButtonPressed -= OnSearchKeyboardScreenPredictionButtonPressed;
+                _searchKeyboardScreenManager.SearchOptionChanged -= OnSearchOptionChanged;
             }
         }
 
@@ -71,9 +78,13 @@ namespace HUI.Search
             _originalLevelCollection = annotatedBeatmaplevelCollection;
             _wordPredictionEngine.SetActiveWordStorageFromLevelCollection(annotatedBeatmaplevelCollection);
 
-            // TODO: maybe have a toggle on whether to clear search query on level collection switch
-            _searchText.Clear();
-            UpdateView();
+            // search keyboard will handle clearing the query (and running associated callbacks)
+            // and hiding itself if necessary
+            _searchKeyboardScreenManager.OnLevelCollectionSelected();
+
+            // view should already be accurate and level collection refresh should already be requested
+            if (!PluginConfig.Instance.Search.ClearQueryOnSelectLevelCollection)
+                UpdateSearchResults();
         }
 
         public bool ApplyModifications(IEnumerable<IPreviewBeatmapLevel> levelCollection, out IEnumerable<IPreviewBeatmapLevel> modifiedLevelCollection)
@@ -121,10 +132,19 @@ namespace HUI.Search
 
         private void ClearSearchText()
         {
-            _searchText.Clear();
+            if (_searchText.Length > 0)
+            {
+                _searchText.Clear();
 
+                UpdateSearchResults();
+                UpdateView();
+                RequestLevelCollectionRefresh();
+            }
+        }
+
+        private void OnSearchOptionChanged()
+        {
             UpdateSearchResults();
-            UpdateView();
             RequestLevelCollectionRefresh();
         }
 
