@@ -176,12 +176,15 @@ namespace HUI.UI.Screens
         {
             base.Dispose();
 
-            if (_originalUpButton != null)
-                _originalUpButton.onClick.RemoveListener(_buttonListener);
-            if (_originalDownButton != null)
-                _originalDownButton.onClick.RemoveListener(_buttonListener);
+            if (_buttonListener != null)
+            {
+                if (_originalUpButton?.onClick != null)
+                    _originalUpButton.onClick.RemoveListener(_buttonListener);
+                if (_originalDownButton?.onClick != null)
+                    _originalDownButton.onClick.RemoveListener(_buttonListener);
 
-            _buttonListener = null;
+                _buttonListener = null;
+            }
 
             if (_levelCollectionDataFlowManager != null)
                 _levelCollectionDataFlowManager.LevelCollectionApplied -= OnLevelCollectionApplied;
