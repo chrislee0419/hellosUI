@@ -211,7 +211,7 @@ namespace HUI.DataFlow
             }
             catch (Exception e)
             {
-                Plugin.Log.Warn($"Unexpected error occurred in {nameof(LevelCollectionDataFlowManager)}:{nameof(LevelCollectionApplied)} event");
+                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(LevelCollectionDataFlowManager)}:{nameof(LevelCollectionApplied)} event");
                 Plugin.Log.Debug(e);
             }
         }

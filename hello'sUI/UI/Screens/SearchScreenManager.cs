@@ -137,7 +137,7 @@ namespace HUI.UI.Screens
             }
             catch (Exception e)
             {
-                Plugin.Log.Warn($"Unexpected error occurred in {nameof(SearchScreenManager)}:{nameof(SearchButtonPressed)} event");
+                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SearchScreenManager)}:{nameof(SearchButtonPressed)} event");
                 Plugin.Log.Debug(e);
             }
         }
@@ -151,7 +151,7 @@ namespace HUI.UI.Screens
             }
             catch (Exception e)
             {
-                Plugin.Log.Warn($"Unexpected error occurred in {nameof(SearchScreenManager)}:{nameof(CancelButtonPressed)} event");
+                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SearchScreenManager)}:{nameof(CancelButtonPressed)} event");
                 Plugin.Log.Debug(e);
             }
         }

@@ -204,7 +204,7 @@ namespace HUI.Search
             }
             catch (Exception e)
             {
-                Plugin.Log.Warn($"Unexpected error occurred in {nameof(SearchManager)}:{nameof(LevelCollectionRefreshRequested)} event");
+                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SearchManager)}:{nameof(LevelCollectionRefreshRequested)} event");
                 Plugin.Log.Debug(e);
             }
         }

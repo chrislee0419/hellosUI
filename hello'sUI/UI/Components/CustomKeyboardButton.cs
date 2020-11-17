@@ -126,7 +126,7 @@ namespace HUI.UI.Components
                 }
                 catch (Exception e)
                 {
-                    Plugin.Log.Warn($"Unexpected error occurred in {nameof(CustomKeyboardKeyButton)}:{nameof(KeyPressed)} event");
+                    Plugin.Log.Warn($"Unexpected exception occurred in {nameof(CustomKeyboardKeyButton)}:{nameof(KeyPressed)} event");
                     Plugin.Log.Debug(e);
                 }
             });
@@ -155,7 +155,7 @@ namespace HUI.UI.Components
                 }
                 catch (Exception e)
                 {
-                    Plugin.Log.Warn($"Unexpected error occurred in {nameof(CustomKeyboardActionButton)}:{nameof(ButtonPressed)} event");
+                    Plugin.Log.Warn($"Unexpected exception occurred in {nameof(CustomKeyboardActionButton)}:{nameof(ButtonPressed)} event");
                     Plugin.Log.Debug(e);
                 }
             });
