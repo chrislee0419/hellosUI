@@ -174,6 +174,9 @@ namespace HUI.UI.Screens
 
             public void PlayConcealAnimation()
             {
+                if (!this.gameObject.activeSelf)
+                    return;
+
                 StopAllAnimations();
                 _revealAnimation = StartCoroutine(RevealAnimationCoroutine(0f, false));
             }
