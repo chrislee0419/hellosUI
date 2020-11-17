@@ -112,14 +112,14 @@ namespace HUI.DataFlow
         {
             _originalLevelCollection = levelCollection;
 
+            ApplyCustomLevelCollectionDelayed();
+
             Plugin.Log.Debug($"{nameof(LevelCollectionDataFlowManager)} storing level collection named \"{levelCollection.collectionName}\"");
 
             _searchManager.OnLevelCollectionSelected(levelCollection);
             _sortManager.OnLevelCollectionSelected(levelCollection);
             foreach (var externalModifier in _externalModifiers)
                 externalModifier.OnLevelCollectionSelected(levelCollection);
-
-            ApplyCustomLevelCollectionDelayed();
         }
 
         private void OnLevelCollectionRefreshRequested()
