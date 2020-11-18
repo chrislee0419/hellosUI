@@ -102,6 +102,8 @@ namespace HUI.UI.Screens
                     return;
 
                 PluginConfig.Instance.Search.UseOffHandLaserPointer = value;
+
+                _laserPointerManager.Enabled = IsVisible && PluginConfig.Instance.Search.UseOffHandLaserPointer;
             }
         }
 
@@ -258,6 +260,7 @@ namespace HUI.UI.Screens
 
         private WordPredictionEngine _wordPredictionEngine;
         private PredictionBar _predictionBar;
+        private LaserPointerManager _laserPointerManager;
 
         private List<CustomKeyboardKeyButton> _keys;
 
@@ -288,11 +291,13 @@ namespace HUI.UI.Screens
             PhysicsRaycasterWithCache physicsRaycaster,
             LevelCollectionViewController levelCollectionViewController,
             UIKeyboardManager uiKeyboardManager,
-            WordPredictionEngine wordPredictionEngine)
+            WordPredictionEngine wordPredictionEngine,
+            LaserPointerManager laserPointerManager)
             : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(ScreenWidth, 40f), DefaultKeyboardPosition, DefaultKeyboardRotation)
         {
             _levelCollectionViewController = levelCollectionViewController;
             _wordPredictionEngine = wordPredictionEngine;
+            _laserPointerManager = laserPointerManager;
 
             this._screen.name = "HUISearchKeyboardScreen";
             this._screen.HandleSide = FloatingScreen.Side.Bottom;
@@ -591,6 +596,8 @@ namespace HUI.UI.Screens
             _settingsView.SetActive(false);
 
             _animationHandler.PlayRevealAnimation();
+
+            _laserPointerManager.Enabled = PluginConfig.Instance.Search.UseOffHandLaserPointer;
         }
 
         public void HideScreen()
@@ -598,6 +605,8 @@ namespace HUI.UI.Screens
             AllowScreenMovement(false);
 
             _animationHandler.PlayConcealAnimation();
+
+            _laserPointerManager.Enabled = false;
         }
 
         public void OnLevelCollectionSelected()

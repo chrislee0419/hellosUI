@@ -37,13 +37,13 @@ namespace HUI
         [OnEnable]
         public void OnEnable()
         {
-            //ApplyHarmonyPatches();
+            ApplyHarmonyPatches();
         }
 
         [OnDisable]
         public void OnDisable()
         {
-            //RemoveHarmonyPatches();
+            RemoveHarmonyPatches();
         }
 
         internal static void ApplyHarmonyPatches()

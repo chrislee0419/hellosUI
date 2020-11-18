@@ -11,6 +11,7 @@ namespace HUI.Installers
 
             Container.Bind<WordSearchEngine>().AsSingle();
             Container.BindInterfacesAndSelfTo<WordPredictionEngine>().AsSingle();
+            Container.BindInterfacesAndSelfTo<LaserPointerManager>().AsSingle();
         }
     }
 }
