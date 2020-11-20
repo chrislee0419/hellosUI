@@ -148,17 +148,6 @@ namespace HUI.Sort
             RequestLevelCollectionRefresh();
         }
 
-        private void RequestLevelCollectionRefresh()
-        {
-            try
-            {
-                LevelCollectionRefreshRequested?.Invoke();
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SongSortManager)}:{nameof(LevelCollectionRefreshRequested)} event");
-                Plugin.Log.Debug(e);
-            }
-        }
+        private void RequestLevelCollectionRefresh() => this.CallAndHandleAction(LevelCollectionRefreshRequested, nameof(LevelCollectionRefreshRequested));
     }
 }

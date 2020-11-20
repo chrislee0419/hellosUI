@@ -1,5 +1,6 @@
 ﻿using System;
 using Zenject;
+using HUI.Utilities;
 
 namespace HUI
 {
@@ -36,17 +37,7 @@ namespace HUI
         private void OnMainMenuViewControllerDidFinish(MainMenuViewController _, MainMenuViewController.MenuButton buttonType)
         {
             if (buttonType == MainMenuViewController.MenuButton.SoloFreePlay || buttonType == MainMenuViewController.MenuButton.Party)
-            {
-                try
-                {
-                    OnSinglePlayerLevelSelectionStarting();
-                }
-                catch (Exception e)
-                {
-                    Plugin.Log.Warn($"Unexpected exception occurred in {GetType().Name}:{nameof(OnSinglePlayerLevelSelectionStarting)}");
-                    Plugin.Log.Debug(e);
-                }
-            }
+                this.CallAndHandleAction(OnSinglePlayerLevelSelectionStarting, nameof(OnSinglePlayerLevelSelectionStarting));
         }
 
         protected virtual void OnSinglePlayerLevelSelectionStarting()
@@ -56,15 +47,7 @@ namespace HUI
 
         private void OnSinglePlayerLevelSelectionFlowCoordinatorDidFinish(SinglePlayerLevelSelectionFlowCoordinator _)
         {
-            try
-            {
-                OnSinglePlayerLevelSelectionFinished();
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {GetType().Name}:{nameof(OnSinglePlayerLevelSelectionFinished)}");
-                Plugin.Log.Debug(e);
-            }
+            this.CallAndHandleAction(OnSinglePlayerLevelSelectionFinished, nameof(OnSinglePlayerLevelSelectionFinished));
         }
 
         protected virtual void OnSinglePlayerLevelSelectionFinished()

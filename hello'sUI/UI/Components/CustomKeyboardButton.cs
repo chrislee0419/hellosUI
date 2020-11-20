@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using HMUI;
+using HUI.Utilities;
 
 namespace HUI.UI.Components
 {
@@ -118,18 +119,7 @@ namespace HUI.UI.Components
         {
             base.Awake();
 
-            _button.onClick.AddListener(delegate ()
-            {
-                try
-                {
-                    KeyPressed?.Invoke(_showAltKey ? AltKey : Key);
-                }
-                catch (Exception e)
-                {
-                    Plugin.Log.Warn($"Unexpected exception occurred in {nameof(CustomKeyboardKeyButton)}:{nameof(KeyPressed)} event");
-                    Plugin.Log.Debug(e);
-                }
-            });
+            _button.onClick.AddListener(() => this.CallAndHandleAction(KeyPressed, nameof(KeyPressed), _showAltKey ? AltKey : Key));
         }
     }
 
@@ -147,18 +137,7 @@ namespace HUI.UI.Components
         {
             base.Awake();
 
-            _button.onClick.AddListener(delegate ()
-            {
-                try
-                {
-                    ButtonPressed?.Invoke();
-                }
-                catch (Exception e)
-                {
-                    Plugin.Log.Warn($"Unexpected exception occurred in {nameof(CustomKeyboardActionButton)}:{nameof(ButtonPressed)} event");
-                    Plugin.Log.Debug(e);
-                }
-            });
+            _button.onClick.AddListener(() => this.CallAndHandleAction(ButtonPressed, nameof(ButtonPressed)));
         }
     }
 }

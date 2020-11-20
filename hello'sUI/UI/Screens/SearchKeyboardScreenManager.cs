@@ -14,6 +14,7 @@ using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage;
 using HUI.Search;
 using HUI.UI.Components;
+using HUI.Utilities;
 using static HUI.Search.WordPredictionEngine;
 using Object = UnityEngine.Object;
 using BSMLUtilities = BeatSaberMarkupLanguage.Utilities;
@@ -458,18 +459,7 @@ namespace HUI.UI.Screens
             deleteButton.rectTransform.anchoredPosition = new Vector2(8 * (KeyWidth + KeySpacing), KeyHeight + KeySpacing);
 
             deleteButton.Text = "DEL";
-            deleteButton.ButtonPressed += delegate ()
-            {
-                try
-                {
-                    DeleteButtonPressed?.Invoke();
-                }
-                catch (Exception e)
-                {
-                    Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SearchKeyboardScreenManager)}:{nameof(DeleteButtonPressed)} event");
-                    Plugin.Log.Debug(e);
-                }
-            };
+            deleteButton.ButtonPressed += () => this.CallAndHandleAction(DeleteButtonPressed, nameof(DeleteButtonPressed));
             deleteButton.SelectedColour = new Color(1f, 0.216f, 0.067f);
 
             // symbols
@@ -660,15 +650,7 @@ namespace HUI.UI.Screens
         {
             string oldSearchText = SearchText.Trim();
 
-            try
-            {
-                ClearButtonPressed?.Invoke();
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SearchKeyboardScreenManager)}:{nameof(ClearButtonPressed)} event");
-                Plugin.Log.Debug(e);
-            }
+            this.CallAndHandleAction(ClearButtonPressed, nameof(ClearButtonPressed));
 
             // show cleared search text as a predicted word to serve as an undo
             if (!string.IsNullOrWhiteSpace(oldSearchText) && oldSearchText != DefaultSearchText)

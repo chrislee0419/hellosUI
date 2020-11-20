@@ -257,15 +257,7 @@ namespace HUI.UI.Screens
         {
             _animationHandler.PlayContractAnimation(true);
 
-            try
-            {
-                SortDirectionChanged?.Invoke();
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SortScreenManager)}:{nameof(SortDirectionChanged)} event");
-                Plugin.Log.Debug(e);
-            }
+            this.CallAndHandleAction(SortDirectionChanged, nameof(SortDirectionChanged));
         }
 
         [UIAction("sort-button-clicked")]
@@ -289,29 +281,13 @@ namespace HUI.UI.Screens
         {
             _animationHandler.PlayContractAnimation(true);
 
-            try
-            {
-                SortCancelled?.Invoke();
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SortScreenManager)}:{nameof(SortCancelled)} event");
-                Plugin.Log.Debug(e);
-            }
+            this.CallAndHandleAction(SortCancelled, nameof(SortCancelled));
         }
 
         [UIAction("sort-mode-list-cell-selected")]
         private void OnSortModeListCellSelected(TableView tableView, int index)
         {
-            try
-            {
-                SortModeListCellSelected?.Invoke(index);
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SortScreenManager)}:{nameof(SortModeListCellSelected)} event");
-                Plugin.Log.Debug(e);
-            }
+            this.CallAndHandleAction(SortModeListCellSelected, nameof(SortModeListCellSelected), index);
         }
     }
 }

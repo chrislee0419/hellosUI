@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using Polyglot;
 using HMUI;
+using HUI.Utilities;
 using static HUI.Search.WordPredictionEngine;
 
 namespace HUI.UI.Components
@@ -157,18 +158,7 @@ namespace HUI.UI.Components
                 Destroy(contentTransform.GetComponent<LayoutElement>());
 
                 _button.onClick.RemoveAllListeners();
-                _button.onClick.AddListener(delegate ()
-                {
-                    try
-                    {
-                        Pressed?.Invoke(_suggestedWord);
-                    }
-                    catch (Exception e)
-                    {
-                        Plugin.Log.Warn($"Unexpected exception occurred in {nameof(PredictionButton)}:{nameof(Pressed)} event");
-                        Plugin.Log.Debug(e);
-                    }
-                });
+                _button.onClick.AddListener(() => this.CallAndHandleAction(Pressed, nameof(Pressed), _suggestedWord));
 
                 LocalizedTextMeshProUGUI localizer = _button.GetComponentInChildren<LocalizedTextMeshProUGUI>(true);
                 if (localizer != null)

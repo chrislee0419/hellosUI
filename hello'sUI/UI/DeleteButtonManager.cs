@@ -159,18 +159,7 @@ namespace HUI.UI
 
         private void OnLevelSelected(LevelCollectionViewController _, IPreviewBeatmapLevel level) => _deleteButton.interactable = level is CustomPreviewBeatmapLevel;
 
-        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            try
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {GetType().Name}:{nameof(NotifyPropertyChanged)}");
-                Plugin.Log.Debug(e);
-            }
-        }
+        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = null) => this.CallAndHandleAction(PropertyChanged, propertyName);
 
         [UIAction("confirm-delete-button-clicked")]
         private void OnConfirmDeleteButtonClicked()

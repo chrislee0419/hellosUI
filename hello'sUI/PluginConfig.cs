@@ -7,6 +7,7 @@ using IPA.Config.Stores.Converters;
 using SiraUtil.Converters;
 using HUI.Converters;
 using HUI.UI.Screens;
+using HUI.Utilities;
 using static HUI.Search.WordSearchEngine;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
@@ -58,18 +59,7 @@ namespace HUI
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
         /// </summary>
-        public virtual void OnReload()
-        {
-            try
-            {
-                ConfigReloaded?.Invoke();
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(PluginConfig)}:{nameof(ConfigReloaded)} event");
-                Plugin.Log.Debug(e);
-            }
-        }
+        public virtual void OnReload() => this.CallAndHandleAction(ConfigReloaded, nameof(ConfigReloaded));
 
         ///// <summary>
         ///// Call this to force BSIPA to update the config file. This is also called by BSIPA if it detects the file was modified.

@@ -95,18 +95,7 @@ namespace HUI.UI.Screens
 
         protected virtual void OnLevelCollectionNavigationControllerDeactivated(bool removedFromHierarchy, bool screenSystemDisabling) => _animationHandler.PlayConcealAnimation();
 
-        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            try
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {GetType().Name}:{nameof(NotifyPropertyChanged)}");
-                Plugin.Log.Debug(e);
-            }
-        }
+        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = null) => this.CallAndHandleAction(PropertyChanged, propertyName);
 
         protected class ScreenAnimationHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
@@ -135,15 +124,7 @@ namespace HUI.UI.Screens
                 if (UsePointerAnimations)
                     PlayExpandAnimation();
 
-                try
-                {
-                    PointerEntered?.Invoke();
-                }
-                catch (Exception e)
-                {
-                    Plugin.Log.Warn($"Unexpected exception occurred in {nameof(ScreenAnimationHandler)}:{nameof(PointerEntered)}");
-                    Plugin.Log.Debug(e);
-                }
+                this.CallAndHandleAction(PointerEntered, nameof(PointerEntered));
             }
 
             public void OnPointerExit(PointerEventData eventData)
@@ -153,15 +134,7 @@ namespace HUI.UI.Screens
                 if (UsePointerAnimations)
                     PlayContractAnimation();
 
-                try
-                {
-                    PointerExited?.Invoke();
-                }
-                catch (Exception e)
-                {
-                    Plugin.Log.Warn($"Unexpected exception occurred in {nameof(ScreenAnimationHandler)}:{nameof(PointerExited)}");
-                    Plugin.Log.Debug(e);
-                }
+                this.CallAndHandleAction(PointerExited, nameof(PointerExited));
             }
 
             public void PlayRevealAnimation()
@@ -229,18 +202,7 @@ namespace HUI.UI.Screens
                 }
             }
 
-            private void OnAnimationFinished(AnimationType animationType)
-            {
-                try
-                {
-                    AnimationFinished?.Invoke(animationType);
-                }
-                catch (Exception e)
-                {
-                    Plugin.Log.Warn($"Unexpected exception occurred in {nameof(ScreenAnimationHandler)}:{nameof(OnAnimationFinished)}");
-                    Plugin.Log.Debug(e);
-                }
-            }
+            private void OnAnimationFinished(AnimationType animationType) => this.CallAndHandleAction(AnimationFinished, nameof(AnimationFinished), animationType);
 
             protected IEnumerator RevealAnimationCoroutine(float destAnimationValue, bool activateOnFinish = true)
             {

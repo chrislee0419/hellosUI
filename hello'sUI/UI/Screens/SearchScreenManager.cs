@@ -129,31 +129,9 @@ namespace HUI.UI.Screens
         }
 
         [UIAction("search-button-clicked")]
-        private void OnSearchButtonPressed()
-        {
-            try
-            {
-                SearchButtonPressed?.Invoke();
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SearchScreenManager)}:{nameof(SearchButtonPressed)} event");
-                Plugin.Log.Debug(e);
-            }
-        }
+        private void OnSearchButtonPressed() => this.CallAndHandleAction(SearchButtonPressed, nameof(SearchButtonPressed));
 
         [UIAction("cancel-search-button-clicked")]
-        private void OnCancelButtonPressed()
-        {
-            try
-            {
-                CancelButtonPressed?.Invoke();
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SearchScreenManager)}:{nameof(CancelButtonPressed)} event");
-                Plugin.Log.Debug(e);
-            }
-        }
+        private void OnCancelButtonPressed() => this.CallAndHandleAction(CancelButtonPressed, nameof(CancelButtonPressed));
     }
 }
