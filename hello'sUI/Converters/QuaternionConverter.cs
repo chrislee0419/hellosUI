@@ -20,13 +20,13 @@ namespace HUI.Converters
 
                 Quaternion quaternion = new Quaternion();
                 if (w is FloatingPoint floatW)
-                    quaternion.z = Convert.ToSingle(floatW);
+                    quaternion.w = Convert.ToSingle(floatW.Value);
                 if (x is FloatingPoint floatX)
-                    quaternion.x = Convert.ToSingle(floatX);
+                    quaternion.x = Convert.ToSingle(floatX.Value);
                 if (y is FloatingPoint floatY)
-                    quaternion.y = Convert.ToSingle(floatY);
+                    quaternion.y = Convert.ToSingle(floatY.Value);
                 if (z is FloatingPoint floatZ)
-                    quaternion.z = Convert.ToSingle(floatZ);
+                    quaternion.z = Convert.ToSingle(floatZ.Value);
 
                 return quaternion;
             }
