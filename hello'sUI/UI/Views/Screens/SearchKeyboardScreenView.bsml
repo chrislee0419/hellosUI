@@ -44,34 +44,4 @@
         anchor-pos-x='0' anchor-pos-y='2'
         size-delta-x='-4' size-delta-y='~keyboard-height' />
   </bg>
-  
-  <bg id='settings-view'
-      active='false'
-      anchor-min-x='0' anchor-min-y='0'
-      anchor-max-x='1' anchor-max-y='1'>
-    <!-- movement buttons -->
-    <clickable-image id='movement-lock-image'
-                     anchor-min-x='0' anchor-min-y='0'
-                     anchor-max-x='0' anchor-max-y='0'
-                     size-delta-x='3' size-delta-y='3'
-                     anchor-pos-x='1.5' anchor-pos-y='1.5'
-                     pivot-x='0' pivot-y='0'
-                     on-click='lock-clicked'
-                     preserve-aspect='true'
-                     default-color='#777777'
-                     highlight-color='#FFFFFF' />
-    <clickable-image id='movement-reset-image'
-                     active='false'
-                     anchor-min-x='1' anchor-min-y='0'
-                     anchor-max-x='1' anchor-max-y='0'
-                     size-delta-x='3' size-delta-y='3'
-                     anchor-pos-x='-1.5' anchor-pos-y='1.5'
-                     pivot-x='1' pivot-y='0'
-                     on-click='reset-clicked'
-                     preserve-aspect='true'
-                     default-color='#AAAAAA'
-                     highlight-color='#FFFFFF' />
-
-    <!-- settings need to be loaded later, since the resources for creating toggles aren't available -->
-  </bg>
 </bg>

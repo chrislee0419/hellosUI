@@ -1,6 +1,7 @@
 ﻿using Zenject;
 using HUI.UI;
 using HUI.UI.Screens;
+using HUI.UI.Settings;
 
 namespace HUI.Installers
 {
@@ -14,6 +15,10 @@ namespace HUI.Installers
             Container.BindInterfacesAndSelfTo<SearchScreenManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<SearchKeyboardScreenManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<ScrollerScreenManager>().AsSingle();
+
+            Container.BindInterfacesAndSelfTo<SettingsModalManager>().AsSingle();
+
+            Container.BindInterfacesAndSelfTo<SearchSettingsTab>().AsSingle();
         }
     }
 }

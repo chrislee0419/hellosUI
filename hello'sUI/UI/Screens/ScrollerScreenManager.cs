@@ -17,7 +17,7 @@ namespace HUI.UI.Screens
 {
     public class ScrollerScreenManager : ScreenManagerBase
     {
-        protected override string AssociatedBSMLResource => "HUI.UI.Views.ScrollerScreenView.bsml";
+        protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.ScrollerScreenView.bsml";
 
         private bool _upButtonInteractable = false;
         [UIValue("up-button-interactable")]

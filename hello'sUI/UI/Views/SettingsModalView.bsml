@@ -1,0 +1,25 @@
+﻿<modal xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+       xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
+       id='modal'
+       show-event='show-settings-modal'
+       hide-event='hide-settings-modal'
+       move-to-center='true'
+       click-off-closes='true'
+       size-delta-x='100' size-delta-y='70'>
+  <tab-selector tab-tag='settings-tab'
+                anchor-pos-x='0' anchor-pos-y='-1.5' />
+
+  <bg anchor-min-x='0' anchor-min-y='0'
+      anchor-max-x='1' anchor-max-y='1'
+      size-delta-x='-6' size-delta-y='-12'
+      anchor-pos-x='0' anchor-pos-y='-4'>
+    <macro.for-each hosts='tab-hosts'
+                    pass-back-tags='true'>
+      <tab id='settings-container'
+           anchor-min-x='0' anchor-min-y='0'
+           anchor-max-x='1' anchor-max-y='1'
+           tags='settings-tab'
+           tab-name='~tab-name' />
+    </macro.for-each>
+  </bg>
+</modal>

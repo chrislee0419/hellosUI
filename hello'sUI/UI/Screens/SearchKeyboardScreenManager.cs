@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 using HMUI;
@@ -11,13 +10,12 @@ using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.FloatingScreen;
 using BeatSaberMarkupLanguage.Parser;
-using BeatSaberMarkupLanguage;
 using HUI.Search;
 using HUI.UI.Components;
+using HUI.UI.Settings;
 using HUI.Utilities;
 using static HUI.Search.WordPredictionEngine;
 using Object = UnityEngine.Object;
-using BSMLUtilities = BeatSaberMarkupLanguage.Utilities;
 
 namespace HUI.UI.Screens
 {
@@ -29,7 +27,7 @@ namespace HUI.UI.Screens
         public event Action<SuggestedWord> PredictionButtonPressed;
         public event Action SearchOptionChanged;
 
-        protected override string AssociatedBSMLResource => "HUI.UI.Views.SearchKeyboardScreenView.bsml";
+        protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.SearchKeyboardScreenView.bsml";
         protected override bool ShowScreenOnSinglePlayerLevelSelectionStarting => false;
 
         public bool IsVisible => _screen.gameObject.activeSelf;
@@ -54,214 +52,27 @@ namespace HUI.UI.Screens
             }
         }
 
-        [UIValue("close-screen-on-select-level-value")]
-        public bool CloseScreenOnSelectLevelValue
-        {
-            get => PluginConfig.Instance.Search.CloseScreenOnSelectLevel;
-            set
-            {
-                if (PluginConfig.Instance.Search.CloseScreenOnSelectLevel == value)
-                    return;
-
-                PluginConfig.Instance.Search.CloseScreenOnSelectLevel = value;
-            }
-        }
-
-        [UIValue("close-screen-on-select-level-collection-value")]
-        public bool CloseScreenOnLevelCollectionSelectValue
-        {
-            get => PluginConfig.Instance.Search.CloseScreenOnSelectLevelCollection;
-            set
-            {
-                if (PluginConfig.Instance.Search.CloseScreenOnSelectLevelCollection == value)
-                    return;
-
-                PluginConfig.Instance.Search.CloseScreenOnSelectLevelCollection = value;
-            }
-        }
-
-        [UIValue("clear-query-on-select-level-collection-value")]
-        public bool ClearQueryOnSelectLevelCollection
-        {
-            get => PluginConfig.Instance.Search.ClearQueryOnSelectLevelCollection;
-            set
-            {
-                if (PluginConfig.Instance.Search.ClearQueryOnSelectLevelCollection == value)
-                    return;
-
-                PluginConfig.Instance.Search.ClearQueryOnSelectLevelCollection = value;
-            }
-        }
-
-        [UIValue("off-hand-laser-pointer-value")]
-        public bool OffHandLaserPointer
-        {
-            get => PluginConfig.Instance.Search.UseOffHandLaserPointer;
-            set
-            {
-                if (PluginConfig.Instance.Search.UseOffHandLaserPointer == value)
-                    return;
-
-                PluginConfig.Instance.Search.UseOffHandLaserPointer = value;
-
-                _laserPointerManager.Enabled = IsVisible && PluginConfig.Instance.Search.UseOffHandLaserPointer;
-            }
-        }
-
-        [UIValue("strip-symbols-value")]
-        public bool StripSymbols
-        {
-            get => PluginConfig.Instance.Search.StripSymbols;
-            set
-            {
-                if (PluginConfig.Instance.Search.StripSymbols == value)
-                    return;
-
-                PluginConfig.Instance.Search.StripSymbols = value;
-                OnSearchOptionChanged();
-            }
-        }
-
-        [UIValue("split-query-value")]
-        public bool SplitQueryByWords
-        {
-            get => PluginConfig.Instance.Search.SplitQueryByWords;
-            set
-            {
-                if (PluginConfig.Instance.Search.SplitQueryByWords == value)
-                    return;
-
-                PluginConfig.Instance.Search.SplitQueryByWords = value;
-                OnSearchOptionChanged();
-            }
-        }
-
-        [UIValue("song-fields-song-title-value")]
-        public bool SearchSongTitleFieldValue
-        {
-            get => (PluginConfig.Instance.Search.SongFieldsToSearch | WordSearchEngine.SearchableSongFields.SongName) != 0;
-            set
-            {
-                WordSearchEngine.SearchableSongFields expectedValue;
-                if (value)
-                    expectedValue = PluginConfig.Instance.Search.SongFieldsToSearch | WordSearchEngine.SearchableSongFields.SongName;
-                else
-                    expectedValue = PluginConfig.Instance.Search.SongFieldsToSearch & ~WordSearchEngine.SearchableSongFields.SongName;
-
-                if (PluginConfig.Instance.Search.SongFieldsToSearch == expectedValue)
-                    return;
-
-                PluginConfig.Instance.Search.SongFieldsToSearch = expectedValue;
-                OnSearchOptionChanged();
-            }
-        }
-
-        [UIValue("song-fields-song-author-value")]
-        public bool SearchSongAuthorFieldValue
-        {
-            get => (PluginConfig.Instance.Search.SongFieldsToSearch | WordSearchEngine.SearchableSongFields.SongAuthor) != 0;
-            set
-            {
-                WordSearchEngine.SearchableSongFields expectedValue;
-                if (value)
-                    expectedValue = PluginConfig.Instance.Search.SongFieldsToSearch | WordSearchEngine.SearchableSongFields.SongAuthor;
-                else
-                    expectedValue = PluginConfig.Instance.Search.SongFieldsToSearch & ~WordSearchEngine.SearchableSongFields.SongAuthor;
-
-                if (PluginConfig.Instance.Search.SongFieldsToSearch == expectedValue)
-                    return;
-
-                PluginConfig.Instance.Search.SongFieldsToSearch = expectedValue;
-                OnSearchOptionChanged();
-            }
-        }
-
-        [UIValue("song-fields-level-author-value")]
-        public bool SearchLevelAuthorFieldValue
-        {
-            get => (PluginConfig.Instance.Search.SongFieldsToSearch | WordSearchEngine.SearchableSongFields.LevelAuthor) != 0;
-            set
-            {
-                WordSearchEngine.SearchableSongFields expectedValue;
-                if (value)
-                    expectedValue = PluginConfig.Instance.Search.SongFieldsToSearch | WordSearchEngine.SearchableSongFields.LevelAuthor;
-                else
-                    expectedValue = PluginConfig.Instance.Search.SongFieldsToSearch & ~WordSearchEngine.SearchableSongFields.LevelAuthor;
-
-                if (PluginConfig.Instance.Search.SongFieldsToSearch == expectedValue)
-                    return;
-
-                PluginConfig.Instance.Search.SongFieldsToSearch = expectedValue;
-                OnSearchOptionChanged();
-            }
-        }
-
-        [UIValue("song-fields-contributors-value")]
-        public bool SearchContributorsFieldValue
-        {
-            get => (PluginConfig.Instance.Search.SongFieldsToSearch | WordSearchEngine.SearchableSongFields.Contributors) != 0;
-            set
-            {
-                WordSearchEngine.SearchableSongFields expectedValue;
-                if (value)
-                    expectedValue = PluginConfig.Instance.Search.SongFieldsToSearch | WordSearchEngine.SearchableSongFields.Contributors;
-                else
-                    expectedValue = PluginConfig.Instance.Search.SongFieldsToSearch & ~WordSearchEngine.SearchableSongFields.Contributors;
-
-                if (PluginConfig.Instance.Search.SongFieldsToSearch == expectedValue)
-                    return;
-
-                PluginConfig.Instance.Search.SongFieldsToSearch = expectedValue;
-                OnSearchOptionChanged();
-            }
-        }
-
         [UIValue("keyboard-height")]
         public float KeyboardHeight => KeyHeight * 4 + KeySpacing * 3;
 
-        [UIValue("list-data")]
-        private List<object> _settingsList = new List<object>
-        {
-            "General Settings",
-            "Search Options",
-            "Screen Position"
-        };
-
-        private GameObject[] _settingsContainers;
-        private BSMLParserParams _settingsViewParserParams;
-
 #pragma warning disable CS0649
-        [UIObject("keyboard-view")]
-        private GameObject _keyboardView;
-        [UIObject("settings-view")]
-        private GameObject _settingsView;
-
         [UIObject("keyboard-container")]
         private GameObject _keyboardContainer;
-
-        [UIObject("general-settings-container")]
-        private GameObject _generalSettingsContainer;
-        [UIObject("search-settings-container")]
-        private GameObject _searchSettingsContainer;
-        [UIObject("position-settings-container")]
-        private GameObject _positionSettingsContainer;
+        [UIObject("keyboard-view")]
+        private GameObject _keyboardView;
 
         [UIComponent("settings-image")]
         private ClickableImage _settingsImage;
         [UIComponent("close-image")]
         private ClickableImage _closeImage;
-
-        [UIComponent("movement-lock-image")]
-        private ClickableImage _lockImage;
-        [UIComponent("movement-reset-image")]
-        private ClickableImage _resetImage;
 #pragma warning restore CS0649
 
         private LevelCollectionViewController _levelCollectionViewController;
 
-        private WordPredictionEngine _wordPredictionEngine;
         private PredictionBar _predictionBar;
         private LaserPointerManager _laserPointerManager;
+        private SettingsModalManager _settingsModalManager;
+        private SearchSettingsTab _searchSettingsTab;
 
         private List<CustomKeyboardKeyButton> _keys;
 
@@ -270,12 +81,6 @@ namespace HUI.UI.Screens
 
         public static readonly Vector3 DefaultKeyboardPosition = new Vector3(0f, 0.5f, 1.4f);
         public static readonly Quaternion DefaultKeyboardRotation = Quaternion.Euler(75f, 0f, 0f);
-
-        private static Sprite _lockSprite;
-        private static Sprite _unlockSprite;
-
-        private static readonly Color LockDefaultColour = new Color(0.47f, 0.47f, 0.47f);
-        private static readonly Color UnlockDefaultColour = new Color(0.67f, 0.67f, 0.67f);
 
         private const float KeyWidth = 5.5f;
         private const float KeyHeight = 4.5f;
@@ -292,13 +97,15 @@ namespace HUI.UI.Screens
             PhysicsRaycasterWithCache physicsRaycaster,
             LevelCollectionViewController levelCollectionViewController,
             UIKeyboardManager uiKeyboardManager,
-            WordPredictionEngine wordPredictionEngine,
-            LaserPointerManager laserPointerManager)
+            LaserPointerManager laserPointerManager,
+            SettingsModalManager settingsModalManager,
+            SearchSettingsTab searchSettingsTab)
             : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(ScreenWidth, 40f), DefaultKeyboardPosition, DefaultKeyboardRotation)
         {
             _levelCollectionViewController = levelCollectionViewController;
-            _wordPredictionEngine = wordPredictionEngine;
             _laserPointerManager = laserPointerManager;
+            _settingsModalManager = settingsModalManager;
+            _searchSettingsTab = searchSettingsTab;
 
             this._screen.name = "HUISearchKeyboardScreen";
             this._screen.HandleSide = FloatingScreen.Side.Bottom;
@@ -500,78 +307,58 @@ namespace HUI.UI.Screens
             // button sprites
             _settingsImage.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.settings.png");
             _closeImage.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.cross.png");
-            _resetImage.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.refresh.png");
-
-            if (_lockSprite == null)
-                _lockSprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.lock.png");
-            if (_unlockSprite == null)
-                _unlockSprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.unlock.png");
-
-            _lockImage.sprite = _lockSprite;
         }
 
         public override void Initialize()
         {
             base.Initialize();
 
-            // late loading of some bsml stuff
-            _settingsViewParserParams = BSMLParser.instance.Parse(BSMLUtilities.GetResourceContent(Assembly.GetExecutingAssembly(), "HUI.UI.Views.DelayedSearchKeyboardScreenView.bsml"), _settingsView, this);
-
-            // minify all toggles
-            IEnumerable<Toggle> allToggles = _generalSettingsContainer.GetComponentsInChildren<Toggle>(true).Concat(_searchSettingsContainer.GetComponentsInChildren<Toggle>(true));
-            foreach (var toggle in allToggles)
-                toggle.transform.localScale = new Vector3(0.7f, 0.7f, 1f);
-
-            // it is dumb that bsml returns some deeply nested container instead of the root gameobject of the newly created scrollview
-            _searchSettingsContainer = _searchSettingsContainer.transform.parent.parent.parent.gameObject;
-
-            // resize search settings container
-            RectTransform rt = _searchSettingsContainer.transform.Find("Viewport") as RectTransform;
-            rt.sizeDelta = new Vector2(-4f, 0f);
-            rt.anchoredPosition = new Vector2(-2f, rt.anchoredPosition.y);
-
-            rt = _searchSettingsContainer.transform.Find("ScrollBar") as RectTransform;
-            rt.sizeDelta = new Vector2(4f, rt.sizeDelta.y);
-
-            rt = _searchSettingsContainer.transform.Find("ScrollBar/UpButton/Icon") as RectTransform;
-            rt.anchoredPosition = new Vector2(-2f, rt.anchoredPosition.y);
-
-            rt = _searchSettingsContainer.transform.Find("ScrollBar/DownButton/Icon") as RectTransform;
-            rt.anchoredPosition = new Vector2(-2f, rt.anchoredPosition.y);
-
-            // settings containers
-            _settingsContainers = new GameObject[]
-            {
-                _generalSettingsContainer,
-                _searchSettingsContainer,
-                _positionSettingsContainer
-            };
-
-            PluginConfig.Instance.ConfigReloaded += OnPluginConfigReloaded;
-
             _levelCollectionViewController.didSelectLevelEvent += OnLevelSelected;
 
             _predictionBar.PredictionButtonPressed += OnPredictionButtonPressed;
+
+            _settingsModalManager.SettingsModalClosed += OnSettingsModalClosed;
+
+            _searchSettingsTab.OffHandLaserPointerSettingChanged += OnOffHandLaserPointerSettingChanged;
+            _searchSettingsTab.SearchOptionChanged += OnSearchOptionChanged;
+            _searchSettingsTab.AllowScreenMovementClicked += OnAllowScreenMovementClicked;
+            _searchSettingsTab.ResetScreenPositionClicked += OnResetScreenPositionClicked;
+            _searchSettingsTab.DefaultScreenPositionClicked += OnDefaultScreenPositionClicked;
+
+            _searchSettingsTab.ScreenPositionGetter = () => (_screen.ScreenPosition, _screen.ScreenRotation);
         }
 
         public override void Dispose()
         {
             base.Dispose();
 
-            if (PluginConfig.Instance != null)
-                PluginConfig.Instance.ConfigReloaded -= OnPluginConfigReloaded;
-
             if (_levelCollectionViewController != null)
                 _levelCollectionViewController.didSelectLevelEvent -= OnLevelSelected;
 
             if (_predictionBar != null)
                 _predictionBar.PredictionButtonPressed -= OnPredictionButtonPressed;
+
+
+            _settingsModalManager.SettingsModalClosed -= OnSettingsModalClosed;
+
+            if (_searchSettingsTab != null)
+            {
+                _searchSettingsTab.OffHandLaserPointerSettingChanged -= OnOffHandLaserPointerSettingChanged;
+                _searchSettingsTab.SearchOptionChanged -= OnSearchOptionChanged;
+                _searchSettingsTab.AllowScreenMovementClicked -= OnAllowScreenMovementClicked;
+                _searchSettingsTab.ResetScreenPositionClicked -= OnResetScreenPositionClicked;
+                _searchSettingsTab.DefaultScreenPositionClicked -= OnDefaultScreenPositionClicked;
+
+                _searchSettingsTab.ScreenPositionGetter = null;
+            }
         }
 
         protected override void OnLevelCollectionNavigationControllerActivated(bool firstActivation, bool addToHierarchy, bool screenSystemEnabling)
         {
             // do not show screen during activation
         }
+
+        protected override void OnLevelCollectionNavigationControllerDeactivated(bool removedFromHierarchy, bool screenSystemDisabling) => HideScreen();
 
         private void OnKeyPressed(char key)
         {
@@ -581,10 +368,6 @@ namespace HUI.UI.Screens
 
         public void ShowScreen()
         {
-            // always show keyboard view when being revealed
-            _keyboardView.SetActive(true);
-            _settingsView.SetActive(false);
-
             _animationHandler.PlayRevealAnimation();
 
             _laserPointerManager.Enabled = PluginConfig.Instance.Search.UseOffHandLaserPointer;
@@ -592,7 +375,7 @@ namespace HUI.UI.Screens
 
         public void HideScreen()
         {
-            AllowScreenMovement(false);
+            OnAllowScreenMovementClicked(false);
 
             _animationHandler.PlayConcealAnimation();
 
@@ -613,30 +396,16 @@ namespace HUI.UI.Screens
             _predictionBar.ClearAndSetPredictionButtons(suggestedWords);
         }
 
-        private void AllowScreenMovement(bool allowMovement)
+        private void OnAllowScreenMovementClicked(bool allowMovement)
         {
-            if (allowMovement)
+            _screen.ShowHandle = allowMovement;
+
+            if (!allowMovement)
             {
-                _lockImage.sprite = _unlockSprite;
-                _lockImage.DefaultColor = UnlockDefaultColour;
-
-                _screen.ShowHandle = true;
-                _resetImage.gameObject.SetActive(true);
-            }
-            else
-            {
-                _lockImage.sprite = _lockSprite;
-                _lockImage.DefaultColor = LockDefaultColour;
-
-                _screen.ShowHandle = false;
-                _resetImage.gameObject.SetActive(false);
-
                 PluginConfig.Instance.Search.KeyboardPosition = _screen.ScreenPosition;
                 PluginConfig.Instance.Search.KeyboardRotation = _screen.ScreenRotation;
             }
         }
-
-        private void OnPluginConfigReloaded() => _settingsViewParserParams.EmitEvent("refresh-all-values");
 
         private void OnLevelSelected(LevelCollectionViewController viewController, IPreviewBeatmapLevel level)
         {
@@ -657,57 +426,53 @@ namespace HUI.UI.Screens
                 SetSuggestedWords(new SuggestedWord[] { new SuggestedWord(oldSearchText.ToLower(), SuggestionType.FuzzyMatch) });
         }
 
+        private void OnSettingsModalClosed()
+        {
+            if (_screen.ShowHandle)
+            {
+                _screen.ShowHandle = false;
+
+                _screen.ScreenPosition = PluginConfig.Instance.Search.KeyboardPosition;
+                _screen.ScreenRotation = PluginConfig.Instance.Search.KeyboardRotation;
+            }
+        }
+
+        private void OnOffHandLaserPointerSettingChanged()
+        {
+            _laserPointerManager.Enabled = IsVisible && PluginConfig.Instance.Search.UseOffHandLaserPointer;
+        }
+
         private void OnSearchOptionChanged()
         {
-            try
-            {
-                SearchOptionChanged?.Invoke();
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.Warn($"Unexpected exception occurred in {nameof(SearchKeyboardScreenManager)}:{nameof(SearchOptionChanged)} event");
-                Plugin.Log.Debug(e);
-            }
+            // exception logging handled by SearchSettingsTab
+            SearchOptionChanged?.Invoke();
         }
 
-        [UIAction("settings-clicked")]
-        private void OnSettingsClicked()
-        {
-            OnResetClicked();
-            AllowScreenMovement(false);
-
-            if (_keyboardView.activeSelf)
-            {
-                _keyboardView.SetActive(false);
-                _settingsView.SetActive(true);
-            }
-            else
-            {
-                _keyboardView.SetActive(true);
-                _settingsView.SetActive(false);
-            }
-        }
-
-        [UIAction("close-clicked")]
-        private void OnCloseClicked() => HideScreen();
-
-        [UIAction("lock-clicked")]
-        private void OnLockClicked() => AllowScreenMovement(!_screen.ShowHandle);
-
-        [UIAction("reset-clicked")]
-        private void OnResetClicked()
+        private void OnResetScreenPositionClicked()
         {
             _screen.ScreenPosition = PluginConfig.Instance.Search.KeyboardPosition;
             _screen.ScreenRotation = PluginConfig.Instance.Search.KeyboardRotation;
         }
 
-        [UIAction("list-cell-selected")]
-        private void OnListCellSelected(SegmentedControl control, int index)
+        private void OnDefaultScreenPositionClicked()
         {
-            foreach (GameObject go in _settingsContainers)
-                go.SetActive(false);
+            PluginConfig.Instance.Search.KeyboardPosition = DefaultKeyboardPosition;
+            PluginConfig.Instance.Search.KeyboardRotation = DefaultKeyboardRotation;
 
-            _settingsContainers[index].SetActive(true);
+            _screen.ScreenPosition = DefaultKeyboardPosition;
+            _screen.ScreenRotation = DefaultKeyboardRotation;
         }
+
+        [UIAction("settings-clicked")]
+        private void OnSettingsClicked()
+        {
+            if (_settingsModalManager.IsVisible)
+                _settingsModalManager.HideModal();
+            else
+                _settingsModalManager.ShowModal();
+        }
+
+        [UIAction("close-clicked")]
+        private void OnCloseClicked() => HideScreen();
     }
 }

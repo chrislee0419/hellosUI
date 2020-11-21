@@ -20,7 +20,7 @@ namespace HUI.UI.Screens
         public event Action SortCancelled;
         public event Action<int> SortModeListCellSelected;
 
-        protected override string AssociatedBSMLResource => "HUI.UI.Views.SortScreenView.bsml";
+        protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.SortScreenView.bsml";
 
         // necessary to prevent buttons/list from being interactable while hidden
         private bool _listBGActive = false;

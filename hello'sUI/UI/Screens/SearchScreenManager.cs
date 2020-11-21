@@ -19,7 +19,7 @@ namespace HUI.UI.Screens
         public event Action SearchButtonPressed;
         public event Action CancelButtonPressed;
 
-        protected override string AssociatedBSMLResource => "HUI.UI.Views.SearchScreenView.bsml";
+        protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.SearchScreenView.bsml";
 
         public string SearchText
         {

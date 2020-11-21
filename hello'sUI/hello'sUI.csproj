@@ -163,6 +163,8 @@
     <Compile Include="Search\SearchManager.cs" />
     <Compile Include="Search\WordSearchEngine.cs" />
     <Compile Include="Search\WordPredictionEngine.cs" />
+    <Compile Include="UI\SettingsModalManager.cs" />
+    <Compile Include="UI\Settings\SearchSettingsTab.cs" />
     <Compile Include="Utilities\FuzzyStringUtilities.cs" />
     <Compile Include="Sort\BuiltIn\DefaultSortMode.cs" />
     <Compile Include="Sort\BuiltIn\LengthSortMode.cs" />
@@ -189,6 +191,7 @@
     <Compile Include="UI\Screens\ScrollerScreenManager.cs" />
     <Compile Include="Installers\UIInstaller.cs" />
     <Compile Include="Utilities\GameObjectUtilities.cs" />
+    <Compile Include="Utilities\GeneralUtilities.cs" />
     <Compile Include="Utilities\InstallerUtilities.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
   </ItemGroup>
@@ -196,14 +199,14 @@
     <EmbeddedResource Include="manifest.json" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\Views\SortScreenView.bsml" />
+    <EmbeddedResource Include="UI\Views\Screens\SortScreenView.bsml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\doublechevron.png" />
     <EmbeddedResource Include="Assets\shuffle.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\Views\ScrollerScreenView.bsml" />
+    <EmbeddedResource Include="UI\Views\Screens\ScrollerScreenView.bsml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\garbagecan.png" />
@@ -225,10 +228,10 @@
     <EmbeddedResource Include="Assets\refresh.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\Views\SearchScreenView.bsml" />
+    <EmbeddedResource Include="UI\Views\Screens\SearchScreenView.bsml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\Views\SearchKeyboardScreenView.bsml" />
+    <EmbeddedResource Include="UI\Views\Screens\SearchKeyboardScreenView.bsml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\lock.png" />
@@ -240,7 +243,13 @@
     <EmbeddedResource Include="Assets\settings.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\Views\DelayedSearchKeyboardScreenView.bsml" />
+    <EmbeddedResource Include="UI\Views\Screens\DelayedSearchKeyboardScreenView.bsml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\Views\SettingsModalView.bsml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\Views\Settings\SearchSettingsView.bsml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
