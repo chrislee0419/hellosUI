@@ -27,17 +27,21 @@ namespace HUI.Search
 
                 VRInputModuleProcessPatch.ProcessHook -= Process;
 
+                if (_laserPointerTransform != null)
+                {
+                    GameObject.Destroy(_laserPointerTransform.gameObject);
+                    _laserPointerTransform = null;
+                }
+
                 if (value)
                 {
                     VRInputModuleProcessPatch.ProcessHook += Process;
 
+                    if (_offHandController == null)
+                        _offHandController = VRControllerAccessor(ref _originalPointer) == _rightController ? _leftController : _rightController;
+
                     _laserPointerTransform = GameObject.Instantiate(_pointerPrefab, _offHandController.transform, false);
                     SetLaserPointerPositionAndScale(_defaultPointerLength);
-                }
-                else if (_laserPointerTransform != null)
-                {
-                    GameObject.Destroy(_laserPointerTransform.gameObject);
-                    _laserPointerTransform = null;
                 }
             }
         }
