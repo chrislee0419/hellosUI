@@ -39,6 +39,9 @@ namespace HUI.UI
         }
 
 #pragma warning disable CS0649
+        [UIObject("root")]
+        private GameObject _rootContainer;
+
         [UIObject("confirm-delete-button")]
         private GameObject _confirmDeleteButton;
 #pragma warning restore CS0649
@@ -126,6 +129,16 @@ namespace HUI.UI
                     _deleteButton.interactable = false;
                 }
             });
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            if (_deleteButton?.gameObject != null)
+                Object.Destroy(_deleteButton.gameObject);
+            if (_rootContainer != null)
+                Object.Destroy(_rootContainer);
         }
 
         protected override void OnSinglePlayerLevelSelectionStarting()
