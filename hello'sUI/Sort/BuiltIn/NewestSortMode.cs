@@ -8,6 +8,10 @@ namespace HUI.Sort.BuiltIn
 {
     public class NewestSortMode : ISortMode
     {
+#pragma warning disable CS0067
+        public event Action AvailabilityChanged;
+#pragma warning restore CS0067
+
         public string Name => "Newest";
         public bool IsAvailable => true;
         public bool DefaultSortByAscending => false;

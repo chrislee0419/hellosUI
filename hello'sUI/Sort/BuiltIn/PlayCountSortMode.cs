@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Zenject;
 using HUI.Interfaces;
@@ -8,6 +9,10 @@ namespace HUI.Sort.BuiltIn
 {
     public class PlayCountSortMode : ISortMode
     {
+#pragma warning disable CS0067
+        public event Action AvailabilityChanged;
+#pragma warning restore CS0067
+
         public string Name => "Play Count";
         public bool IsAvailable => true;
         public bool DefaultSortByAscending => false;

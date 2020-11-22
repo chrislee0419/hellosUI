@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using IPA.Loader;
 using HUI.Interfaces;
@@ -9,6 +10,10 @@ namespace HUI.Sort.BuiltIn
 {
     public class StarRatingSortMode : ISortMode
     {
+#pragma warning disable CS0067
+        public event Action AvailabilityChanged;
+#pragma warning restore CS0067
+
         public string Name => "Star Rating";
         public bool IsAvailable => PluginManager.GetPluginFromId("SongDataCore") != null;
         public bool DefaultSortByAscending => false;

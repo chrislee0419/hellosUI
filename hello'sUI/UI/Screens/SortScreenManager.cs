@@ -242,7 +242,13 @@ namespace HUI.UI.Screens
             _sortModeList.data.Clear();
 
             foreach (ISortMode sortMode in sortModes)
-                _sortModeList.data.Add(new CustomListTableData.CustomCellInfo(sortMode.Name.EscapeTextMeshProTags()));
+            {
+                string name = sortMode.Name.EscapeTextMeshProTags();
+                if (!sortMode.IsAvailable)
+                    name = $"<color=#FF5555>{name} <size=60%>(!)</size></color>";
+
+                _sortModeList.data.Add(new CustomListTableData.CustomCellInfo(name));
+            }
 
             _sortModeList.tableView.ReloadData();
         }

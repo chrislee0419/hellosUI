@@ -47,17 +47,18 @@ namespace HUI.Sort
                 new StarRatingSortMode()
             };
             _externalSortModes = externalSortModes;
-
-            Instance = this;
         }
 
         public void Initialize()
         {
-            RefreshSortModeAvailablity();
+            RefreshSortModeAvailability();
 
             _sortScreenManager.SortDirectionChanged += OnSortDirectionChanged;
             _sortScreenManager.SortCancelled += OnSortCancelled;
             _sortScreenManager.SortModeListCellSelected += OnSortModeListCellSelected;
+
+            foreach (var sortMode in SortModes)
+                sortMode.AvailabilityChanged += RefreshSortModeAvailability;
         }
 
         public void Dispose()
@@ -67,6 +68,15 @@ namespace HUI.Sort
                 _sortScreenManager.SortDirectionChanged -= OnSortDirectionChanged;
                 _sortScreenManager.SortCancelled -= OnSortCancelled;
                 _sortScreenManager.SortModeListCellSelected -= OnSortModeListCellSelected;
+            }
+
+            if (SortModes != null)
+            {
+                foreach (var sortMode in SortModes)
+                {
+                    if (sortMode != null)
+                        sortMode.AvailabilityChanged -= RefreshSortModeAvailability;
+                }
             }
         }
 
@@ -89,8 +99,10 @@ namespace HUI.Sort
             }
         }
 
-        public void RefreshSortModeAvailablity()
+        private void RefreshSortModeAvailability()
         {
+            Plugin.Log.Info("Refreshing sort mode availability");
+
             SortModes = _builtInSortModes
                 .Concat(_externalSortModes.OrderBy(x => x.Name))
                 .OrderByDescending(x => x.IsAvailable)
@@ -109,12 +121,21 @@ namespace HUI.Sort
         private void OnSortModeListCellSelected(int index)
         {
             ISortMode newSortMode = SortModes[index];
-            bool ascending = newSortMode.DefaultSortByAscending;
 
-            if (newSortMode == CurrentSortMode)
-                ascending = !SortAscending;
+            if (newSortMode.IsAvailable)
+            {
+                bool ascending = newSortMode.DefaultSortByAscending;
+                if (newSortMode == CurrentSortMode)
+                    ascending = !SortAscending;
 
-            ApplySortMode(newSortMode, ascending);
+                ApplySortMode(newSortMode, ascending);
+            }
+            else
+            {
+                // reselect the current sort mode if the user clicked on an unavailable sort mode
+                index = SortModes.IndexOf(CurrentSortMode);
+                _sortScreenManager.SelectSortMode(index);
+            }
         }
 
         internal void ApplySortMode(ISortMode sortMode, bool ascending)

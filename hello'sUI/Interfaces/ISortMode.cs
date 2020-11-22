@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace HUI.Interfaces
 {
     public interface ISortMode
     {
+        event Action AvailabilityChanged;
+
         /// <summary>
         /// The name of the sort mode that will be displayed to the user.
         /// </summary>
