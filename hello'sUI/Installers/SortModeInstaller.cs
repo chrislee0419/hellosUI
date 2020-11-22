@@ -15,7 +15,8 @@ namespace HUI.Installers
 
             // get external sort modes
             var externalSortModes = InstallerUtilities.GetDerivativeTypesFromAllAssemblies(typeof(ISortMode));
-            Container.Bind<ISortMode>().To(externalSortModes).AsCached();
+            foreach (var externalSortMode in externalSortModes)
+                Container.BindInterfacesAndSelfTo(externalSortMode).AsSingle();
         }
     }
 }
