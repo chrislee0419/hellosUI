@@ -210,12 +210,6 @@ namespace HUI.UI.Settings
         }
 
 #pragma warning disable CS0649
-        [UIObject("root-container")]
-        private GameObject _rootContainer;
-
-        [UIObject("search-settings-container")]
-        private GameObject _searchSettingsContainer;
-
         [UIComponent("screen-pos-x-text")]
         private TextMeshProUGUI _screenPosXText;
         [UIComponent("screen-pos-y-text")]
@@ -236,33 +230,11 @@ namespace HUI.UI.Settings
         private static readonly WaitForSeconds ScreenPositionTextUpdateTime = new WaitForSeconds(0.2f);
 
         private const string ScreenPositionStringFormat = "F3";
-        private const string ScreenRotationStringFormat = "F2";
+        private const string ScreenRotationStringFormat = "F1";
 
         public override void SetupView()
         {
             base.SetupView();
-
-            //// minify all toggles
-            //IEnumerable<Toggle> allToggles = _rootContainer.GetComponentsInChildren<Toggle>(true).Concat(_searchSettingsContainer.GetComponentsInChildren<Toggle>(true));
-            //foreach (var toggle in allToggles)
-            //    toggle.transform.localScale = new Vector3(0.7f, 0.7f, 1f);
-
-            //// it is dumb that bsml returns some deeply nested container instead of the root gameobject of the newly created scrollview
-            //_searchSettingsContainer = _searchSettingsContainer.transform.parent.parent.parent.gameObject;
-
-            //// resize search settings container
-            //RectTransform rt = _searchSettingsContainer.transform.Find("Viewport") as RectTransform;
-            //rt.sizeDelta = new Vector2(-4f, 0f);
-            //rt.anchoredPosition = new Vector2(-2f, rt.anchoredPosition.y);
-
-            //rt = _searchSettingsContainer.transform.Find("ScrollBar") as RectTransform;
-            //rt.sizeDelta = new Vector2(4f, rt.sizeDelta.y);
-
-            //rt = _searchSettingsContainer.transform.Find("ScrollBar/UpButton/Icon") as RectTransform;
-            //rt.anchoredPosition = new Vector2(-2f, rt.anchoredPosition.y);
-
-            //rt = _searchSettingsContainer.transform.Find("ScrollBar/DownButton/Icon") as RectTransform;
-            //rt.anchoredPosition = new Vector2(-2f, rt.anchoredPosition.y);
 
             PluginConfig.Instance.ConfigReloaded += OnPluginConfigReloaded;
 

@@ -243,9 +243,6 @@
     <EmbeddedResource Include="Assets\settings.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\Views\Screens\DelayedSearchKeyboardScreenView.bsml" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="UI\Views\SettingsModalView.bsml" />
   </ItemGroup>
   <ItemGroup>
