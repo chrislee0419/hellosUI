@@ -1,0 +1,9 @@
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
+    id='root'>
+  <button text='Toggle Sort Mode Availability'
+          anchor-min-x='1' anchor-min-y='1'
+          anchor-max-x='1' anchor-max-y='1'
+          pivot-x='1' pivot-y='1'
+          on-click='button-clicked' />
+</bg>

@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace HUI.Utilities
 {
-    internal static class GeneralUtilities
+    public static class GeneralUtilities
     {
         public static void CallAndHandleAction(this object obj, Action action, string nameOfAction)
         {

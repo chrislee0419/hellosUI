@@ -5,16 +5,28 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hello'sUI", "hello'sUI\hello'sUI.csproj", "{5A4F279B-F947-4C7C-87C9-98EAEBDE1979}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SortModeExamplePlugin", "SortModeExamplePlugin\SortModeExamplePlugin.csproj", "{947E88B5-4266-4072-878E-DBDF9B31FF54}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A4F279B-F947-4C7C-87C9-98EAEBDE1979} = {5A4F279B-F947-4C7C-87C9-98EAEBDE1979}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug (with examples)|Any CPU = Debug (with examples)|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A4F279B-F947-4C7C-87C9-98EAEBDE1979}.Debug (with examples)|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A4F279B-F947-4C7C-87C9-98EAEBDE1979}.Debug (with examples)|Any CPU.Build.0 = Debug|Any CPU
 		{5A4F279B-F947-4C7C-87C9-98EAEBDE1979}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5A4F279B-F947-4C7C-87C9-98EAEBDE1979}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A4F279B-F947-4C7C-87C9-98EAEBDE1979}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A4F279B-F947-4C7C-87C9-98EAEBDE1979}.Release|Any CPU.Build.0 = Release|Any CPU
+		{947E88B5-4266-4072-878E-DBDF9B31FF54}.Debug (with examples)|Any CPU.ActiveCfg = Debug|Any CPU
+		{947E88B5-4266-4072-878E-DBDF9B31FF54}.Debug (with examples)|Any CPU.Build.0 = Debug|Any CPU
+		{947E88B5-4266-4072-878E-DBDF9B31FF54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{947E88B5-4266-4072-878E-DBDF9B31FF54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
