@@ -20,14 +20,14 @@ namespace HUI.Search.Data
 
             Node curr = _root;
 
-            int dist = FuzzyStringUtilities.LevenshteinDistance(curr.Word, word);
+            int dist = StringUtilities.LevenshteinDistance(curr.Word, word);
             while (curr.ContainsKey(dist))
             {
                 if (dist == 0)
                     return;
 
                 curr = curr[dist];
-                dist = FuzzyStringUtilities.LevenshteinDistance(curr.Word, word);
+                dist = StringUtilities.LevenshteinDistance(curr.Word, word);
             }
 
             curr.AddChild(dist, word);
@@ -46,7 +46,7 @@ namespace HUI.Search.Data
             while (nodesToSearch.Count > 0)
             {
                 Node curr = nodesToSearch.Dequeue();
-                int dist = FuzzyStringUtilities.LevenshteinDistance(curr.Word, word);
+                int dist = StringUtilities.LevenshteinDistance(curr.Word, word);
                 int minDist = dist - tolerance;
                 int maxDist = dist + tolerance;
 

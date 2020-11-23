@@ -359,7 +359,7 @@ namespace HUI.Search
             foreach (var kv in _words)
             {
                 string targetWord = kv.Key;
-                if (FuzzyStringUtilities.JaroWinklerSimilarity(word, targetWord) >= minSimilarity)
+                if (StringUtilities.JaroWinklerSimilarity(word, targetWord) >= minSimilarity)
                     words.Add(targetWord);
             }
 

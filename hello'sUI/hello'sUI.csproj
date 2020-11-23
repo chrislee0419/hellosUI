@@ -165,7 +165,6 @@
     <Compile Include="Search\WordPredictionEngine.cs" />
     <Compile Include="UI\SettingsModalManager.cs" />
     <Compile Include="UI\Settings\SearchSettingsTab.cs" />
-    <Compile Include="Utilities\FuzzyStringUtilities.cs" />
     <Compile Include="Sort\BuiltIn\DefaultSortMode.cs" />
     <Compile Include="Sort\BuiltIn\LengthSortMode.cs" />
     <Compile Include="Sort\BuiltIn\StarRatingSortMode.cs" />
