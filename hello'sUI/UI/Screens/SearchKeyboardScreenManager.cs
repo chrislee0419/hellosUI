@@ -9,7 +9,6 @@ using BS_Utils.Utilities;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.FloatingScreen;
-using BeatSaberMarkupLanguage.Parser;
 using HUI.Search;
 using HUI.UI.Components;
 using HUI.UI.Settings;
