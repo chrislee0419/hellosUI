@@ -23,11 +23,11 @@
                   pad-bottom='4' pad-left='4' pad-right='4'>
         <button id='confirm-delete-button'
                 text='Delete'
-                font-size='3.4'
+                font-size='4'
                 preferred-width='30'
                 on-click='confirm-delete-button-clicked' />
         <button text='Cancel'
-                font-size='3.4'
+                font-size='4'
                 preferred-width='30'
                 click-event='hide-delete-confirmation-modal' />
       </horizontal>
