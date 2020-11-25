@@ -19,7 +19,7 @@ namespace HUI.UI
     {
         public event Action SettingsModalClosed;
 
-        public bool IsVisible => _modal.isActiveAndEnabled;
+        public bool IsVisible => _modal?.isActiveAndEnabled ?? false;
 
         [UIValue("tab-hosts")]
         public List<object> TabHosts => _tabHosts.Select(x => (object)x).ToList();
@@ -46,16 +46,6 @@ namespace HUI.UI
 
         public void Initialize()
         {
-            _parserParams = BSMLParser.instance.Parse(BSMLUtilities.GetResourceContent(Assembly.GetExecutingAssembly(), "HUI.UI.Views.SettingsModalView.bsml"), _levelCollectionNavigationController.gameObject, this);
-
-            _modal.name = "HUISettingsModal";
-
-            _parserParams.AddEvent("hide-settings-modal", OnSettingsModalHidden);
-            _modal.blockerClickedEvent += OnSettingsModalHidden;
-
-            foreach (ISettingsModalTab tabHost in _tabHosts)
-                tabHost.SetupView();
-
             _levelCollectionNavigationController.didDeactivateEvent += OnLevelCollectionNavigationControllerDeactivated;
         }
 
@@ -68,9 +58,28 @@ namespace HUI.UI
                 _levelCollectionNavigationController.didDeactivateEvent -= OnLevelCollectionNavigationControllerDeactivated;
         }
 
-        public void ShowModal() => _parserParams.EmitEvent("show-settings-modal");
+        public void ShowModal()
+        {
+            // late initialization of the modal view
+            if (_parserParams == null)
+            {
+                _parserParams = BSMLParser.instance.Parse(BSMLUtilities.GetResourceContent(Assembly.GetExecutingAssembly(), "HUI.UI.Views.SettingsModalView.bsml"), _levelCollectionNavigationController.gameObject, this);
 
-        public void HideModal() => _parserParams.EmitEvent("hide-settings-modal");
+                _modal.name = "HUISettingsModal";
+
+                _parserParams.AddEvent("hide-settings-modal", OnSettingsModalHidden);
+                _modal.blockerClickedEvent += OnSettingsModalHidden;
+
+                foreach (ISettingsModalTab tabHost in _tabHosts)
+                    tabHost.SetupView();
+
+                Plugin.Log.Notice(Assembly.GetExecutingAssembly().GetName().FullName);
+            }
+
+            _parserParams.EmitEvent("show-settings-modal");
+        }
+
+        public void HideModal() => _parserParams?.EmitEvent("hide-settings-modal");
 
         private void OnLevelCollectionNavigationControllerDeactivated(bool removedFromHierarchy, bool screenSystemDisabling)
         {
@@ -105,15 +114,31 @@ namespace HUI.UI
 
             protected virtual string AssociatedBSMLResource => null;
 
+            protected BSMLParserParams _parserParams;
+
             public virtual void SetupView()
             {
                 if (!string.IsNullOrEmpty(AssociatedBSMLResource))
-                    BSMLParser.instance.Parse(BSMLUtilities.GetResourceContent(Assembly.GetExecutingAssembly(), AssociatedBSMLResource), _container, this);
+                    _parserParams = BSMLParser.instance.Parse(BSMLUtilities.GetResourceContent(Assembly.GetExecutingAssembly(), AssociatedBSMLResource), _container, this);
 
                 _container.name = TabName + "Tab";
+
+                PluginConfig.Instance.ConfigReloaded += OnPluginConfigReloaded;
             }
 
-            public abstract void OnModalClosed();
+            public virtual void Dispose()
+            {
+                if (PluginConfig.Instance != null)
+                    PluginConfig.Instance.ConfigReloaded -= OnPluginConfigReloaded;
+            }
+
+            public virtual void OnModalClosed()
+            { }
+
+            protected virtual void OnPluginConfigReloaded()
+            {
+                _parserParams?.EmitEvent("refresh-all-values");
+            }
 
             protected void NotifyPropertyChanged([CallerMemberName] string propertyName = null) => this.CallAndHandleAction(PropertyChanged, propertyName);
         }

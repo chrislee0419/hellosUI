@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using HMUI;
 using BeatSaberMarkupLanguage.Attributes;
@@ -13,7 +10,7 @@ using HUI.Utilities;
 
 namespace HUI.UI.Settings
 {
-    public class SearchSettingsTab : SettingsModalManager.SettingsModalTabBase, IDisposable
+    public class SearchSettingsTab : SettingsModalManager.SettingsModalTabBase
     {
         public event Action OffHandLaserPointerSettingChanged;
         public event Action SearchOptionChanged;
@@ -222,9 +219,6 @@ namespace HUI.UI.Settings
         private TextMeshProUGUI _screenRotYText;
         [UIComponent("screen-rot-z-text")]
         private TextMeshProUGUI _screenRotZText;
-
-        [UIParams]
-        private BSMLParserParams _parserParams;
 #pragma warning restore CS0649
 
         private static readonly WaitForSeconds ScreenPositionTextUpdateTime = new WaitForSeconds(0.2f);
@@ -236,20 +230,12 @@ namespace HUI.UI.Settings
         {
             base.SetupView();
 
-            PluginConfig.Instance.ConfigReloaded += OnPluginConfigReloaded;
-
             UpdateScreenPositionText(true);
         }
 
         public override void OnModalClosed()
         {
             AllowScreenMovement = false;
-        }
-
-        public void Dispose()
-        {
-            if (PluginConfig.Instance != null)
-                PluginConfig.Instance.ConfigReloaded -= OnPluginConfigReloaded;
         }
 
         private IEnumerator UpdateScreenPositionTextCoroutine()
@@ -289,8 +275,6 @@ namespace HUI.UI.Settings
                 _screenRotZText.text = screenRot.eulerAngles.z.ToString(ScreenRotationStringFormat);
             }
         }
-
-        private void OnPluginConfigReloaded() => _parserParams.EmitEvent("refresh-all-values");
 
         [UIAction("tab-selected")]
         private void OnTabSelected(SegmentedControl segmentedControl, int index)
