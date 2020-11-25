@@ -1,6 +1,7 @@
 ﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
   <icon-button id='up-button'
+               icon='hellosUI:HUI.Assets.doublechevron.png'
                anchor-min-x='0' anchor-min-y='1'
                anchor-max-x='1' anchor-max-y='1'
                anchor-pos-x='0' anchor-pos-y='-6'
@@ -10,6 +11,7 @@
                interactable='~up-button-interactable'
                on-click='up-button-clicked' />
   <icon-button id='random-button'
+               icon='hellosUI:HUI.Assets.shuffle.png'
                anchor-min-x='0' anchor-min-y='0.5'
                anchor-max-x='1' anchor-max-y='0.5'
                anchor-pos-x='0' anchor-pos-y='0'
@@ -19,6 +21,7 @@
                interactable='~random-button-interactable'
                on-click='random-button-clicked' />
   <icon-button id='down-button'
+               icon='hellosUI:HUI.Assets.doublechevron.png'
                anchor-min-x='0' anchor-min-y='0'
                anchor-max-x='1' anchor-max-y='0'
                anchor-pos-x='0' anchor-pos-y='6'

@@ -102,19 +102,8 @@ namespace HUI.UI.Screens
 
             this._animationHandler.UsePointerAnimations = false;
 
-            // BSML seems to not like it when the default namespace is different from the name of the assembly,
-            // so load images here using BS Utils
-            Sprite chevronSprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.doublechevron.png");
-
-            Image buttonImage = _upButton.transform.Find("Content/Icon").GetComponent<ImageView>();
-            buttonImage.rectTransform.Rotate(0f, 0f, 180f, Space.Self);
-            buttonImage.sprite = chevronSprite;
-
-            buttonImage = _downButton.transform.Find("Content/Icon").GetComponent<ImageView>();
-            buttonImage.sprite = chevronSprite;
-
-            buttonImage = _randomButton.transform.Find("Content/Icon").GetComponent<ImageView>();
-            buttonImage.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.shuffle.png");
+            Transform imageTransform = _upButton.transform.Find("Content/Icon");
+            imageTransform.Rotate(0f, 0f, 180f, Space.Self);
 
             // destroy ContentSizeFitter so the anchors are used
             Object.Destroy(_upButton.GetComponent<ContentSizeFitter>());
