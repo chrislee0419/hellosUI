@@ -18,6 +18,7 @@ namespace HUI.Installers
 
             Container.BindInterfacesAndSelfTo<SettingsModalManager>().AsSingle();
 
+            Container.BindInterfacesAndSelfTo<SortSettingsTab>().AsSingle();
             Container.BindInterfacesAndSelfTo<SearchSettingsTab>().AsSingle();
         }
     }

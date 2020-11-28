@@ -165,6 +165,7 @@
     <Compile Include="Search\WordPredictionEngine.cs" />
     <Compile Include="UI\SettingsModalManager.cs" />
     <Compile Include="UI\Settings\SearchSettingsTab.cs" />
+    <Compile Include="UI\Settings\SortSettingsTab.cs" />
     <Compile Include="Sort\BuiltIn\DefaultSortMode.cs" />
     <Compile Include="Sort\BuiltIn\LengthSortMode.cs" />
     <Compile Include="Sort\BuiltIn\StarRatingSortMode.cs" />
@@ -192,6 +193,7 @@
     <Compile Include="Utilities\GameObjectUtilities.cs" />
     <Compile Include="Utilities\GeneralUtilities.cs" />
     <Compile Include="Utilities\InstallerUtilities.cs" />
+    <Compile Include="Utilities\SortModeUtilities.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -246,6 +248,13 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\Views\Settings\SearchSettingsView.bsml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\Views\Settings\SortSettingsView.bsml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\arrow.png" />
+    <EmbeddedResource Include="Assets\arrowwithline.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

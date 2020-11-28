@@ -1,0 +1,134 @@
+﻿<vertical xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
+          size-delta-x='-4'
+          spacing='2'>
+  <bool-setting text='Hide unavailable sort modes'
+                preferred-height='8'
+                font-size='3.8'
+                value='hide-unavailable-value'
+                get-event='refresh-all-values'
+                apply-on-change='true' />
+
+  <horizontal preferred-height='6'
+              spacing='2'>
+    <horizontal preferred-width='52'>
+      <text text='Reorder and hide selected sort modes'
+            font-size='3.8'
+            align='Left' />
+    </horizontal>
+    <button text='Undo'
+            interactable='~top-buttons-interactable'
+            font-size='3'
+            on-click='undo-button-clicked' />
+    <button text='Apply Changes'
+            interactable='~top-buttons-interactable'
+            font-size='3'
+            on-click='apply-button-clicked' />
+  </horizontal>
+
+  <horizontal preferred-height='40'>
+    <vertical preferred-width='62'>
+      <custom-list id='sort-mode-list'
+                   anchor-min-x='0' anchor-min-y='0'
+                   anchor-max-x='1' anchor-max-y='0'
+                   pivot-x='0.5' pivot-y='0'
+                   anchor-pos-x='0' anchor-pos-y='0'
+                   size-delta-x='0' size-delta-y='48'
+                   cell-size='8'
+                   clickable-cells='true'
+                   select-cell='sort-mode-selected'>
+        <text text='~name-text'
+              font-align='Left'
+              font-size='3.5'
+              anchor-min-x='0' anchor-min-y='0'
+              anchor-max-x='0' anchor-max-y='1'
+              pivot-x='0' pivot-y='0.5'
+              anchor-pos-x='3' anchor-pos-y='0'
+              size-delta-x='44' size-delta-y='0' />
+        <text text='~status-text'
+              font-align='Right'
+              font-size='3'
+              anchor-min-x='1' anchor-min-y='0'
+              anchor-max-x='1' anchor-max-y='1'
+              pivot-x='1' pivot-y='0.5'
+              anchor-pos-x='-3' anchor-pos-y='0'
+              size-delta-x='12' size-delta-y='0' />
+        <bg id='hovered-bg'
+            bg='panel-fade-gradient'
+            bg-color='#00AAFF40'
+            anchor-min-x='0' anchor-min-y='0'
+            anchor-max-x='1' anchor-max-y='1'
+            tags='hovered' />
+        <bg id='selected-bg'
+            bg='panel-fade-gradient'
+            bg-color='#40AAFF80'
+            anchor-min-x='0' anchor-min-y='0'
+            anchor-max-x='1' anchor-max-y='1'
+            tags='selected' />
+      </custom-list>
+    </vertical>
+    
+    <vertical preferred-width='8'>
+      <vertical child-align='UpperCenter'
+                child-expand-height='false'>
+        <icon-button id='list-up-button'
+                     icon='hellosUI:HUI.Assets.chevron.png'
+                     preferred-width='6'
+                     preferred-height='12'
+                     click-event='sort-mode-list#PageUp' />
+      </vertical>
+      <vertical child-align='LowerCenter'
+                child-expand-height='false'>
+        <icon-button id='list-down-button'
+                     icon='hellosUI:HUI.Assets.chevron.png'
+                     preferred-width='6'
+                     preferred-height='12'
+                     click-event='sort-mode-list#PageDown' />
+      </vertical>
+    </vertical>
+
+    <vertical bg='round-rect-panel'
+              bg-color='#00000040'
+              preferred-width='24'
+              pad='1'
+              spacing='1'>
+      <icon-button id='top-button'
+                   icon='hellosUI:HUI.Assets.arrowwithline.png'
+                   interactable='~up-buttons-interactable'
+                   preferred-width='8'
+                   preferred-height='5'
+                   hover-hint='Move to the top'
+                   on-click='top-button-clicked' />
+      <icon-button id='up-button'
+                   icon='hellosUI:HUI.Assets.arrow.png'
+                   interactable='~up-buttons-interactable'
+                   preferred-width='9'
+                   preferred-height='6.5'
+                   hover-hint='Move up'
+                   on-click='up-button-clicked' />
+      <icon-button id='down-button'
+                   icon='hellosUI:HUI.Assets.arrow.png'
+                   interactable='~down-buttons-interactable'
+                   preferred-width='9'
+                   preferred-height='6.5'
+                   hover-hint='Move down'
+                   on-click='down-button-clicked' />
+      <icon-button id='bottom-button'
+                   icon='hellosUI:HUI.Assets.arrowwithline.png'
+                   interactable='~down-buttons-interactable'
+                   preferred-width='8'
+                   preferred-height='5'
+                   hover-hint='Move to the bottom'
+                   on-click='bottom-button-clicked' />
+      <vertical pad-top='1'
+                child-align='UpperCenter'>
+        <button text='~hide-button-text'
+                font-size='3.3'
+                preferred-width='18'
+                preferred-height='8'
+                hover-hint='Hide/unhide the selected sort mode in the list'
+                on-click='hide-button-clicked' />
+      </vertical>
+    </vertical>
+  </horizontal>
+</vertical>

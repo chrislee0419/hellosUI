@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using IPA.Config.Stores;
 using IPA.Config.Stores.Attributes;
@@ -20,6 +21,22 @@ namespace HUI
         public static PluginConfig Instance { get; set; }
 
         public virtual int FastScrollSpeed { get; set; } = 5;
+
+        [NonNullable]
+        public virtual SortSettings Sort { get; set; } = new SortSettings();
+
+        public class SortSettings
+        {
+            public virtual bool HideUnavailable { get; set; } = false;
+
+            [NonNullable]
+            [UseConverter(typeof(ListConverter<string>))]
+            public virtual List<string> HiddenSortModes { get; set; } = new List<string>();
+
+            [NonNullable]
+            [UseConverter(typeof(ListConverter<string>))]
+            public virtual List<string> SortModeOrdering { get; set; } = new List<string>();
+        }
 
         [NonNullable]
         public virtual SearchSettings Search { get; set; } = new SearchSettings();

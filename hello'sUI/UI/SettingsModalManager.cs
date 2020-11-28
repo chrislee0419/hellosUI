@@ -72,8 +72,6 @@ namespace HUI.UI
 
                 foreach (ISettingsModalTab tabHost in _tabHosts)
                     tabHost.SetupView();
-
-                Plugin.Log.Notice(Assembly.GetExecutingAssembly().GetName().FullName);
             }
 
             _parserParams.EmitEvent("show-settings-modal");

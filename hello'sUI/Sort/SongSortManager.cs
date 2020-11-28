@@ -5,6 +5,7 @@ using Zenject;
 using HUI.Interfaces;
 using HUI.Sort.BuiltIn;
 using HUI.UI.Screens;
+using HUI.UI.Settings;
 using HUI.Utilities;
 
 namespace HUI.Sort
@@ -20,6 +21,7 @@ namespace HUI.Sort
         private bool IsDefaultSort => CurrentSortMode == _defaultSortMode && SortAscending == _defaultSortMode.DefaultSortByAscending;
 
         private SortScreenManager _sortScreenManager;
+        private SortSettingsTab _sortSettingsTab;
 
         private DefaultSortMode _defaultSortMode;
         private ISortMode[] _builtInSortModes;
@@ -28,10 +30,12 @@ namespace HUI.Sort
         [Inject]
         public SongSortManager(
             SortScreenManager sortScreenManager,
+            SortSettingsTab sortSettingsTab,
             PlayCountSortMode playCountSort,
             List<ISortMode> externalSortModes)
         {
             _sortScreenManager = sortScreenManager;
+            _sortSettingsTab = sortSettingsTab;
 
             _defaultSortMode = new DefaultSortMode();
             _builtInSortModes = new ISortMode[]
@@ -48,14 +52,16 @@ namespace HUI.Sort
 
         public void Initialize()
         {
-            RefreshSortModeAvailability();
+            RefreshSortModeList();
 
             _sortScreenManager.SortDirectionChanged += OnSortDirectionChanged;
             _sortScreenManager.SortCancelled += OnSortCancelled;
             _sortScreenManager.SortModeListCellSelected += OnSortModeListCellSelected;
 
+            _sortSettingsTab.SortModeListSettingChanged += RefreshSortModeList;
+
             foreach (var sortMode in SortModes)
-                sortMode.AvailabilityChanged += RefreshSortModeAvailability;
+                sortMode.AvailabilityChanged += RefreshSortModeList;
         }
 
         public void Dispose()
@@ -67,12 +73,15 @@ namespace HUI.Sort
                 _sortScreenManager.SortModeListCellSelected -= OnSortModeListCellSelected;
             }
 
+            if (_sortSettingsTab != null)
+                _sortSettingsTab.SortModeListSettingChanged += RefreshSortModeList;
+
             if (SortModes != null)
             {
                 foreach (var sortMode in SortModes)
                 {
                     if (sortMode != null)
-                        sortMode.AvailabilityChanged -= RefreshSortModeAvailability;
+                        sortMode.AvailabilityChanged -= RefreshSortModeList;
                 }
             }
         }
@@ -96,17 +105,57 @@ namespace HUI.Sort
             }
         }
 
-        private void RefreshSortModeAvailability()
+        private void RefreshSortModeList()
         {
-            Plugin.Log.Info("Refreshing sort mode availability");
+            Plugin.Log.Debug("Refreshing sort mode list");
 
-            SortModes = _builtInSortModes
-                .Concat(_externalSortModes.OrderBy(x => x.Name))
-                .OrderByDescending(x => x.IsAvailable)
-                .ToList()
-                .AsReadOnly();
+            var sortSettings = PluginConfig.Instance.Sort;
+
+            // do not allow default sort mode to be hidden
+            sortSettings.HiddenSortModes.Remove(_defaultSortMode.GetIdentifier());
+
+            IEnumerable<ISortMode> sortModeOrdering = _builtInSortModes.Concat(_externalSortModes.OrderBy(x => x.Name));
+            List<string> savedOrdering = sortSettings.SortModeOrdering;
+            if (savedOrdering.Count == 0)
+            {
+                savedOrdering = sortModeOrdering.Select(x => x.GetIdentifier()).ToList();
+                sortSettings.SortModeOrdering = savedOrdering;
+            }
+            else
+            {
+                Dictionary<string, int> savedOrderMap = new Dictionary<string, int>(sortModeOrdering.Count());
+                for (int i = 0; i < savedOrdering.Count; ++i)
+                    savedOrderMap.Add(savedOrdering[i], i);
+
+                // some default order is needed to position newly added sort modes
+                Dictionary<string, int> defaultOrderMap = new Dictionary<string, int>(sortModeOrdering.Count());
+                int j = 0;
+                foreach (var sortMode in sortModeOrdering)
+                    defaultOrderMap.Add(sortMode.GetIdentifier(), j++);
+
+                sortModeOrdering = sortModeOrdering.OrderBy(delegate (ISortMode sortMode)
+                {
+                    string id = sortMode.GetIdentifier();
+                    if (savedOrderMap.ContainsKey(id))
+                        return savedOrderMap[id];
+                    else
+                        return defaultOrderMap[id];
+                });
+
+                if (savedOrdering.Count != sortModeOrdering.Count())
+                    sortSettings.SortModeOrdering = sortModeOrdering.Select(x => x.GetIdentifier()).ToList();
+            }
+
+            IEnumerable<ISortMode> unhiddenSortModes = sortModeOrdering.Where(x => !sortSettings.HiddenSortModes.Contains(x.GetIdentifier()));
+            if (sortSettings.HideUnavailable)
+                unhiddenSortModes = unhiddenSortModes.Where(x => x.IsAvailable);
+            else
+                unhiddenSortModes = unhiddenSortModes.OrderByDescending(x => x.IsAvailable);
+
+            SortModes = unhiddenSortModes.ToList().AsReadOnly();
 
             _sortScreenManager.RefreshSortModeList(SortModes);
+            _sortSettingsTab.RefreshSortModeList(sortModeOrdering);
 
             ApplyDefaultSort();
         }
@@ -159,7 +208,7 @@ namespace HUI.Sort
             CurrentSortMode = _defaultSortMode;
             SortAscending = true;
 
-            _sortScreenManager.SelectSortMode(0);
+            _sortScreenManager.SelectSortMode(SortModes.IndexOf(_defaultSortMode));
             _sortScreenManager.SortText = _defaultSortMode.Name;
             _sortScreenManager.SortAscending = _defaultSortMode.DefaultSortByAscending;
 
