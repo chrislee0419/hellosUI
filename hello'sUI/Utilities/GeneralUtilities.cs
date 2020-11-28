@@ -5,6 +5,19 @@ namespace HUI.Utilities
 {
     public static class GeneralUtilities
     {
+        private static double Epsilon = 0.001;
+        public static bool RoughlyEquals(this float num2, float num)
+        {
+            float diff = num2 - num;
+            return diff < Epsilon && diff > -Epsilon;
+        }
+
+        public static bool RoughlyEquals(this double num2, double num)
+        {
+            double diff = num2 - num;
+            return diff < Epsilon && diff > -Epsilon;
+        }
+
         public static void CallAndHandleAction(this object obj, Action action, string nameOfAction)
         {
             try
