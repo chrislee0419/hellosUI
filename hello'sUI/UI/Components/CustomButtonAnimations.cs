@@ -83,6 +83,7 @@ namespace HUI.UI.Components
 
         protected NoTransitionsButton _button;
         protected ImageView _bg;
+        protected GameObject _underlineGO;
 
         protected static readonly Color TranslucentColour = new Color(1f, 1f, 1f, 0.5f);
 
@@ -90,6 +91,7 @@ namespace HUI.UI.Components
         {
             _button = this.GetComponent<NoTransitionsButton>();
             _bg = this.transform.Find("BG").GetComponent<ImageView>();
+            _underlineGO = this.transform.Find("Underline")?.gameObject;
 
             _bg.enabled = true;
 
@@ -120,21 +122,29 @@ namespace HUI.UI.Components
                 case NoTransitionsButton.SelectionState.Disabled:
                     _bg.color = _disabledBGColour;
                     _bg.color1 = Color.white;
+                    if (_underlineGO != null)
+                        _underlineGO.SetActive(false);
                     break;
 
                 case NoTransitionsButton.SelectionState.Normal:
                     _bg.color = _normalBGColour;
                     _bg.color1 = _normalUseTranslucent ? TranslucentColour : Color.white;
+                    if (_underlineGO != null)
+                        _underlineGO.SetActive(true);
                     break;
 
                 case NoTransitionsButton.SelectionState.Highlighted:
                     _bg.color = _highlightedBGColour;
                     _bg.color1 = TranslucentColour;
+                    if (_underlineGO != null)
+                        _underlineGO.SetActive(true);
                     break;
 
                 case NoTransitionsButton.SelectionState.Pressed:
                     _bg.color = _pressedBGColour;
                     _bg.color1 = TranslucentColour;
+                    if (_underlineGO != null)
+                        _underlineGO.SetActive(true);
                     break;
             }
         }
@@ -157,7 +167,7 @@ namespace HUI.UI.Components
             }
         }
 
-        private Color _disabledIconColour = new Color(0.25f, 0.25f, 0.25f, 0.5f);
+        private Color _disabledIconColour = new Color(1f, 1f, 1f, 0.25f);
         public Color DisabledIconColour
         {
             get => _disabledIconColour;
