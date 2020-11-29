@@ -22,11 +22,24 @@ namespace HUI
 
         public virtual int FastScrollSpeed { get; set; } = 5;
 
+        [UseConverter(typeof(EnumConverter<SelectLevelCategoryViewController.LevelCategory>))]
+        public virtual SelectLevelCategoryViewController.LevelCategory LastLevelCategory { get; set; } = SelectLevelCategoryViewController.LevelCategory.None;
+
+        public virtual string LastLevelPackID { get; set; }
+
+        public virtual string LastLevelID { get; set; }
+        public const string LastLevelIDSeparator = "|||;;;";
+        public static readonly string[] LastLevelIDSeparatorArray = new string[] { LastLevelIDSeparator };
+
         [NonNullable]
         public virtual SortSettings Sort { get; set; } = new SortSettings();
 
         public class SortSettings
         {
+            public virtual string LastSortModeID { get; set; }
+
+            public virtual bool LastSortModeIsAscending { get; set; }
+
             public virtual bool HideUnavailable { get; set; } = false;
 
             [NonNullable]

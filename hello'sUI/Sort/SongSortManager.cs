@@ -54,14 +54,33 @@ namespace HUI.Sort
         {
             RefreshSortModeList();
 
+            // try to reselect the last sort mode used
+            if (!string.IsNullOrEmpty(PluginConfig.Instance.Sort.LastSortModeID))
+            {
+                foreach (var sortMode in SortModes)
+                {
+                    if (sortMode.GetIdentifier() == PluginConfig.Instance.Sort.LastSortModeID)
+                    {
+                        if (!sortMode.IsAvailable)
+                            break;
+
+                        ApplySortMode(sortMode, PluginConfig.Instance.Sort.LastSortModeIsAscending);
+                        break;
+                    }
+                }
+            }
+
+            if (CurrentSortMode == null)
+                ApplyDefaultSort();
+
             _sortScreenManager.SortDirectionChanged += OnSortDirectionChanged;
             _sortScreenManager.SortCancelled += OnSortCancelled;
             _sortScreenManager.SortModeListCellSelected += OnSortModeListCellSelected;
 
-            _sortSettingsTab.SortModeListSettingChanged += RefreshSortModeList;
+            _sortSettingsTab.SortModeListSettingChanged += OnSortModeListChanged;
 
             foreach (var sortMode in SortModes)
-                sortMode.AvailabilityChanged += RefreshSortModeList;
+                sortMode.AvailabilityChanged += OnSortModeListChanged;
         }
 
         public void Dispose()
@@ -74,14 +93,14 @@ namespace HUI.Sort
             }
 
             if (_sortSettingsTab != null)
-                _sortSettingsTab.SortModeListSettingChanged += RefreshSortModeList;
+                _sortSettingsTab.SortModeListSettingChanged += OnSortModeListChanged;
 
             if (SortModes != null)
             {
                 foreach (var sortMode in SortModes)
                 {
                     if (sortMode != null)
-                        sortMode.AvailabilityChanged -= RefreshSortModeList;
+                        sortMode.AvailabilityChanged -= OnSortModeListChanged;
                 }
             }
         }
@@ -156,8 +175,15 @@ namespace HUI.Sort
 
             _sortScreenManager.RefreshSortModeList(SortModes);
             _sortSettingsTab.RefreshSortModeList(sortModeOrdering);
+        }
 
-            ApplyDefaultSort();
+        private void OnSortModeListChanged()
+        {
+            RefreshSortModeList();
+
+            // reset to default if the current sort mode is unavailable
+            if (!CurrentSortMode.IsAvailable)
+                ApplyDefaultSort();
         }
 
         private void OnSortDirectionChanged() => ApplySortMode(CurrentSortMode, !SortAscending);
@@ -186,34 +212,20 @@ namespace HUI.Sort
 
         internal void ApplySortMode(ISortMode sortMode, bool ascending)
         {
-            if (sortMode is DefaultSortMode && ascending)
-            {
-                ApplyDefaultSort();
-            }
-            else
-            {
-                CurrentSortMode = sortMode;
-                SortAscending = ascending;
+            CurrentSortMode = sortMode;
+            SortAscending = ascending;
 
-                _sortScreenManager.SelectSortMode(SortModes.IndexOf(CurrentSortMode));
-                _sortScreenManager.SortText = CurrentSortMode.Name.EscapeTextMeshProTags();
-                _sortScreenManager.SortAscending = SortAscending;
+            PluginConfig.Instance.Sort.LastSortModeID = sortMode.GetIdentifier();
+            PluginConfig.Instance.Sort.LastSortModeIsAscending = ascending;
 
-                RequestLevelCollectionRefresh();
-            }
-        }
-
-        internal void ApplyDefaultSort()
-        {
-            CurrentSortMode = _defaultSortMode;
-            SortAscending = true;
-
-            _sortScreenManager.SelectSortMode(SortModes.IndexOf(_defaultSortMode));
-            _sortScreenManager.SortText = _defaultSortMode.Name;
-            _sortScreenManager.SortAscending = _defaultSortMode.DefaultSortByAscending;
+            _sortScreenManager.SelectSortMode(SortModes.IndexOf(sortMode));
+            _sortScreenManager.SortText = sortMode.Name.EscapeTextMeshProTags();
+            _sortScreenManager.SortAscending = ascending;
 
             RequestLevelCollectionRefresh();
         }
+
+        internal void ApplyDefaultSort() => ApplySortMode(_defaultSortMode, _defaultSortMode.DefaultSortByAscending);
 
         private void RequestLevelCollectionRefresh() => this.CallAndHandleAction(LevelCollectionRefreshRequested, nameof(LevelCollectionRefreshRequested));
     }

@@ -293,6 +293,7 @@ namespace HUI.UI.Screens
         [UIAction("sort-mode-list-cell-selected")]
         private void OnSortModeListCellSelected(TableView tableView, int index)
         {
+            // note: sort name text and ascending/descending icon will be changed by the song sort manager
             this.CallAndHandleAction(SortModeListCellSelected, nameof(SortModeListCellSelected), index);
         }
     }

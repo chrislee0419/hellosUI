@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using IPA.Utilities;
 using SongCore;
@@ -18,9 +19,11 @@ namespace HUI.DataFlow
         private IAnnotatedBeatmapLevelCollection _originalLevelCollection;
         private CustomBeatmapLevelPack _customLevelPack = new CustomBeatmapLevelPack();
 
+        private BeatmapLevelsModel _beatmapLevelsModel;
         private LevelFilteringNavigationController _levelFilteringNavigationController;
         private LevelCollectionNavigationController _levelCollectionNavigationController;
         private LevelSelectionNavigationController _levelSelectionNavigationController;
+        private LevelCollectionViewController _levelCollectionViewController;
 
         private SearchManager _searchManager;
         private SongSortManager _sortManager;
@@ -38,17 +41,21 @@ namespace HUI.DataFlow
             MainMenuViewController mainMenuVC,
             SoloFreePlayFlowCoordinator soloFC,
             PartyFreePlayFlowCoordinator partyFC,
+            BeatmapLevelsModel beatmapLevelsModel,
             LevelFilteringNavigationController levelFilteringNavigationController,
             LevelCollectionNavigationController levelCollectionNavigationController,
             LevelSelectionNavigationController levelSelectionNavigationController,
+            LevelCollectionViewController levelCollectionViewController,
             SearchManager searchManager,
             SongSortManager sortManager,
             List<ILevelCollectionModifier> modifiers)
             : base(mainMenuVC, soloFC, partyFC)
         {
+            _beatmapLevelsModel = beatmapLevelsModel;
             _levelFilteringNavigationController = levelFilteringNavigationController;
             _levelCollectionNavigationController = levelCollectionNavigationController;
             _levelSelectionNavigationController = levelSelectionNavigationController;
+            _levelCollectionViewController = levelCollectionViewController;
 
             _searchManager = searchManager;
             _sortManager = sortManager;
@@ -99,18 +106,50 @@ namespace HUI.DataFlow
         protected override void OnSinglePlayerLevelSelectionStarting(bool isSolo)
         {
             _levelFilteringNavigationController.didSelectAnnotatedBeatmapLevelCollectionEvent += OnAnnotatedBeatmapLevelCollectionSelected;
+            _levelCollectionViewController.didSelectLevelEvent += OnLevelSelected;
             Loader.OnLevelPacksRefreshed += OnLevelPacksRefreshed;
+
+            if (!string.IsNullOrEmpty(PluginConfig.Instance.LastLevelPackID))
+            {
+                SinglePlayerLevelSelectionFlowCoordinator levelSelectionFlowCoordinator;
+                if (isSolo)
+                    levelSelectionFlowCoordinator = _soloFC;
+                else
+                    levelSelectionFlowCoordinator = _partyFC;
+
+                IBeatmapLevelPack lastLevelPack = _beatmapLevelsModel.GetLevelPack(PluginConfig.Instance.LastLevelPackID);
+                if (lastLevelPack != null)
+                {
+                    var startState = new LevelSelectionFlowCoordinator.State(lastLevelPack);
+                    FieldAccessor<LevelSelectionFlowCoordinator.State, SelectLevelCategoryViewController.LevelCategory?>
+                        .Set(ref startState, "levelCategory", PluginConfig.Instance.LastLevelCategory);
+
+                    // note: startState is set to null after fc activation, so we don't have to do any clean up there
+                    levelSelectionFlowCoordinator.Setup(startState);
+                }
+            }
+            else
+            {
+                PluginConfig.Instance.LastLevelCategory = SelectLevelCategoryViewController.LevelCategory.None;
+                PluginConfig.Instance.LastLevelPackID = null;
+                PluginConfig.Instance.LastLevelID = null;
+            }
         }
 
         protected override void OnSinglePlayerLevelSelectionFinished()
         {
             _levelFilteringNavigationController.didSelectAnnotatedBeatmapLevelCollectionEvent -= OnAnnotatedBeatmapLevelCollectionSelected;
+            _levelCollectionViewController.didSelectLevelEvent -= OnLevelSelected;
             Loader.OnLevelPacksRefreshed -= OnLevelPacksRefreshed;
         }
 
         private void OnAnnotatedBeatmapLevelCollectionSelected(LevelFilteringNavigationController controller, IAnnotatedBeatmapLevelCollection levelCollection, GameObject noDataInfoPrefab, BeatmapCharacteristicSO preferredBeatmapCharacteristic)
         {
             _originalLevelCollection = levelCollection;
+
+            PluginConfig.Instance.LastLevelCategory = _levelFilteringNavigationController.selectedLevelCategory;
+            if (levelCollection is IBeatmapLevelPack levelPack)
+                PluginConfig.Instance.LastLevelPackID = levelPack.packID;
 
             ApplyCustomLevelCollectionDelayed();
 
@@ -120,6 +159,17 @@ namespace HUI.DataFlow
             _sortManager.OnLevelCollectionSelected(levelCollection);
             foreach (var externalModifier in _externalModifiers)
                 externalModifier.OnLevelCollectionSelected(levelCollection);
+        }
+
+        private void OnLevelSelected(LevelCollectionViewController viewController, IPreviewBeatmapLevel level)
+        {
+            StringBuilder sb = new StringBuilder(level.levelID)
+                .Append(PluginConfig.LastLevelIDSeparator)
+                .Append(level.songName)
+                .Append(PluginConfig.LastLevelIDSeparator)
+                .Append(level.levelAuthorName);
+
+            PluginConfig.Instance.LastLevelID = sb.ToString();
         }
 
         private void OnLevelCollectionRefreshRequested()
@@ -203,6 +253,33 @@ namespace HUI.DataFlow
                     NotAllowedCharacteristicsAccessor(ref _levelSelectionNavigationController));
 
                 levelCollection = _originalLevelCollection.beatmapLevelCollection.beatmapLevels;
+            }
+
+            if (!string.IsNullOrEmpty(PluginConfig.Instance.LastLevelID))
+            {
+                string[] lastLevelData = PluginConfig.Instance.LastLevelID.Split(PluginConfig.LastLevelIDSeparatorArray, StringSplitOptions.None);
+                if (lastLevelData.Length == 3)
+                {
+                    string levelID = lastLevelData[0];
+
+                    IPreviewBeatmapLevel lastLevel = levelCollection.FirstOrDefault(x => x.levelID == levelID);
+
+                    // couldn't find the level by its id
+                    // it could be a WIP level, so look again, but now with the song title and level author
+                    if (lastLevel == null)
+                    {
+                        string songName = lastLevelData[1];
+                        string levelAuthor = lastLevelData[2];
+
+                        lastLevel = levelCollection.FirstOrDefault(x => x.songName == songName && x.levelAuthorName == levelAuthor);
+                    }
+
+                    if (lastLevel != null)
+                    {
+                        // can't use this, since it causes the music to play again and can cause the search keyboard to hide
+                        //_levelCollectionNavigationController.SelectLevel(lastLevel);
+                    }
+                }
             }
 
             this.CallAndHandleAction(LevelCollectionApplied, nameof(LevelCollectionApplied), levelCollection);
