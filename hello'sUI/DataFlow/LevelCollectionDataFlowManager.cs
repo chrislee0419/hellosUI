@@ -96,7 +96,7 @@ namespace HUI.DataFlow
             }
         }
 
-        protected override void OnSinglePlayerLevelSelectionStarting()
+        protected override void OnSinglePlayerLevelSelectionStarting(bool isSolo)
         {
             _levelFilteringNavigationController.didSelectAnnotatedBeatmapLevelCollectionEvent += OnAnnotatedBeatmapLevelCollectionSelected;
             Loader.OnLevelPacksRefreshed += OnLevelPacksRefreshed;

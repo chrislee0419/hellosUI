@@ -141,7 +141,7 @@ namespace HUI.UI
                 Object.Destroy(_rootContainer);
         }
 
-        protected override void OnSinglePlayerLevelSelectionStarting()
+        protected override void OnSinglePlayerLevelSelectionStarting(bool isSolo)
         {
             // not sure why, but this is throwing a null ref exception when setting the highlighted colour in the constructor
             // seems like it somehow can't find the necessary components, even though i do the exact same thing in ScrollerScreenManager

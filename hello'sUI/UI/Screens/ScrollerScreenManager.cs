@@ -179,9 +179,9 @@ namespace HUI.UI.Screens
                 _levelCollectionDataFlowManager.LevelCollectionApplied -= OnLevelCollectionApplied;
         }
 
-        protected override void OnSinglePlayerLevelSelectionStarting()
+        protected override void OnSinglePlayerLevelSelectionStarting(bool isSolo)
         {
-            base.OnSinglePlayerLevelSelectionStarting();
+            base.OnSinglePlayerLevelSelectionStarting(isSolo);
 
             if (_scroller == null)
             {

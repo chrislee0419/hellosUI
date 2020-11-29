@@ -73,7 +73,7 @@ namespace HUI.UI.Screens
                 Object.Destroy(_screen.gameObject);
         }
 
-        protected override void OnSinglePlayerLevelSelectionStarting()
+        protected override void OnSinglePlayerLevelSelectionStarting(bool isSolo)
         {
             if (ShowScreenOnSinglePlayerLevelSelectionStarting)
                 _animationHandler.PlayRevealAnimation();

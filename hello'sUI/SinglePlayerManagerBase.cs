@@ -6,9 +6,9 @@ namespace HUI
 {
     public class SinglePlayerManagerBase : IInitializable, IDisposable
     {
-        private MainMenuViewController _mainMenuVC;
-        private SoloFreePlayFlowCoordinator _soloFC;
-        private PartyFreePlayFlowCoordinator _partyFC;
+        protected MainMenuViewController _mainMenuVC;
+        protected SoloFreePlayFlowCoordinator _soloFC;
+        protected PartyFreePlayFlowCoordinator _partyFC;
 
         public SinglePlayerManagerBase(MainMenuViewController mainMenuVC, SoloFreePlayFlowCoordinator soloFC, PartyFreePlayFlowCoordinator partyFC)
         {
@@ -36,11 +36,12 @@ namespace HUI
 
         private void OnMainMenuViewControllerDidFinish(MainMenuViewController _, MainMenuViewController.MenuButton buttonType)
         {
-            if (buttonType == MainMenuViewController.MenuButton.SoloFreePlay || buttonType == MainMenuViewController.MenuButton.Party)
-                this.CallAndHandleAction(OnSinglePlayerLevelSelectionStarting, nameof(OnSinglePlayerLevelSelectionStarting));
+            bool isSolo = buttonType == MainMenuViewController.MenuButton.SoloFreePlay;
+            if (isSolo || buttonType == MainMenuViewController.MenuButton.Party)
+                this.CallAndHandleAction(OnSinglePlayerLevelSelectionStarting, nameof(OnSinglePlayerLevelSelectionStarting), isSolo);
         }
 
-        protected virtual void OnSinglePlayerLevelSelectionStarting()
+        protected virtual void OnSinglePlayerLevelSelectionStarting(bool isSolo)
         {
 
         }
