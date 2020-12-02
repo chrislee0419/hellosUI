@@ -79,7 +79,7 @@ namespace HUI.Sort
 
             _sortSettingsTab.SortModeListSettingChanged += OnSortModeListChanged;
 
-            foreach (var sortMode in SortModes)
+            foreach (var sortMode in _builtInSortModes.Concat(_externalSortModes))
                 sortMode.AvailabilityChanged += OnSortModeListChanged;
         }
 
@@ -95,13 +95,16 @@ namespace HUI.Sort
             if (_sortSettingsTab != null)
                 _sortSettingsTab.SortModeListSettingChanged += OnSortModeListChanged;
 
-            if (SortModes != null)
+            IEnumerable<ISortMode> sortModes = Enumerable.Empty<ISortMode>();
+            if (_builtInSortModes != null)
+                sortModes = sortModes.Concat(_builtInSortModes);
+            if (_externalSortModes != null)
+                sortModes = sortModes.Concat(_externalSortModes);
+
+            foreach (var sortMode in sortModes)
             {
-                foreach (var sortMode in SortModes)
-                {
-                    if (sortMode != null)
-                        sortMode.AvailabilityChanged -= OnSortModeListChanged;
-                }
+                if (sortMode != null)
+                    sortMode.AvailabilityChanged -= OnSortModeListChanged;
             }
         }
 
