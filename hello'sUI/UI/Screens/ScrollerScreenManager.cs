@@ -65,6 +65,8 @@ namespace HUI.UI.Screens
         }
 
 #pragma warning disable CS0649
+        [UIObject("settings-button")]
+        private GameObject _settingsButton;
         [UIObject("up-button")]
         private GameObject _upButton;
         [UIObject("down-button")]
@@ -80,6 +82,7 @@ namespace HUI.UI.Screens
         private TableViewScroller _scroller;
 
         private LevelCollectionDataFlowManager _levelCollectionDataFlowManager;
+        private SettingsModalManager _settingsModalManager;
 
         private Random _rng = new Random();
 
@@ -93,12 +96,14 @@ namespace HUI.UI.Screens
             LevelCollectionNavigationController levelCollectionNC,
             PhysicsRaycasterWithCache physicsRaycaster,
             LevelCollectionViewController levelCollectionViewController,
-            LevelCollectionDataFlowManager levelCollectionDataFlowManager)
-            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(7f, 50f), new Vector3(-1.5f, 1.2f, 2.05f), Quaternion.Euler(0f, 330f, 0f))
+            LevelCollectionDataFlowManager levelCollectionDataFlowManager,
+            SettingsModalManager settingsModalManager)
+            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(7f, 58f), new Vector3(-1.525f, 1.3f, 2.075f), Quaternion.Euler(0f, 330f, 0f))
         {
             _levelCollectionDataFlowManager = levelCollectionDataFlowManager;
+            _settingsModalManager = settingsModalManager;
 
-            this._screen.name = "HUISongUIScreen";
+            this._screen.name = "HUISongScrollerScreen";
 
             this._animationHandler.UsePointerAnimations = false;
 
@@ -106,29 +111,38 @@ namespace HUI.UI.Screens
             imageTransform.Rotate(0f, 0f, 180f, Space.Self);
 
             // destroy ContentSizeFitter so the anchors are used
+            Object.Destroy(_settingsButton.GetComponent<ContentSizeFitter>());
             Object.Destroy(_upButton.GetComponent<ContentSizeFitter>());
             Object.Destroy(_downButton.GetComponent<ContentSizeFitter>());
             Object.Destroy(_randomButton.GetComponent<ContentSizeFitter>());
 
             // remove underline
+            Object.Destroy(_settingsButton.transform.Find("Underline").gameObject);
             Object.Destroy(_upButton.transform.Find("Underline").gameObject);
             Object.Destroy(_downButton.transform.Find("Underline").gameObject);
             Object.Destroy(_randomButton.transform.Find("Underline").gameObject);
 
             // remove skew
+            _settingsButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
             _upButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
             _downButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
             _randomButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
 
             // add custom animations
+            Object.Destroy(_settingsButton.GetComponent<ButtonStaticAnimations>());
             Object.Destroy(_upButton.GetComponent<ButtonStaticAnimations>());
             Object.Destroy(_downButton.GetComponent<ButtonStaticAnimations>());
             Object.Destroy(_randomButton.GetComponent<ButtonStaticAnimations>());
 
+            Color settingsButtonHighlightedColour = new Color(0.4f, 1f, 0.15f);
             Color pageButtonHighlightedColour = new Color(1f, 0.375f, 0f);
             Color randomButtonHighlighedColour = new Color(0.145f, 0.443f, 1f);
 
-            var btnAnims = _upButton.AddComponent<CustomIconButtonAnimations>();
+            var btnAnims = _settingsButton.AddComponent<CustomIconButtonAnimations>();
+            btnAnims.HighlightedBGColour = settingsButtonHighlightedColour;
+            btnAnims.PressedBGColour = settingsButtonHighlightedColour;
+
+            btnAnims = _upButton.AddComponent<CustomIconButtonAnimations>();
             btnAnims.HighlightedBGColour = pageButtonHighlightedColour;
             btnAnims.PressedBGColour = pageButtonHighlightedColour;
 
@@ -219,6 +233,15 @@ namespace HUI.UI.Screens
             }
 
             return true;
+        }
+
+        [UIAction("settings-button-clicked")]
+        private void OnSettingsButtonClicked()
+        {
+            if (_settingsModalManager.IsVisible)
+                _settingsModalManager.HideModal();
+            else
+                _settingsModalManager.ShowModal();
         }
 
         [UIAction("up-button-clicked")]
