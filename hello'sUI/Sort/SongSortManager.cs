@@ -32,6 +32,7 @@ namespace HUI.Sort
             SortScreenManager sortScreenManager,
             SortSettingsTab sortSettingsTab,
             PlayCountSortMode playCountSort,
+            PPSortMode ppSort,
             List<ISortMode> externalSortModes)
         {
             _sortScreenManager = sortScreenManager;
@@ -44,7 +45,7 @@ namespace HUI.Sort
                 new NewestSortMode(),
                 playCountSort,
                 new SongLengthSortMode(),
-                new PPSortMode(),
+                ppSort,
                 new StarRatingSortMode()
             };
             _externalSortModes = externalSortModes;
