@@ -5,9 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using HMUI;
 using VRUIControls;
-using BS_Utils.Utilities;
 using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.FloatingScreen;
 using HUI.Search;
 using HUI.UI.Components;
@@ -59,11 +57,6 @@ namespace HUI.UI.Screens
         private GameObject _keyboardContainer;
         [UIObject("keyboard-view")]
         private GameObject _keyboardView;
-
-        [UIComponent("settings-image")]
-        private ClickableImage _settingsImage;
-        [UIComponent("close-image")]
-        private ClickableImage _closeImage;
 #pragma warning restore CS0649
 
         private LevelCollectionViewController _levelCollectionViewController;
@@ -302,10 +295,6 @@ namespace HUI.UI.Screens
             clearButton.SelectedColour = new Color(1f, 0.216f, 0.067f);
 
             Object.Destroy(keyPrefab.gameObject);
-
-            // button sprites
-            _settingsImage.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.settings.png");
-            _closeImage.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.cross.png");
         }
 
         public override void Initialize()
