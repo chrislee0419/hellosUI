@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using HMUI;
 using IPA.Utilities;
 using SongCore;
 using HUI.Interfaces;
@@ -30,12 +31,17 @@ namespace HUI.DataFlow
         private List<ILevelCollectionModifier> _externalModifiers;
 
         private bool _levelCollectionRefreshing = false;
+        private bool _selectLastLevel = false;
 
         private static readonly FieldAccessor<LevelCollectionNavigationController, bool>.Accessor ShowPlayerStatsAccessor = FieldAccessor<LevelCollectionNavigationController, bool>.GetAccessor("_showPlayerStatsInDetailView");
         private static readonly FieldAccessor<LevelCollectionNavigationController, bool>.Accessor ShowPracticeButtonAccessor = FieldAccessor<LevelCollectionNavigationController, bool>.GetAccessor("_showPracticeButtonInDetailView");
         private static readonly FieldAccessor<LevelCollectionNavigationController, string>.Accessor ActionButtonTextAccessor = FieldAccessor<LevelCollectionNavigationController, string>.GetAccessor("_actionButtonTextInDetailView");
         private static readonly FieldAccessor<LevelSelectionNavigationController, BeatmapDifficultyMask>.Accessor AllowedBeatmapDifficultyMaskAccessor = FieldAccessor<LevelSelectionNavigationController, BeatmapDifficultyMask>.GetAccessor("_allowedBeatmapDifficultyMask");
         private static readonly FieldAccessor<LevelSelectionNavigationController, BeatmapCharacteristicSO[]>.Accessor NotAllowedCharacteristicsAccessor = FieldAccessor<LevelSelectionNavigationController, BeatmapCharacteristicSO[]>.GetAccessor("_notAllowedCharacteristics");
+        private static readonly FieldAccessor<LevelCollectionViewController, LevelCollectionTableView>.Accessor LevelCollectionTableViewAccessor = FieldAccessor<LevelCollectionViewController, LevelCollectionTableView>.GetAccessor("_levelCollectionTableView");
+        private static readonly FieldAccessor<LevelCollectionTableView, int>.Accessor SelectedRowAccessor = FieldAccessor<LevelCollectionTableView, int>.GetAccessor("_selectedRow");
+        private static readonly FieldAccessor<LevelCollectionTableView, bool>.Accessor ShowLevelPackHeaderAccessor = FieldAccessor<LevelCollectionTableView, bool>.GetAccessor("_showLevelPackHeader");
+        private static readonly FieldAccessor<LevelCollectionTableView, TableView>.Accessor TableViewAccessor = FieldAccessor<LevelCollectionTableView, TableView>.GetAccessor("_tableView");
 
         public LevelCollectionDataFlowManager(
             MainMenuViewController mainMenuVC,
@@ -127,6 +133,8 @@ namespace HUI.DataFlow
                     // note: startState is set to null after fc activation, so we don't have to do any clean up there
                     levelSelectionFlowCoordinator.Setup(startState);
                 }
+
+                _selectLastLevel = true;
             }
             else
             {
@@ -276,11 +284,30 @@ namespace HUI.DataFlow
 
                     if (lastLevel != null)
                     {
-                        // can't use this, since it causes the music to play again and can cause the search keyboard to hide
-                        //_levelCollectionNavigationController.SelectLevel(lastLevel);
+                        // essentially, a re-implementation of LevelCollectionTableView.SelectLevel
+                        // but without selecting the cell (and triggering the TableView didSelectCellWithIdx callback)
+                        // unless it is necessary
+                        var levelCollectionTableView = LevelCollectionTableViewAccessor(ref _levelCollectionViewController);
+
+                        // index should always be valid, since lastLevel comes from levelCollection
+                        int index = ShowLevelPackHeaderAccessor(ref levelCollectionTableView) ? 0 : -1;
+                        levelCollection.FirstOrDefault(delegate (IPreviewBeatmapLevel level)
+                        {
+                            ++index;
+                            return level == lastLevel;
+                        });
+
+                        SelectedRowAccessor(ref levelCollectionTableView) = index;
+
+                        var tableView = TableViewAccessor(ref levelCollectionTableView);
+                        tableView.ScrollToCellWithIdx(index, TableViewScroller.ScrollPositionType.Center, false);
+                        if (_selectLastLevel)
+                            tableView.SelectCellWithIdx(index, true);
                     }
                 }
             }
+
+            _selectLastLevel = false;
 
             this.CallAndHandleAction(LevelCollectionApplied, nameof(LevelCollectionApplied), levelCollection);
         }
