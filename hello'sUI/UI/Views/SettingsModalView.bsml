@@ -6,6 +6,16 @@
        move-to-center='true'
        click-off-closes='true'
        size-delta-x='100' size-delta-y='70'>
+  <clickable-image source='hellosUI:HUI.Assets.cross.png'
+                   anchor-min-x='1' anchor-min-y='1'
+                   anchor-max-x='1' anchor-max-y='1'
+                   size-delta-x='4' size-delta-y='4'
+                   anchor-pos-x='-1.5' anchor-pos-y='-1.5'
+                   pivot-x='1' pivot-y='1'
+                   on-click='close-clicked'
+                   preserve-aspect='true'
+                   default-color='#777777'
+                   highlight-color='#FFAAAA' />
   <tab-selector tab-tag='settings-tab'
                 anchor-pos-x='0' anchor-pos-y='-1.5' />
 

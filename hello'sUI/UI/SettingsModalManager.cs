@@ -77,6 +77,7 @@ namespace HUI.UI
             _parserParams.EmitEvent("show-settings-modal");
         }
 
+        [UIAction("close-clicked")]
         public void HideModal() => _parserParams?.EmitEvent("hide-settings-modal");
 
         private void OnLevelCollectionNavigationControllerDeactivated(bool removedFromHierarchy, bool screenSystemDisabling)
