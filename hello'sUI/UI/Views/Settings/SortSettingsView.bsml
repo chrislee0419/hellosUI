@@ -123,6 +123,7 @@
       <vertical pad-top='1'
                 child-align='UpperCenter'>
         <button text='~hide-button-text'
+                interactable='~hide-button-interactable'
                 font-size='3.3'
                 preferred-width='18'
                 preferred-height='8'

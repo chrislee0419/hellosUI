@@ -63,7 +63,7 @@ namespace HUI.UI.Settings
                 if (_selectedSortMode == null)
                     return "Hide";
                 else
-                    return PluginConfig.Instance.Sort.HiddenSortModes.Contains(_selectedSortMode.SortMode.GetIdentifier()) ? "Unhide" : "Hide";
+                    return _selectedSortMode.Hidden ? "Unhide" : "Hide";
             }
         }
 
@@ -345,6 +345,7 @@ namespace HUI.UI.Settings
             if (IsCellSelected())
             {
                 _selectedSortMode.Hidden = !_selectedSortMode.Hidden;
+                NotifyPropertyChanged(nameof(HideButtonText));
                 NotifyPropertyChanged(nameof(AnyChanges));
             }
         }
