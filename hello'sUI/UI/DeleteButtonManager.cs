@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -135,7 +134,7 @@ namespace HUI.UI
         {
             base.Dispose();
 
-            if (_deleteButton?.gameObject != null)
+            if (_deleteButton != null && _deleteButton.gameObject != null)
                 Object.Destroy(_deleteButton.gameObject);
             if (_rootContainer != null)
                 Object.Destroy(_rootContainer);
