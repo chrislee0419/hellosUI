@@ -33,7 +33,8 @@
                    anchor-max-x='1' anchor-max-y='0'
                    pivot-x='0.5' pivot-y='0'
                    anchor-pos-x='0' anchor-pos-y='0'
-                   size-delta-x='0' size-delta-y='48'
+                   list-width='62'
+                   visible-cells='5'
                    cell-size='8'
                    clickable-cells='true'
                    select-cell='sort-mode-selected'>
