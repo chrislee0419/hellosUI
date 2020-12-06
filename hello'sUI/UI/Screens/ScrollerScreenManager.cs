@@ -165,7 +165,7 @@ namespace HUI.UI.Screens
         {
             base.Initialize();
 
-            // page buttons need to be refreshed on the next frame, since it isn't guaranteed that
+            // page buttons need to be refreshed on the end of the frame, since it isn't guaranteed that
             // the game's callback to change the targetPosition would happen before the refresh occurs
             _buttonListener = new UnityAction(() => CoroutineUtilities.StartDelayedAction(RefreshPageButtons));
 
@@ -191,28 +191,28 @@ namespace HUI.UI.Screens
 
             if (_levelCollectionDataFlowManager != null)
                 _levelCollectionDataFlowManager.LevelCollectionApplied -= OnLevelCollectionApplied;
+
+            if (_scroller != null)
+                _scroller.positionDidChangeEvent -= OnTableViewPositionChanged;
         }
 
         protected override void OnSinglePlayerLevelSelectionStarting(bool isSolo)
         {
             base.OnSinglePlayerLevelSelectionStarting(isSolo);
 
-            if (_scroller == null)
+            CoroutineUtilities.StartDelayedAction(delegate ()
             {
-                CoroutineUtilities.StartDelayedAction(RefreshPageButtons);
-                return;
-            }
+                _scroller = FieldAccessor<TableView, TableViewScroller>.Get(ref _levelsTableView, "scroller");
+                _scroller.positionDidChangeEvent += OnTableViewPositionChanged;
 
-            RefreshPageButtons();
+                RefreshPageButtons();
+            });
         }
 
         public void RefreshPageButtons()
         {
-            if (ScrollerExists())
-            {
-                DownButtonInteractable = _scroller.targetPosition < _scroller.scrollableSize - 0.01f;
-                UpButtonInteractable = _scroller.targetPosition > 0.01f;
-            }
+            DownButtonInteractable = _scroller.targetPosition < _scroller.scrollableSize - 0.01f;
+            UpButtonInteractable = _scroller.targetPosition > 0.01f;
         }
 
         private void OnLevelCollectionApplied(IEnumerable<IPreviewBeatmapLevel> levels)
@@ -222,18 +222,7 @@ namespace HUI.UI.Screens
             RandomButtonInteractable = levels.Count() > 0;
         }
 
-        private bool ScrollerExists()
-        {
-            // the scroller is lazy initialized
-            if (_scroller == null)
-            {
-                _scroller = FieldAccessor<TableView, TableViewScroller>.Get(ref _levelsTableView, "scroller");
-                if (_scroller == null)
-                    return false;
-            }
-
-            return true;
-        }
+        private void OnTableViewPositionChanged(TableViewScroller scroller, float position) => RefreshPageButtons();
 
         [UIAction("settings-button-clicked")]
         private void OnSettingsButtonClicked()
@@ -252,14 +241,11 @@ namespace HUI.UI.Screens
             if (newTargetPosition < 0f)
                 newTargetPosition = 0f;
 
-            if (ScrollerExists())
-            {
-                TargetPositionAccessor.Invoke(ref _scroller) = newTargetPosition;
-                _scroller.enabled = true;
+            TargetPositionAccessor.Invoke(ref _scroller) = newTargetPosition;
+            _scroller.enabled = true;
 
-                RefreshPageButtons();
-                _scroller.InvokeMethod("RefreshScrollBar");
-            }
+            RefreshPageButtons();
+            _scroller.RefreshScrollBar();
         }
 
         [UIAction("down-button-clicked")]
@@ -271,14 +257,11 @@ namespace HUI.UI.Screens
             if (newTargetPosition > maxPosition)
                 newTargetPosition = maxPosition;
 
-            if (ScrollerExists())
-            {
-                TargetPositionAccessor.Invoke(ref _scroller) = newTargetPosition;
-                _scroller.enabled = true;
+            TargetPositionAccessor.Invoke(ref _scroller) = newTargetPosition;
+            _scroller.enabled = true;
 
-                RefreshPageButtons();
-                _scroller.InvokeMethod("RefreshScrollBar");
-            }
+            RefreshPageButtons();
+            _scroller.RefreshScrollBar();
         }
 
         [UIAction("random-button-clicked")]

@@ -150,6 +150,7 @@
   <ItemGroup>
     <Compile Include="Converters\QuaternionConverter.cs" />
     <Compile Include="DataFlow\CustomBeatmapLevelPack.cs" />
+    <Compile Include="HarmonyPatches\TableViewScrollerHandleJoystickWasNotCenteredThisFramePatch.cs" />
     <Compile Include="HarmonyPatches\VRInputModuleProcessPatch.cs" />
     <Compile Include="Interfaces\ILevelCollectionModifier.cs" />
     <Compile Include="Installers\DataFlowInstaller.cs" />
