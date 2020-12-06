@@ -155,9 +155,16 @@ namespace HUI.DataFlow
         {
             _originalLevelCollection = levelCollection;
 
-            PluginConfig.Instance.LastLevelCategory = _levelFilteringNavigationController.selectedLevelCategory;
             if (levelCollection is IBeatmapLevelPack levelPack)
+            {
+                PluginConfig.Instance.LastLevelCategory = _levelFilteringNavigationController.selectedLevelCategory;
                 PluginConfig.Instance.LastLevelPackID = levelPack.packID;
+            }
+            else
+            {
+                PluginConfig.Instance.LastLevelCategory = SelectLevelCategoryViewController.LevelCategory.None;
+                PluginConfig.Instance.LastLevelPackID = null;
+            }
 
             ApplyCustomLevelCollectionDelayed();
 
