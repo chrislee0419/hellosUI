@@ -27,6 +27,8 @@ namespace HUI.Sort
         private ISortMode[] _builtInSortModes;
         private List<ISortMode> _externalSortModes;
 
+        private bool _isBaseGamePlaylist = false;
+
         [Inject]
         public SongSortManager(
             SortScreenManager sortScreenManager,
@@ -111,21 +113,20 @@ namespace HUI.Sort
 
         public void OnLevelCollectionSelected(IAnnotatedBeatmapLevelCollection annotatedBeatmaplevelCollection)
         {
-            // no action needed
+            _isBaseGamePlaylist = annotatedBeatmaplevelCollection.collectionName == null;
         }
 
         public bool ApplyModifications(IEnumerable<IPreviewBeatmapLevel> levelCollection, out IEnumerable<IPreviewBeatmapLevel> modifiedLevelCollection)
         {
-            if (IsDefaultSort)
-            {
-                modifiedLevelCollection = levelCollection;
-                return false;
-            }
-            else
-            {
-                modifiedLevelCollection = CurrentSortMode.SortSongs(levelCollection, SortAscending);
-                return true;
-            }
+            // reversed default sort for all songs and favorites playlists has to be partially done here,
+            // since the songs aren't actually in the expected order
+            // (expects alphabetical order, but the sorting was done in
+            // LevelCollectionTableView -> AlphabetScrollbarInfoBeatmapLevelHelper.CreateData)
+            if (CurrentSortMode == _defaultSortMode && !SortAscending && _isBaseGamePlaylist)
+                levelCollection = levelCollection.OrderBy(x => x.songName.ToUpperInvariant());
+
+            modifiedLevelCollection = CurrentSortMode.SortSongs(levelCollection, SortAscending);
+            return !IsDefaultSort;
         }
 
         private void RefreshSortModeList()
