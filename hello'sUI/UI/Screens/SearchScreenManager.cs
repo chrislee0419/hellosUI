@@ -14,11 +14,13 @@ using Object = UnityEngine.Object;
 
 namespace HUI.UI.Screens
 {
-    public class SearchScreenManager : ScreenManagerBase
+    public class SearchScreenManager : ModifiableScreenManagerBase
     {
         public event Action SearchButtonPressed;
         public event Action CancelButtonPressed;
 
+        public override string ScreenName => "Search Widget";
+        public override Graphic Background => throw new NotImplementedException();
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.SearchScreenView.bsml";
 
         public string SearchText

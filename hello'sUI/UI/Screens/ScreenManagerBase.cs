@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using VRUIControls;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.FloatingScreen;
+using HUI.Interfaces;
 using HUI.Utilities;
 using BSMLUtilities = BeatSaberMarkupLanguage.Utilities;
 using Object = UnityEngine.Object;
@@ -294,6 +296,37 @@ namespace HUI.UI.Screens
             Conceal,
             Expand,
             Contract
+        }
+    }
+
+    public abstract class ModifiableScreenManagerBase : ScreenManagerBase, IModifiableScreen
+    {
+        public abstract string ScreenName { get; }
+        public FloatingScreen Screen => _screen;
+        public abstract Graphic Background { get; }
+
+        private Vector3 _defaultScreenPosition;
+        private Quaternion _defaultScreenRotation;
+
+        public ModifiableScreenManagerBase(
+            MainMenuViewController mainMenuVC,
+            SoloFreePlayFlowCoordinator soloFC,
+            PartyFreePlayFlowCoordinator partyFC,
+            LevelCollectionNavigationController levelCollectionNC,
+            PhysicsRaycasterWithCache physicsRaycaster,
+            Vector2 screenSize,
+            Vector3 screenPosition,
+            Quaternion screenRotation)
+            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, screenSize, screenPosition, screenRotation)
+        {
+            _defaultScreenPosition = screenPosition;
+            _defaultScreenRotation = screenRotation;
+        }
+
+        public virtual void ResetPosition()
+        {
+            _screen.ScreenPosition = _defaultScreenPosition;
+            _screen.ScreenRotation = _defaultScreenRotation;
         }
     }
 }

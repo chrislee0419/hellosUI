@@ -5,6 +5,9 @@ namespace HUI.Interfaces
 {
     public interface ISortMode
     {
+        /// <summary>
+        /// Used to notify the sort manager when this sort mode's IsAvailable status changes.
+        /// </summary>
         event Action AvailabilityChanged;
 
         /// <summary>

@@ -16,7 +16,7 @@ using Object = UnityEngine.Object;
 
 namespace HUI.UI.Screens
 {
-    public class SearchKeyboardScreenManager : ScreenManagerBase
+    public class SearchKeyboardScreenManager : ModifiableScreenManagerBase
     {
         public event Action<char> KeyPressed;
         public event Action DeleteButtonPressed;
@@ -24,6 +24,8 @@ namespace HUI.UI.Screens
         public event Action<SuggestedWord> PredictionButtonPressed;
         public event Action SearchOptionChanged;
 
+        public override string ScreenName => "Search Keyboard";
+        public override Graphic Background => throw new NotImplementedException();
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.SearchKeyboardScreenView.bsml";
         protected override bool ShowScreenOnSinglePlayerLevelSelectionStarting => false;
 

@@ -14,12 +14,14 @@ using Object = UnityEngine.Object;
 
 namespace HUI.UI.Screens
 {
-    public class SortScreenManager : ScreenManagerBase
+    public class SortScreenManager : ModifiableScreenManagerBase
     {
         public event Action SortDirectionChanged;
         public event Action SortCancelled;
         public event Action<int> SortModeListCellSelected;
 
+        public override string ScreenName => "Sort Widget";
+        public override Graphic Background => throw new NotImplementedException();
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.SortScreenView.bsml";
 
         // necessary to prevent buttons/list from being interactable while hidden

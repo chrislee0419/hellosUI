@@ -4,7 +4,6 @@ using UnityEngine;
 using TMPro;
 using HMUI;
 using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.Parser;
 using HUI.Search;
 using HUI.Utilities;
 

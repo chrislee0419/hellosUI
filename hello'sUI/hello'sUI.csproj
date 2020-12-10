@@ -157,6 +157,7 @@
     <Compile Include="Installers\SearchInstaller.cs" />
     <Compile Include="Installers\SortModeInstaller.cs" />
     <Compile Include="DataFlow\LevelCollectionDataFlowManager.cs" />
+    <Compile Include="Interfaces\IModifiableScreen.cs" />
     <Compile Include="Search\Data\BKTree.cs" />
     <Compile Include="Search\Data\Trie.cs" />
     <Compile Include="Search\LaserPointerManager.cs" />

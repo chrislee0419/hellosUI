@@ -7,7 +7,6 @@ using HMUI;
 using VRUIControls;
 using IPA.Utilities;
 using BeatSaberMarkupLanguage.Attributes;
-using BS_Utils.Utilities;
 using HUI.UI.Components;
 using HUI.DataFlow;
 using HUI.Utilities;
@@ -15,8 +14,10 @@ using Random = System.Random;
 
 namespace HUI.UI.Screens
 {
-    public class ScrollerScreenManager : ScreenManagerBase
+    public class ScrollerScreenManager : ModifiableScreenManagerBase
     {
+        public override string ScreenName => "Level Scroller";
+        public override Graphic Background => throw new System.NotImplementedException();
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.ScrollerScreenView.bsml";
 
         private bool _upButtonInteractable = false;
