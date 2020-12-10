@@ -43,8 +43,8 @@ namespace HUI
             public virtual bool HideUnavailable { get; set; } = false;
 
             [NonNullable]
-            [UseConverter(typeof(ListConverter<string>))]
-            public virtual List<string> HiddenSortModes { get; set; } = new List<string>();
+            [UseConverter(typeof(ISetConverter<string>))]
+            public virtual HashSet<string> HiddenSortModes { get; set; } = new HashSet<string>();
 
             [NonNullable]
             [UseConverter(typeof(ListConverter<string>))]
