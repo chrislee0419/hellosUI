@@ -173,6 +173,7 @@ namespace HUI.UI.Screens
             _originalDownButton.onClick.AddListener(_buttonListener);
 
             _levelCollectionDataFlowManager.LevelCollectionApplied += OnLevelCollectionApplied;
+            _levelCollectionDataFlowManager.EmptyLevelCollectionApplied += OnEmptyLevelCollectionApplied;
         }
 
         public override void Dispose()
@@ -190,7 +191,10 @@ namespace HUI.UI.Screens
             }
 
             if (_levelCollectionDataFlowManager != null)
+            {
                 _levelCollectionDataFlowManager.LevelCollectionApplied -= OnLevelCollectionApplied;
+                _levelCollectionDataFlowManager.EmptyLevelCollectionApplied -= OnEmptyLevelCollectionApplied;
+            }
 
             if (_scroller != null)
                 _scroller.positionDidChangeEvent -= OnTableViewPositionChanged;
@@ -220,6 +224,13 @@ namespace HUI.UI.Screens
             RefreshPageButtons();
 
             RandomButtonInteractable = levels.Count() > 0;
+        }
+
+        private void OnEmptyLevelCollectionApplied()
+        {
+            DownButtonInteractable = false;
+            UpButtonInteractable = false;
+            RandomButtonInteractable = false;
         }
 
         private void OnTableViewPositionChanged(TableViewScroller scroller, float position) => RefreshPageButtons();

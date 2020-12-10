@@ -16,6 +16,7 @@ namespace HUI.DataFlow
     public class LevelCollectionDataFlowManager : SinglePlayerManagerBase
     {
         public event Action<IEnumerable<IPreviewBeatmapLevel>> LevelCollectionApplied;
+        public event Action EmptyLevelCollectionApplied;
 
         private IAnnotatedBeatmapLevelCollection _originalLevelCollection;
         private CustomBeatmapLevelPack _customLevelPack = new CustomBeatmapLevelPack();
@@ -270,7 +271,15 @@ namespace HUI.DataFlow
                 levelCollection = _originalLevelCollection.beatmapLevelCollection.beatmapLevels;
             }
 
-            if (!string.IsNullOrEmpty(PluginConfig.Instance.LastLevelID))
+
+            // when the list of levels is empty, the game just deactivates the levels TableView (doesn't clear the list either)
+            // which means it doesn't update the interactable state of this mod's fast page up/down buttons
+            // hence, we do update the interactable state here
+            if (!levelCollection.Any())
+            {
+                this.CallAndHandleAction(EmptyLevelCollectionApplied, nameof(EmptyLevelCollectionApplied));
+            }
+            else if (_selectLastLevel && !string.IsNullOrEmpty(PluginConfig.Instance.LastLevelID))
             {
                 string[] lastLevelData = PluginConfig.Instance.LastLevelID.Split(PluginConfig.LastLevelIDSeparatorArray, StringSplitOptions.None);
                 if (lastLevelData.Length == 3)
@@ -290,27 +299,7 @@ namespace HUI.DataFlow
                     }
 
                     if (lastLevel != null)
-                    {
-                        // essentially, a re-implementation of LevelCollectionTableView.SelectLevel
-                        // but without selecting the cell (and triggering the TableView didSelectCellWithIdx callback)
-                        // unless it is necessary
-                        var levelCollectionTableView = LevelCollectionTableViewAccessor(ref _levelCollectionViewController);
-
-                        // index should always be valid, since lastLevel comes from levelCollection
-                        int index = ShowLevelPackHeaderAccessor(ref levelCollectionTableView) ? 0 : -1;
-                        levelCollection.FirstOrDefault(delegate (IPreviewBeatmapLevel level)
-                        {
-                            ++index;
-                            return level == lastLevel;
-                        });
-
-                        SelectedRowAccessor(ref levelCollectionTableView) = index;
-
-                        var tableView = TableViewAccessor(ref levelCollectionTableView);
-                        tableView.ScrollToCellWithIdx(index, TableViewScroller.ScrollPositionType.Center, false);
-                        if (_selectLastLevel)
-                            tableView.SelectCellWithIdx(index, true);
-                    }
+                        _levelCollectionNavigationController.SelectLevel(lastLevel);
                 }
             }
 
