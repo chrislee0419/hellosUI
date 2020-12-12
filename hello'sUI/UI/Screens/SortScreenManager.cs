@@ -21,7 +21,6 @@ namespace HUI.UI.Screens
         public event Action<int> SortModeListCellSelected;
 
         public override string ScreenName => "Sort Widget";
-        public override Graphic Background => throw new NotImplementedException();
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.SortScreenView.bsml";
 
         // necessary to prevent buttons/list from being interactable while hidden

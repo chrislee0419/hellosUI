@@ -13,7 +13,7 @@ using BeatSaberMarkupLanguage.Parser;
 using HUI.Utilities;
 using BSMLUtilities = BeatSaberMarkupLanguage.Utilities;
 
-namespace HUI.UI
+namespace HUI.UI.Settings
 {
     public class SettingsModalManager : IInitializable, IDisposable
     {
@@ -31,6 +31,7 @@ namespace HUI.UI
 
         private LevelCollectionNavigationController _levelCollectionNavigationController;
 
+        private SettingsModalDispatcher _dispatcher;
         private List<ISettingsModalTab> _tabHosts;
 
         private BSMLParserParams _parserParams;
@@ -38,15 +39,21 @@ namespace HUI.UI
         [Inject]
         public SettingsModalManager(
             LevelCollectionNavigationController levelCollectionNavigationController,
+            SettingsModalDispatcher settingsModalDispatcher,
             List<ISettingsModalTab> settingsTabs)
         {
             _levelCollectionNavigationController = levelCollectionNavigationController;
+            _dispatcher = settingsModalDispatcher;
             _tabHosts = settingsTabs;
         }
 
         public void Initialize()
         {
             _levelCollectionNavigationController.didDeactivateEvent += OnLevelCollectionNavigationControllerDeactivated;
+
+            _dispatcher.ShowModalRequested += ShowModal;
+            _dispatcher.HideModalRequested += HideModal;
+            _dispatcher.ToggleModalVisibilityRequested += ToggleModalVisibility;
         }
 
         public void Dispose()
@@ -56,9 +63,16 @@ namespace HUI.UI
 
             if (_levelCollectionNavigationController != null)
                 _levelCollectionNavigationController.didDeactivateEvent -= OnLevelCollectionNavigationControllerDeactivated;
+
+            if (_dispatcher != null)
+            {
+                _dispatcher.ShowModalRequested -= ShowModal;
+                _dispatcher.HideModalRequested -= HideModal;
+                _dispatcher.ToggleModalVisibilityRequested -= ToggleModalVisibility;
+            }
         }
 
-        public void ShowModal()
+        private void ShowModal()
         {
             // late initialization of the modal view
             if (_parserParams == null)
@@ -78,7 +92,15 @@ namespace HUI.UI
         }
 
         [UIAction("close-clicked")]
-        public void HideModal() => _parserParams?.EmitEvent("hide-settings-modal");
+        private void HideModal() => _parserParams?.EmitEvent("hide-settings-modal");
+
+        private void ToggleModalVisibility()
+        {
+            if (IsVisible)
+                HideModal();
+            else
+                ShowModal();
+        }
 
         private void OnLevelCollectionNavigationControllerDeactivated(bool removedFromHierarchy, bool screenSystemDisabling)
         {

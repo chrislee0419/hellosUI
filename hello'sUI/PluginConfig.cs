@@ -8,6 +8,7 @@ using IPA.Config.Stores.Converters;
 using SiraUtil.Converters;
 using HUI.Converters;
 using HUI.UI.Screens;
+using HUI.UI.Settings;
 using HUI.Utilities;
 using static HUI.Search.WordSearchEngine;
 
@@ -31,6 +32,30 @@ namespace HUI
         public const string LastLevelIDSeparator = "|||;;;";
         public static readonly string[] LastLevelIDSeparatorArray = new string[] { LastLevelIDSeparator };
 
+        public virtual ScreensSettings Screens { get; set; } = new ScreensSettings();
+
+        public class ScreensSettings
+        {
+            [UseConverter(typeof(HexColorConverter))]
+            public virtual Color ScreenBackgroundColour { get; set; } = ScreenBackgroundColourDefaultValue;
+            public static readonly Color ScreenBackgroundColourDefaultValue = new Color(0.5f, 0.5f, 0.5f);
+
+            [NonNullable]
+            [UseConverter(typeof(DictionaryConverter<ScreensSettingsTab.BackgroundOpacity, EnumConverter<ScreensSettingsTab.BackgroundOpacity>>))]
+            public virtual Dictionary<string, ScreensSettingsTab.BackgroundOpacity> ScreenOpacities { get; set; } = new Dictionary<string, ScreensSettingsTab.BackgroundOpacity>()
+            {
+                { typeof(SearchKeyboardScreenManager).FullName, ScreensSettingsTab.BackgroundOpacity.Translucent }
+            };
+
+            [NonNullable]
+            [UseConverter(typeof(DictionaryConverter<Vector3, Vector3Converter>))]
+            public virtual Dictionary<string, Vector3> ScreenPositions { get; set; } = new Dictionary<string, Vector3>();
+
+            [NonNullable]
+            [UseConverter(typeof(DictionaryConverter<Quaternion, QuaternionConverter>))]
+            public virtual Dictionary<string, Quaternion> ScreenRotations { get; set; } = new Dictionary<string, Quaternion>();
+        }
+
         [NonNullable]
         public virtual SortSettings Sort { get; set; } = new SortSettings();
 
@@ -44,7 +69,7 @@ namespace HUI
 
             [NonNullable]
             [UseConverter(typeof(ISetConverter<string>))]
-            public virtual HashSet<string> HiddenSortModes { get; set; } = new HashSet<string>();
+            public virtual ISet<string> HiddenSortModes { get; set; } = new HashSet<string>();
 
             [NonNullable]
             [UseConverter(typeof(ListConverter<string>))]
@@ -56,12 +81,6 @@ namespace HUI
 
         public class SearchSettings
         {
-            [UseConverter(typeof(Vector3Converter))]
-            public virtual Vector3 KeyboardPosition { get; set; } = SearchKeyboardScreenManager.DefaultKeyboardPosition;
-
-            [UseConverter(typeof(QuaternionConverter))]
-            public virtual Quaternion KeyboardRotation { get; set; } = SearchKeyboardScreenManager.DefaultKeyboardRotation;
-
             public virtual bool CloseScreenOnSelectLevel { get; set; } = CloseScreenOnSelectLevelDefaultValue;
             public const bool CloseScreenOnSelectLevelDefaultValue = true;
 

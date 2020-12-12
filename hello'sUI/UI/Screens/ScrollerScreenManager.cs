@@ -8,6 +8,7 @@ using VRUIControls;
 using IPA.Utilities;
 using BeatSaberMarkupLanguage.Attributes;
 using HUI.UI.Components;
+using HUI.UI.Settings;
 using HUI.DataFlow;
 using HUI.Utilities;
 using Random = System.Random;
@@ -17,7 +18,6 @@ namespace HUI.UI.Screens
     public class ScrollerScreenManager : ModifiableScreenManagerBase
     {
         public override string ScreenName => "Level Scroller";
-        public override Graphic Background => throw new System.NotImplementedException();
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.ScrollerScreenView.bsml";
 
         private bool _upButtonInteractable = false;
@@ -83,7 +83,7 @@ namespace HUI.UI.Screens
         private TableViewScroller _scroller;
 
         private LevelCollectionDataFlowManager _levelCollectionDataFlowManager;
-        private SettingsModalManager _settingsModalManager;
+        private SettingsModalDispatcher _settingsModalDispatcher;
 
         private Random _rng = new Random();
 
@@ -98,11 +98,11 @@ namespace HUI.UI.Screens
             PhysicsRaycasterWithCache physicsRaycaster,
             LevelCollectionViewController levelCollectionViewController,
             LevelCollectionDataFlowManager levelCollectionDataFlowManager,
-            SettingsModalManager settingsModalManager)
+            SettingsModalDispatcher settingsModalDispatcher)
             : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(7f, 58f), new Vector3(-1.525f, 1.3f, 2.075f), Quaternion.Euler(0f, 330f, 0f))
         {
             _levelCollectionDataFlowManager = levelCollectionDataFlowManager;
-            _settingsModalManager = settingsModalManager;
+            _settingsModalDispatcher = settingsModalDispatcher;
 
             this._screen.name = "HUISongScrollerScreen";
 
@@ -237,13 +237,7 @@ namespace HUI.UI.Screens
         private void OnTableViewPositionChanged(TableViewScroller scroller, float position) => RefreshPageButtons();
 
         [UIAction("settings-button-clicked")]
-        private void OnSettingsButtonClicked()
-        {
-            if (_settingsModalManager.IsVisible)
-                _settingsModalManager.HideModal();
-            else
-                _settingsModalManager.ShowModal();
-        }
+        private void OnSettingsButtonClicked() => _settingsModalDispatcher.ToggleModalVisibility();
 
         [UIAction("up-button-clicked")]
         private void OnUpButtonClicked()

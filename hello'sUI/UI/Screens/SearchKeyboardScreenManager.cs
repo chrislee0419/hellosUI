@@ -25,7 +25,6 @@ namespace HUI.UI.Screens
         public event Action SearchOptionChanged;
 
         public override string ScreenName => "Search Keyboard";
-        public override Graphic Background => throw new NotImplementedException();
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.SearchKeyboardScreenView.bsml";
         protected override bool ShowScreenOnSinglePlayerLevelSelectionStarting => false;
 
@@ -65,7 +64,7 @@ namespace HUI.UI.Screens
 
         private PredictionBar _predictionBar;
         private LaserPointerManager _laserPointerManager;
-        private SettingsModalManager _settingsModalManager;
+        private SettingsModalDispatcher _settingsModalDispatcher;
         private SearchSettingsTab _searchSettingsTab;
 
         private List<CustomKeyboardKeyButton> _keys;
@@ -92,19 +91,16 @@ namespace HUI.UI.Screens
             LevelCollectionViewController levelCollectionViewController,
             UIKeyboardManager uiKeyboardManager,
             LaserPointerManager laserPointerManager,
-            SettingsModalManager settingsModalManager,
+            SettingsModalDispatcher settingsModalDispatcher,
             SearchSettingsTab searchSettingsTab)
             : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(ScreenWidth, 40f), DefaultKeyboardPosition, DefaultKeyboardRotation)
         {
             _levelCollectionViewController = levelCollectionViewController;
             _laserPointerManager = laserPointerManager;
-            _settingsModalManager = settingsModalManager;
+            _settingsModalDispatcher = settingsModalDispatcher;
             _searchSettingsTab = searchSettingsTab;
 
             this._screen.name = "HUISearchKeyboardScreen";
-            this._screen.HandleSide = FloatingScreen.Side.Bottom;
-            this._screen.ScreenPosition = PluginConfig.Instance.Search.KeyboardPosition;
-            this._screen.ScreenRotation = PluginConfig.Instance.Search.KeyboardRotation;
             this._animationHandler.UsePointerAnimations = false;
 
             // prediction bar creation
@@ -307,15 +303,8 @@ namespace HUI.UI.Screens
 
             _predictionBar.PredictionButtonPressed += OnPredictionButtonPressed;
 
-            _settingsModalManager.SettingsModalClosed += OnSettingsModalClosed;
-
             _searchSettingsTab.OffHandLaserPointerSettingChanged += OnOffHandLaserPointerSettingChanged;
             _searchSettingsTab.SearchOptionChanged += OnSearchOptionChanged;
-            _searchSettingsTab.AllowScreenMovementClicked += OnAllowScreenMovementClicked;
-            _searchSettingsTab.ResetScreenPositionClicked += OnResetScreenPositionClicked;
-            _searchSettingsTab.DefaultScreenPositionClicked += OnDefaultScreenPositionClicked;
-
-            _searchSettingsTab.ScreenPositionGetter = () => (_screen.ScreenPosition, _screen.ScreenRotation);
         }
 
         public override void Dispose()
@@ -328,18 +317,10 @@ namespace HUI.UI.Screens
             if (_predictionBar != null)
                 _predictionBar.PredictionButtonPressed -= OnPredictionButtonPressed;
 
-
-            _settingsModalManager.SettingsModalClosed -= OnSettingsModalClosed;
-
             if (_searchSettingsTab != null)
             {
                 _searchSettingsTab.OffHandLaserPointerSettingChanged -= OnOffHandLaserPointerSettingChanged;
                 _searchSettingsTab.SearchOptionChanged -= OnSearchOptionChanged;
-                _searchSettingsTab.AllowScreenMovementClicked -= OnAllowScreenMovementClicked;
-                _searchSettingsTab.ResetScreenPositionClicked -= OnResetScreenPositionClicked;
-                _searchSettingsTab.DefaultScreenPositionClicked -= OnDefaultScreenPositionClicked;
-
-                _searchSettingsTab.ScreenPositionGetter = null;
             }
         }
 
@@ -365,8 +346,6 @@ namespace HUI.UI.Screens
 
         public void HideScreen()
         {
-            OnAllowScreenMovementClicked(false);
-
             _animationHandler.PlayConcealAnimation();
 
             _laserPointerManager.Enabled = false;
@@ -384,17 +363,6 @@ namespace HUI.UI.Screens
         public void SetSuggestedWords(IEnumerable<SuggestedWord> suggestedWords)
         {
             _predictionBar.ClearAndSetPredictionButtons(suggestedWords);
-        }
-
-        private void OnAllowScreenMovementClicked(bool allowMovement)
-        {
-            _screen.ShowHandle = allowMovement;
-
-            if (!allowMovement)
-            {
-                PluginConfig.Instance.Search.KeyboardPosition = _screen.ScreenPosition;
-                PluginConfig.Instance.Search.KeyboardRotation = _screen.ScreenRotation;
-            }
         }
 
         private void OnLevelSelected(LevelCollectionViewController viewController, IPreviewBeatmapLevel level)
@@ -416,17 +384,6 @@ namespace HUI.UI.Screens
                 SetSuggestedWords(new SuggestedWord[] { new SuggestedWord(oldSearchText.ToLower(), SuggestionType.FuzzyMatch) });
         }
 
-        private void OnSettingsModalClosed()
-        {
-            if (_screen.ShowHandle)
-            {
-                _screen.ShowHandle = false;
-
-                _screen.ScreenPosition = PluginConfig.Instance.Search.KeyboardPosition;
-                _screen.ScreenRotation = PluginConfig.Instance.Search.KeyboardRotation;
-            }
-        }
-
         private void OnOffHandLaserPointerSettingChanged()
         {
             _laserPointerManager.Enabled = IsVisible && PluginConfig.Instance.Search.UseOffHandLaserPointer;
@@ -438,29 +395,8 @@ namespace HUI.UI.Screens
             SearchOptionChanged?.Invoke();
         }
 
-        private void OnResetScreenPositionClicked()
-        {
-            _screen.ScreenPosition = PluginConfig.Instance.Search.KeyboardPosition;
-            _screen.ScreenRotation = PluginConfig.Instance.Search.KeyboardRotation;
-        }
-
-        private void OnDefaultScreenPositionClicked()
-        {
-            PluginConfig.Instance.Search.KeyboardPosition = DefaultKeyboardPosition;
-            PluginConfig.Instance.Search.KeyboardRotation = DefaultKeyboardRotation;
-
-            _screen.ScreenPosition = DefaultKeyboardPosition;
-            _screen.ScreenRotation = DefaultKeyboardRotation;
-        }
-
         [UIAction("settings-clicked")]
-        private void OnSettingsClicked()
-        {
-            if (_settingsModalManager.IsVisible)
-                _settingsModalManager.HideModal();
-            else
-                _settingsModalManager.ShowModal();
-        }
+        private void OnSettingsClicked() => _settingsModalDispatcher.ToggleModalVisibility();
 
         [UIAction("close-clicked")]
         private void OnCloseClicked() => HideScreen();

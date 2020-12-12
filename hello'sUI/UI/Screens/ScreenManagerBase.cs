@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using VRUIControls;
 using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.FloatingScreen;
 using HUI.Interfaces;
 using HUI.Utilities;
@@ -303,7 +304,12 @@ namespace HUI.UI.Screens
     {
         public abstract string ScreenName { get; }
         public FloatingScreen Screen => _screen;
-        public abstract Graphic Background { get; }
+        public virtual Graphic Background => _background;
+
+#pragma warning disable CS0649
+        [UIComponent("background")]
+        protected Graphic _background;
+#pragma warning restore CS0649
 
         private Vector3 _defaultScreenPosition;
         private Quaternion _defaultScreenRotation;
@@ -321,6 +327,8 @@ namespace HUI.UI.Screens
         {
             _defaultScreenPosition = screenPosition;
             _defaultScreenRotation = screenRotation;
+
+            _screen.HandleSide = FloatingScreen.Side.Bottom;
         }
 
         public virtual void ResetPosition()

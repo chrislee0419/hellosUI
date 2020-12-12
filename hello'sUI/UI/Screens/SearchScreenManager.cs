@@ -20,7 +20,6 @@ namespace HUI.UI.Screens
         public event Action CancelButtonPressed;
 
         public override string ScreenName => "Search Widget";
-        public override Graphic Background => throw new NotImplementedException();
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.SearchScreenView.bsml";
 
         public string SearchText

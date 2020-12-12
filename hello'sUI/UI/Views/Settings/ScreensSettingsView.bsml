@@ -1,0 +1,86 @@
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+  <vertical pad='2'>
+    <color-setting text='Screen background colour'
+                   preferred-height='10'
+                   font-size='3.6'
+                   value='bg-colour-value'
+                   get-event='refresh-all-values'
+                   bind-value='true' />
+    <horizontal vertical-fit='Unconstrained'
+                pad='2'>
+      <list id='screen-list'
+            preferred-width='30' list-width='30'
+            data='data'
+            list-style='Simple'
+            cell-size='7'
+            visible-cells='7'
+            select-cell='cell-selected' />
+        
+      <vertical preferred-width='8'>
+        <vertical child-align='UpperCenter'
+                  child-expand-height='false'>
+          <icon-button id='list-up-button'
+                        icon='hellosUI:HUI.Assets.chevron.png'
+                        preferred-width='6'
+                        preferred-height='12'
+                        click-event='screen-list#PageUp' />
+        </vertical>
+        <vertical child-align='LowerCenter'
+                  child-expand-height='false'>
+          <icon-button id='list-down-button'
+                        icon='hellosUI:HUI.Assets.chevron.png'
+                        preferred-width='6'
+                        preferred-height='12'
+                        click-event='screen-list#PageDown' />
+        </vertical>
+      </vertical>
+
+      <vertical bg='round-rect-panel'
+                bg-color='#00000040'
+                preferred-width='50'
+                vertical-fit='Unconstrained'
+                child-align='UpperCenter'
+                child-expand-height='false'
+                spacing='5'
+                pad='2'>
+        <vertical spacing='1'
+                  child-expand-height='false'>
+          <text text='Set background opacity'
+                italics='true'
+                font-size='3.4'
+                font-align='Center' />
+          <list-setting text=''
+                        interactable='~bg-interactable'
+                        hover-hint='Use an opaque, coloured background for the screen'
+                        preferred-width='40'
+                        preferred-height='6'
+                        value='bg-opacity-value'
+                        options='bg-opacity-options'
+                        get-event='refresh-all-values'
+                        bind-value='true'
+                        apply-on-change='true' />
+        </vertical>
+        <vertical spacing='2'
+                  child-expand-height='false'>
+          <bool-setting text='Allow repositioning'
+                        interactable='~screen-interactable'
+                        hover-hint='Show the repositioning bar, allowing the screen to be moved'
+                        preferred-width='44'
+                        preferred-height='6'
+                        font-size='3.4'
+                        value='enable-movement-value'
+                        get-event='refresh-all-values'
+                        bind-value='true'
+                        apply-on-change='true' />
+          <button text='Reset to Default Position'
+                  interactable='~screen-interactable'
+                  preferred-width='40'
+                  preferred-height='8'
+                  font-size='3.2'
+                  on-click='reset-button-clicked' />
+        </vertical>
+      </vertical>
+    </horizontal>
+  </vertical>
+</bg>

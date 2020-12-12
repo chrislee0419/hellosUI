@@ -56,15 +56,6 @@
                 vertical-fit='Unconstrained'
                 spacing='1.5'
                 pad='2'>
-      <!--<scroll-view id='search-settings-container'
-                   anchor-min-x='0' anchor-min-y='0'
-                   anchor-max-x='1' anchor-max-y='1'
-                   size-delta-x='0' size-delta-y='0'
-                   anchor-pos-x='0' anchor-pos-y='0'
-                   ignore-layout='true'
-                   reserve-button-space='true'
-                   pad='2'
-                   spacing='0'>-->
         <bool-setting text='Strip symbols from song details'
                       hover-hint='Ignore all non-alphanumeric characters when searching through the song fields'
                       preferred-width='68'
@@ -117,106 +108,6 @@
                         get-event='refresh-all-values'
                         apply-on-change='true' />
         </vertical>
-      <!--</scroll-view>-->
-      </vertical>
-    </tab>
-
-    <tab tags='search-settings-tab' tab-name='Screen Position'>
-      <vertical anchor-min-x='0' anchor-min-y='0'
-                anchor-max-x='1' anchor-max-y='1'
-                size-delta-x='0' size-delta-y='0'
-                anchor-pos-x='0' anchor-pos-y='0'
-                spacing='1'>
-        <!-- screen position -->
-        <vertical child-align='MiddleLeft'>
-          <text text='Screen Position'
-                font-size='4.2'
-                align='Center'
-                underlined='true' />
-          <horizontal spacing='5'>
-            <horizontal spacing='1.5'>
-              <text text='X'
-                    font-size='4'
-                    font-color='#FFCCCC'
-                    align='Left'/>
-              <text id='screen-pos-x-text'
-                    font-size='3.8'
-                    font-color='#FFFFFF80'
-                    align='Right' />
-            </horizontal>
-            <horizontal spacing='1.5'>
-              <text text='Y'
-                    font-size='4'
-                    font-color='#CCFFCC'
-                    align='Left'/>
-              <text id='screen-pos-y-text'
-                    font-size='3.8'
-                    font-color='#FFFFFF80'
-                    align='Right' />
-            </horizontal>
-            <horizontal spacing='1.5'>
-              <text text='Z'
-                    font-size='4'
-                    font-color='#CCCCFF'
-                    align='Left'/>
-              <text id='screen-pos-z-text'
-                    font-size='3.8'
-                    font-color='#FFFFFF80'
-                    align='Right' />
-            </horizontal>
-          </horizontal>
-        </vertical>
-
-        <!-- screen rotation -->
-        <vertical child-align='MiddleLeft'>
-          <text text='Screen Rotation'
-                font-size='4.2'
-                align='Center'
-                underlined='true' />
-          <horizontal spacing='5'>
-            <horizontal spacing='1.5'>
-              <text text='X'
-                    font-size='4'
-                    font-color='#FFCCCC'
-                    align='Left'/>
-              <text id='screen-rot-x-text'
-                    font-size='3.8'
-                    font-color='#FFFFFF80'
-                    align='Right' />
-            </horizontal>
-            <horizontal spacing='1.5'>
-              <text text='Y'
-                    font-size='4'
-                    font-color='#CCFFCC'
-                    align='Left'/>
-              <text id='screen-rot-y-text'
-                    font-size='3.8'
-                    font-color='#FFFFFF80'
-                    align='Right' />
-            </horizontal>
-            <horizontal spacing='1.5'>
-              <text text='Z'
-                    font-size='4'
-                    font-color='#CCCCFF'
-                    align='Left'/>
-              <text id='screen-rot-z-text'
-                    font-size='3.8'
-                    font-color='#FFFFFF80'
-                    align='Right' />
-            </horizontal>
-          </horizontal>
-        </vertical>
-
-        <!-- buttons -->
-        <horizontal child-align='MiddleCenter'
-                    spacing='2'>
-          <button text='~allow-screen-movement-button-text'
-                  font-size='3.8'
-                  on-click='allow-screen-movement-clicked' />
-          <button text='~set-default-screen-position-button-text'
-                  font-size='3.8'
-                  on-click='reset-screen-position-clicked' />
-        </horizontal>
       </vertical>
     </tab>
   </bg>

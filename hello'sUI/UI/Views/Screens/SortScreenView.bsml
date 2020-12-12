@@ -3,8 +3,8 @@
     anchor-min-x='0' anchor-min-y='0'
     anchor-max-x='1' anchor-max-y='1'
     anchor-pos-x='0' anchor-pos-y='0'
-    bg='round-rect-panel'
-    bg-color='#00000000'>
+    id='background'
+    bg='round-rect-panel'>
   <!-- top buttons -->
   <icon-button id='sort-direction-button'
                anchor-min-x='0' anchor-min-y='1'

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using TMPro;
 using HMUI;
@@ -14,10 +13,6 @@ namespace HUI.UI.Settings
         public event Action OffHandLaserPointerSettingChanged;
         public event Action SearchOptionChanged;
         public event Action<bool> AllowScreenMovementClicked;
-        public event Action ResetScreenPositionClicked;
-        public event Action DefaultScreenPositionClicked;
-
-        public Func<(Vector3 position, Quaternion rotation)> ScreenPositionGetter { private get; set; }
 
         public override string TabName => "Search";
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Settings.SearchSettingsView.bsml";
@@ -205,74 +200,9 @@ namespace HUI.UI.Settings
             }
         }
 
-#pragma warning disable CS0649
-        [UIComponent("screen-pos-x-text")]
-        private TextMeshProUGUI _screenPosXText;
-        [UIComponent("screen-pos-y-text")]
-        private TextMeshProUGUI _screenPosYText;
-        [UIComponent("screen-pos-z-text")]
-        private TextMeshProUGUI _screenPosZText;
-        [UIComponent("screen-rot-x-text")]
-        private TextMeshProUGUI _screenRotXText;
-        [UIComponent("screen-rot-y-text")]
-        private TextMeshProUGUI _screenRotYText;
-        [UIComponent("screen-rot-z-text")]
-        private TextMeshProUGUI _screenRotZText;
-#pragma warning restore CS0649
-
-        private static readonly WaitForSeconds ScreenPositionTextUpdateTime = new WaitForSeconds(0.2f);
-
-        private const string ScreenPositionStringFormat = "F3";
-        private const string ScreenRotationStringFormat = "F1";
-
-        public override void SetupView()
-        {
-            base.SetupView();
-
-            UpdateScreenPositionText(true);
-        }
-
         public override void OnModalClosed()
         {
             AllowScreenMovement = false;
-        }
-
-        private IEnumerator UpdateScreenPositionTextCoroutine()
-        {
-            while (AllowScreenMovement)
-            {
-                UpdateScreenPositionText(false);
-
-                yield return ScreenPositionTextUpdateTime;
-            }
-
-            yield return null;
-
-            UpdateScreenPositionText(true);
-        }
-
-        private void UpdateScreenPositionText(bool useStored)
-        {
-            if (useStored)
-            {
-                _screenPosXText.text = PluginConfig.Instance.Search.KeyboardPosition.x.ToString(ScreenPositionStringFormat);
-                _screenPosYText.text = PluginConfig.Instance.Search.KeyboardPosition.y.ToString(ScreenPositionStringFormat);
-                _screenPosZText.text = PluginConfig.Instance.Search.KeyboardPosition.z.ToString(ScreenPositionStringFormat);
-                _screenRotXText.text = PluginConfig.Instance.Search.KeyboardRotation.eulerAngles.x.ToString(ScreenRotationStringFormat);
-                _screenRotYText.text = PluginConfig.Instance.Search.KeyboardRotation.eulerAngles.y.ToString(ScreenRotationStringFormat);
-                _screenRotZText.text = PluginConfig.Instance.Search.KeyboardRotation.eulerAngles.z.ToString(ScreenRotationStringFormat);
-            }
-            else
-            {
-                (Vector3 screenPos, Quaternion screenRot) = ScreenPositionGetter?.Invoke() ?? (default, default);
-
-                _screenPosXText.text = screenPos.x.ToString(ScreenPositionStringFormat);
-                _screenPosYText.text = screenPos.y.ToString(ScreenPositionStringFormat);
-                _screenPosZText.text = screenPos.z.ToString(ScreenPositionStringFormat);
-                _screenRotXText.text = screenRot.eulerAngles.x.ToString(ScreenRotationStringFormat);
-                _screenRotYText.text = screenRot.eulerAngles.y.ToString(ScreenRotationStringFormat);
-                _screenRotZText.text = screenRot.eulerAngles.z.ToString(ScreenRotationStringFormat);
-            }
         }
 
         [UIAction("tab-selected")]
@@ -281,31 +211,6 @@ namespace HUI.UI.Settings
             AllowScreenMovement = false;
 
             this.CallAndHandleAction(AllowScreenMovementClicked, nameof(AllowScreenMovementClicked), false);
-        }
-
-        [UIAction("allow-screen-movement-clicked")]
-        private void OnAllowScreenMovementClicked()
-        {
-            AllowScreenMovement = !AllowScreenMovement;
-
-            SharedCoroutineStarter.instance.StartCoroutine(UpdateScreenPositionTextCoroutine());
-
-            this.CallAndHandleAction(AllowScreenMovementClicked, nameof(AllowScreenMovementClicked), AllowScreenMovement);
-        }
-
-        [UIAction("reset-screen-position-clicked")]
-        private void OnResetScreenPositionClicked()
-        {
-            if (AllowScreenMovement)
-            {
-                this.CallAndHandleAction(ResetScreenPositionClicked, nameof(ResetScreenPositionClicked));
-            }
-            else
-            {
-                this.CallAndHandleAction(DefaultScreenPositionClicked, nameof(DefaultScreenPositionClicked));
-
-                UpdateScreenPositionText(true);
-            }
         }
     }
 }

@@ -246,7 +246,7 @@ namespace HUI.UI.Settings
                 return;
             }
 
-            HashSet<string> hiddenSortModes = PluginConfig.Instance.Sort.HiddenSortModes;
+            ISet<string> hiddenSortModes = PluginConfig.Instance.Sort.HiddenSortModes;
             List<string> sortModeOrdering = PluginConfig.Instance.Sort.SortModeOrdering;
 
             hiddenSortModes.Clear();
