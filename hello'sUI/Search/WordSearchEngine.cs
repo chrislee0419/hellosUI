@@ -144,61 +144,24 @@ namespace HUI.Search
         /// <returns>True if the song contains all the words in the query, otherwise false.</returns>
         private bool CheckSong(IPreviewBeatmapLevel level, bool stripSymbols, bool combineSingleLetterSequences, SearchableSongFields songFields, IEnumerable<string> queryWords)
         {
-            string songName;
+            StringBuilder songName;
 
             if (combineSingleLetterSequences)
             {
-                // combine contiguous single letter 'word' sequences in the title each into one word
-                // should only done when Split Words option is enabled
-                StringBuilder songNameSB = new StringBuilder(level.songName.Length);
-                StringBuilder constructedWordSB = new StringBuilder(level.songName.Length);
-
-                foreach (string word in level.songName.Split(StringUtilities.SpaceCharArray, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    if (word.Length > 1 || !char.IsLetterOrDigit(word[0]))
-                    {
-                        // multi-letter word or special character
-                        if (constructedWordSB.Length > 0)
-                        {
-                            if (songNameSB.Length > 0)
-                                songNameSB.Append(' ');
-
-                            songNameSB.Append(constructedWordSB.ToString());
-                            constructedWordSB.Clear();
-                        }
-
-                        if (songNameSB.Length > 0)
-                            songNameSB.Append(' ');
-
-                        songNameSB.Append(word);
-
-                    }
-                    else
-                    {
-                        // single letter 'word'
-                        constructedWordSB.Append(word);
-                    }
-                }
-
-                // add last constructed word if it exists
-                if (constructedWordSB.Length > 0)
-                {
-                    if (songNameSB.Length > 0)
-                        songNameSB.Append(' ');
-
-                    songNameSB.Append(constructedWordSB.ToString());
-                }
-
-                songName = songNameSB.ToString();
+                songName = CombineSingleLetterSequences(level.songName).Append(' ');
+                if (!string.IsNullOrWhiteSpace(level.songSubName))
+                    songName.Append(CombineSingleLetterSequences(level.songSubName)).Append(' ');
             }
             else
             {
-                songName = level.songName;
+                songName = new StringBuilder(level.songName).Append(' ');
+                if (!string.IsNullOrWhiteSpace(level.songSubName))
+                    songName.Append(CombineSingleLetterSequences(level.songSubName)).Append(' ');
             }
 
             StringBuilder fieldsSB = new StringBuilder();
             if ((songFields & SearchableSongFields.SongName) != 0)
-                fieldsSB.Append(songName).Append(' ');
+                fieldsSB.Append(songName);
             if ((songFields & SearchableSongFields.SongAuthor) != 0)
                 fieldsSB.Append(level.songAuthorName).Append(' ');
             if ((songFields & SearchableSongFields.LevelAuthor) != 0)
@@ -225,6 +188,52 @@ namespace HUI.Search
             }
 
             return true;
+        }
+
+        private StringBuilder CombineSingleLetterSequences(string str)
+        {
+            // combine contiguous single letter 'word' sequences in the title each into one word
+            // should only done when Split Words option is enabled
+            StringBuilder sb = new StringBuilder(str.Length);
+            StringBuilder constructedWordSB = new StringBuilder(str.Length);
+
+            foreach (string word in str.Split(StringUtilities.SpaceCharArray, StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (word.Length > 1 || !char.IsLetterOrDigit(word[0]))
+                {
+                    // multi-letter word or special character
+                    if (constructedWordSB.Length > 0)
+                    {
+                        if (sb.Length > 0)
+                            sb.Append(' ');
+
+                        sb.Append(constructedWordSB);
+                        constructedWordSB.Clear();
+                    }
+
+                    if (sb.Length > 0)
+                        sb.Append(' ');
+
+                    sb.Append(word);
+
+                }
+                else
+                {
+                    // single letter 'word'
+                    constructedWordSB.Append(word);
+                }
+            }
+
+            // add last constructed word if it exists
+            if (constructedWordSB.Length > 0)
+            {
+                if (sb.Length > 0)
+                    sb.Append(' ');
+
+                sb.Append(constructedWordSB);
+            }
+
+            return sb;
         }
 
         [Flags]
