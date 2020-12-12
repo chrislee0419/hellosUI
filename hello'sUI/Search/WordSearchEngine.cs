@@ -144,24 +144,27 @@ namespace HUI.Search
         /// <returns>True if the song contains all the words in the query, otherwise false.</returns>
         private bool CheckSong(IPreviewBeatmapLevel level, bool stripSymbols, bool combineSingleLetterSequences, SearchableSongFields songFields, IEnumerable<string> queryWords)
         {
-            StringBuilder songName;
-
-            if (combineSingleLetterSequences)
-            {
-                songName = CombineSingleLetterSequences(level.songName).Append(' ');
-                if (!string.IsNullOrWhiteSpace(level.songSubName))
-                    songName.Append(CombineSingleLetterSequences(level.songSubName)).Append(' ');
-            }
-            else
-            {
-                songName = new StringBuilder(level.songName).Append(' ');
-                if (!string.IsNullOrWhiteSpace(level.songSubName))
-                    songName.Append(CombineSingleLetterSequences(level.songSubName)).Append(' ');
-            }
-
             StringBuilder fieldsSB = new StringBuilder();
             if ((songFields & SearchableSongFields.SongName) != 0)
+            {
+                StringBuilder songName;
+
+                if (combineSingleLetterSequences)
+                {
+                    songName = CombineSingleLetterSequences(level.songName).Append(' ');
+                    if (!string.IsNullOrWhiteSpace(level.songSubName))
+                        songName.Append(CombineSingleLetterSequences(level.songSubName)).Append(' ');
+                }
+                else
+                {
+                    songName = new StringBuilder(level.songName).Append(' ');
+                    if (!string.IsNullOrWhiteSpace(level.songSubName))
+                        songName.Append(CombineSingleLetterSequences(level.songSubName)).Append(' ');
+                }
+
                 fieldsSB.Append(songName);
+            }
+
             if ((songFields & SearchableSongFields.SongAuthor) != 0)
                 fieldsSB.Append(level.songAuthorName).Append(' ');
             if ((songFields & SearchableSongFields.LevelAuthor) != 0)
