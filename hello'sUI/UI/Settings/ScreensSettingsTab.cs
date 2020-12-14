@@ -153,7 +153,7 @@ namespace HUI.UI.Settings
             btnAnims.PressedBGColour = ListMoveColour;
         }
 
-        public override void OnModalClosed()
+        public override void OnTabHidden()
         {
             if (_selectedScreen != null)
                 _selectedScreen.Screen.ShowHandle = false;

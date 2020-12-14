@@ -200,7 +200,7 @@ namespace HUI.UI.Settings
             }
         }
 
-        public override void OnModalClosed()
+        public override void OnTabHidden()
         {
             AllowScreenMovement = false;
         }

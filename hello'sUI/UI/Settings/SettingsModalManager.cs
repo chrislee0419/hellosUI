@@ -33,6 +33,7 @@ namespace HUI.UI.Settings
 
         private SettingsModalDispatcher _dispatcher;
         private List<ISettingsModalTab> _tabHosts;
+        private int _lastTabIndex = 0;
 
         private BSMLParserParams _parserParams;
 
@@ -109,10 +110,16 @@ namespace HUI.UI.Settings
 
         private void OnSettingsModalHidden()
         {
-            foreach (ISettingsModalTab tabHost in _tabHosts)
-                this.CallAndHandleAction(tabHost.OnModalClosed, nameof(ISettingsModalTab.OnModalClosed));
+            this.CallAndHandleAction(_tabHosts[_lastTabIndex].OnTabHidden, nameof(ISettingsModalTab.OnTabHidden));
 
             this.CallAndHandleAction(SettingsModalClosed, nameof(SettingsModalClosed));
+        }
+
+        [UIAction("tab-selected")]
+        private void OnTabSelected(SegmentedControl segmentedControl, int index)
+        {
+            _tabHosts[_lastTabIndex].OnTabHidden();
+            _lastTabIndex = index;
         }
 
         public interface ISettingsModalTab
@@ -120,7 +127,7 @@ namespace HUI.UI.Settings
             string TabName { get; }
 
             void SetupView();
-            void OnModalClosed();
+            void OnTabHidden();
         }
 
         public abstract class SettingsModalTabBase : ISettingsModalTab, INotifyPropertyChanged
@@ -153,7 +160,7 @@ namespace HUI.UI.Settings
                     PluginConfig.Instance.ConfigReloaded -= OnPluginConfigReloaded;
             }
 
-            public virtual void OnModalClosed()
+            public virtual void OnTabHidden()
             { }
 
             protected virtual void OnPluginConfigReloaded()

@@ -17,7 +17,8 @@
                    default-color='#777777'
                    highlight-color='#FFAAAA' />
   <tab-selector tab-tag='settings-tab'
-                anchor-pos-x='0' anchor-pos-y='-1.5' />
+                anchor-pos-x='0' anchor-pos-y='-1.5'
+                select-cell='tab-selected' />
 
   <bg anchor-min-x='0' anchor-min-y='0'
       anchor-max-x='1' anchor-max-y='1'
