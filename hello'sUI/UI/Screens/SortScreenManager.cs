@@ -149,13 +149,8 @@ namespace HUI.UI.Screens
             var icon = _cancelButton.transform.Find("Content/Icon").GetComponent<ImageView>();
             icon.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.refresh.png");
 
-            Sprite chevronSprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.chevron.png");
             icon = _pageUpButton.transform.Find("Content/Icon").GetComponent<ImageView>();
-            icon.sprite = chevronSprite;
             icon.rectTransform.Rotate(0f, 0f, 180f, Space.Self);
-
-            icon = _pageDownButton.transform.Find("Content/Icon").GetComponent<ImageView>();
-            icon.sprite = chevronSprite;
 
             Object.Destroy(_sortDirectionButton.GetComponent<ContentSizeFitter>());
             Object.Destroy(_cancelButton.GetComponent<ContentSizeFitter>());
