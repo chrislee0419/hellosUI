@@ -6,7 +6,6 @@ using UnityEngine.UI;
 using HMUI;
 using VRUIControls;
 using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.FloatingScreen;
 using HUI.Search;
 using HUI.UI.Components;
 using HUI.UI.Settings;
@@ -28,7 +27,7 @@ namespace HUI.UI.Screens
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.SearchKeyboardScreenView.bsml";
         protected override bool ShowScreenOnSinglePlayerLevelSelectionStarting => false;
 
-        public bool IsVisible => _screen.gameObject.activeSelf;
+        public bool IsVisible => this._screen.gameObject.activeSelf;
 
         private string _searchText = DefaultSearchText;
         [UIValue("search-text")]
@@ -339,14 +338,14 @@ namespace HUI.UI.Screens
 
         public void ShowScreen()
         {
-            _animationHandler.PlayRevealAnimation();
+            this._animationHandler.PlayRevealAnimation();
 
             _laserPointerManager.Enabled = PluginConfig.Instance.Search.UseOffHandLaserPointer;
         }
 
         public void HideScreen()
         {
-            _animationHandler.PlayConcealAnimation();
+            this._animationHandler.PlayConcealAnimation();
 
             _laserPointerManager.Enabled = false;
         }
