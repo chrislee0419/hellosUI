@@ -28,6 +28,7 @@ namespace HUI.Installers
             Container.BindInterfacesAndSelfTo<DeleteButtonManager>().AsSingle();
 
             Container.BindInterfacesAndSelfTo<SortScreenManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<SortListScreenManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<SearchScreenManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<SearchKeyboardScreenManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<ScrollerScreenManager>().AsSingle();

@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using VRUIControls;
 using HMUI;
 using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.Components;
 using BS_Utils.Utilities;
 using HUI.UI.Components;
-using HUI.Interfaces;
 using HUI.Utilities;
 using Object = UnityEngine.Object;
 
@@ -16,28 +13,12 @@ namespace HUI.UI.Screens
 {
     public class SortScreenManager : ModifiableScreenManagerBase
     {
+        public event Action SortButtonPressed;
         public event Action SortDirectionChanged;
         public event Action SortCancelled;
-        public event Action<int> SortModeListCellSelected;
 
         public override string ScreenName => "Sort Widget";
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.SortScreenView.bsml";
-
-        // necessary to prevent buttons/list from being interactable while hidden
-        private bool _listBGActive = false;
-        [UIValue("list-bg-active")]
-        public bool ListBGActive
-        {
-            get => _listBGActive;
-            set
-            {
-                if (_listBGActive == value)
-                    return;
-
-                _listBGActive = value;
-                NotifyPropertyChanged();
-            }
-        }
 
         private string _sortText = "Default";
         [UIValue("sort-text")]
@@ -89,21 +70,12 @@ namespace HUI.UI.Screens
         private Button _cancelButton;
         [UIComponent("sort-button")]
         private Button _sortButton;
-
-        [UIComponent("sort-mode-list")]
-        private CustomListTableData _sortModeList;
-
-        [UIObject("page-up-button")]
-        private GameObject _pageUpButton;
-        [UIObject("page-down-button")]
-        private GameObject _pageDownButton;
 #pragma warning restore CS0649
 
         private ImageView _sortIcon;
         private CustomIconButtonAnimations _sortDirectionButtonAnimations;
 
         private static readonly Vector2 DefaultSize = new Vector2(52f, 10f);
-        private static readonly Vector2 ExpandedSize = new Vector2(52f, 54f);
 
         private static Sprite AscendingIconSprite;
         private static Sprite DescendingIconSprite;
@@ -116,26 +88,11 @@ namespace HUI.UI.Screens
             PartyFreePlayFlowCoordinator partyFC,
             LevelCollectionNavigationController levelCollectionNC,
             PhysicsRaycasterWithCache physicsRaycaster)
-            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, DefaultSize, new Vector3(-1.1f, 0.5f, 2.3f), Quaternion.Euler(65f, 345f, 0f))
+            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, DefaultSize, new Vector3(-1.05f, 0.45f, 2.235f), Quaternion.Euler(65f, 345f, 0f))
         {
             this._screen.name = "HUISortScreen";
 
-            this._animationHandler.ExpandedSize = ExpandedSize;
             this._animationHandler.UsePointerAnimations = false;
-            this._animationHandler.AnimationFinished += OnAnimationHandlerAnimationFinished;
-
-            // BSMLList needs a VRGraphicRaycaster, so we need to fix the PhysicsRaycaster,
-            // just like what is done for FloatingScreen in ScreenManagerBase
-            _sortModeList.gameObject.FixRaycaster(physicsRaycaster);
-
-            // move pivot so the screen expands downwards
-            var rt = this._screen.transform as RectTransform;
-            rt.anchorMin = new Vector2(0.5f, 1f);
-            rt.anchorMax = new Vector2(0.5f, 1f);
-            rt.pivot = new Vector2(0.5f, 1f);
-
-            var curvedCanvasSettings = _screen.GetComponent<CurvedCanvasSettings>();
-            curvedCanvasSettings.SetRadius(0);
 
             // icons
             if (AscendingIconSprite == null)
@@ -149,17 +106,9 @@ namespace HUI.UI.Screens
             var icon = _cancelButton.transform.Find("Content/Icon").GetComponent<ImageView>();
             icon.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.refresh.png");
 
-            icon = _pageUpButton.transform.Find("Content/Icon").GetComponent<ImageView>();
-            icon.rectTransform.Rotate(0f, 0f, 180f, Space.Self);
-
             Object.Destroy(_sortDirectionButton.GetComponent<ContentSizeFitter>());
             Object.Destroy(_cancelButton.GetComponent<ContentSizeFitter>());
             Object.Destroy(_sortButton.GetComponent<ContentSizeFitter>());
-            Object.Destroy(_pageUpButton.GetComponent<ContentSizeFitter>());
-            Object.Destroy(_pageDownButton.GetComponent<ContentSizeFitter>());
-
-            Object.Destroy(_pageUpButton.transform.Find("Underline").gameObject);
-            Object.Destroy(_pageDownButton.transform.Find("Underline").gameObject);
 
             // remove skew
             _sortDirectionButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
@@ -171,15 +120,10 @@ namespace HUI.UI.Screens
             _sortButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
             _sortButton.transform.Find("Underline").GetComponent<ImageView>().SetSkew(0f);
 
-            _pageUpButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
-            _pageDownButton.transform.Find("BG").GetComponent<ImageView>().SetSkew(0f);
-
             // custom animations
             Object.Destroy(_sortDirectionButton.GetComponent<ButtonStaticAnimations>());
             Object.Destroy(_cancelButton.GetComponent<ButtonStaticAnimations>());
             Object.Destroy(_sortButton.GetComponent<ButtonStaticAnimations>());
-            Object.Destroy(_pageUpButton.GetComponent<ButtonStaticAnimations>());
-            Object.Destroy(_pageDownButton.GetComponent<ButtonStaticAnimations>());
 
             _sortDirectionButtonAnimations = _sortDirectionButton.gameObject.AddComponent<CustomIconButtonAnimations>();
             _sortDirectionButtonAnimations.NormalIconColour = Color.white;
@@ -194,16 +138,6 @@ namespace HUI.UI.Screens
             iconBtnAnims.PressedBGColour = Color.red;
             iconBtnAnims.HighlightedLocalScale = new Vector3(1.2f, 1.2f, 1.2f);
 
-            iconBtnAnims = _pageUpButton.gameObject.AddComponent<CustomIconButtonAnimations>();
-            iconBtnAnims.HighlightedBGColour = new Color(1f, 0.375f, 0f);
-            iconBtnAnims.PressedBGColour = new Color(1f, 0.375f, 0f);
-            iconBtnAnims.HighlightedLocalScale = new Vector3(1.2f, 1.2f, 1.2f);
-
-            iconBtnAnims = _pageDownButton.gameObject.AddComponent<CustomIconButtonAnimations>();
-            iconBtnAnims.HighlightedBGColour = new Color(1f, 0.375f, 0f);
-            iconBtnAnims.PressedBGColour = new Color(1f, 0.375f, 0f);
-            iconBtnAnims.HighlightedLocalScale = new Vector3(1.2f, 1.2f, 1.2f);
-
             Color sortButtonBGColour = new Color(0.145f, 0.443f, 1f);
             var btnAnims = _sortButton.gameObject.AddComponent<CustomButtonAnimations>();
             btnAnims.HighlightedBGColour = sortButtonBGColour;
@@ -215,82 +149,24 @@ namespace HUI.UI.Screens
 
             slg = _cancelButton.transform.Find("Content").GetComponent<StackLayoutGroup>();
             slg.padding = new RectOffset(0, 0, 2, 2);
-
-            slg = _pageUpButton.transform.Find("Content").GetComponent<StackLayoutGroup>();
-            slg.padding = new RectOffset(0, 0, 1, 1);
-
-            slg = _pageDownButton.transform.Find("Content").GetComponent<StackLayoutGroup>();
-            slg.padding = new RectOffset(0, 0, 1, 1);
-        }
-
-        private void OnAnimationHandlerAnimationFinished(AnimationType animationType)
-        {
-            if (animationType == AnimationType.Contract)
-            {
-                _animationHandler.UsePointerAnimations = false;
-
-                ListBGActive = false;
-            }
-        }
-
-        public void RefreshSortModeList(IEnumerable<ISortMode> sortModes)
-        {
-            _sortModeList.data.Clear();
-
-            foreach (ISortMode sortMode in sortModes)
-            {
-                string name = sortMode.Name.EscapeTextMeshProTags();
-                if (!sortMode.IsAvailable)
-                    name = $"<color=#FF5555>{name} <size=60%>(!)</size></color>";
-
-                _sortModeList.data.Add(new CustomListTableData.CustomCellInfo(name));
-            }
-
-            _sortModeList.tableView.ReloadData();
-        }
-
-        public void SelectSortMode(int index, bool fireCallback = false)
-        {
-            _sortModeList.tableView.SelectCellWithIdx(index, fireCallback);
         }
 
         [UIAction("sort-direction-button-clicked")]
         private void OnSortDirectionButtonClicked()
         {
-            _animationHandler.PlayContractAnimation(true);
-
             this.CallAndHandleAction(SortDirectionChanged, nameof(SortDirectionChanged));
         }
 
         [UIAction("sort-button-clicked")]
         private void OnSortButtonClicked()
         {
-            // use the UsePointerAnimations bool to check whether the FloatingScreen is expanded
-            if (_animationHandler.UsePointerAnimations)
-            {
-                _animationHandler.PlayContractAnimation(true);
-            }
-            else
-            {
-                _animationHandler.PlayExpandAnimation();
-                _animationHandler.UsePointerAnimations = true;
-                ListBGActive = true;
-            }
+            this.CallAndHandleAction(SortButtonPressed, nameof(SortButtonPressed));
         }
 
         [UIAction("cancel-sort-button-clicked")]
         private void OnCancelSortButtonClicked()
         {
-            _animationHandler.PlayContractAnimation(true);
-
             this.CallAndHandleAction(SortCancelled, nameof(SortCancelled));
-        }
-
-        [UIAction("sort-mode-list-cell-selected")]
-        private void OnSortModeListCellSelected(TableView tableView, int index)
-        {
-            // note: sort name text and ascending/descending icon will be changed by the song sort manager
-            this.CallAndHandleAction(SortModeListCellSelected, nameof(SortModeListCellSelected), index);
         }
     }
 }

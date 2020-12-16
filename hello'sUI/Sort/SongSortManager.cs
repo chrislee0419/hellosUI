@@ -21,6 +21,7 @@ namespace HUI.Sort
         private bool IsDefaultSort => CurrentSortMode == _defaultSortMode && SortAscending == _defaultSortMode.DefaultSortByAscending;
 
         private SortScreenManager _sortScreenManager;
+        private SortListScreenManager _sortListScreenManager;
         private SortSettingsTab _sortSettingsTab;
 
         private DefaultSortMode _defaultSortMode;
@@ -32,12 +33,14 @@ namespace HUI.Sort
         [Inject]
         public SongSortManager(
             SortScreenManager sortScreenManager,
+            SortListScreenManager sortListScreenManager,
             SortSettingsTab sortSettingsTab,
             PlayCountSortMode playCountSort,
             PPSortMode ppSort,
             List<ISortMode> externalSortModes)
         {
             _sortScreenManager = sortScreenManager;
+            _sortListScreenManager = sortListScreenManager;
             _sortSettingsTab = sortSettingsTab;
 
             _defaultSortMode = new DefaultSortMode();
@@ -76,9 +79,11 @@ namespace HUI.Sort
             if (CurrentSortMode == null)
                 ApplyDefaultSort();
 
+            _sortScreenManager.SortButtonPressed += OnSortButtonPressed;
             _sortScreenManager.SortDirectionChanged += OnSortDirectionChanged;
             _sortScreenManager.SortCancelled += OnSortCancelled;
-            _sortScreenManager.SortModeListCellSelected += OnSortModeListCellSelected;
+
+            _sortListScreenManager.SortModeListCellSelected += OnSortModeListCellSelected;
 
             _sortSettingsTab.SortModeListSettingChanged += OnSortModeListChanged;
 
@@ -90,10 +95,13 @@ namespace HUI.Sort
         {
             if (_sortScreenManager != null)
             {
+                _sortScreenManager.SortButtonPressed -= OnSortButtonPressed;
                 _sortScreenManager.SortDirectionChanged -= OnSortDirectionChanged;
                 _sortScreenManager.SortCancelled -= OnSortCancelled;
-                _sortScreenManager.SortModeListCellSelected -= OnSortModeListCellSelected;
             }
+
+            if (_sortListScreenManager != null)
+                _sortListScreenManager.SortModeListCellSelected -= OnSortModeListCellSelected;
 
             if (_sortSettingsTab != null)
                 _sortSettingsTab.SortModeListSettingChanged += OnSortModeListChanged;
@@ -178,8 +186,16 @@ namespace HUI.Sort
 
             SortModes = unhiddenSortModes.ToList().AsReadOnly();
 
-            _sortScreenManager.RefreshSortModeList(SortModes);
+            _sortListScreenManager.RefreshSortModeList(SortModes);
             _sortSettingsTab.RefreshSortModeList(sortModeOrdering);
+        }
+
+        private void OnSortButtonPressed()
+        {
+            if (_sortListScreenManager.IsVisible)
+                _sortListScreenManager.HideScreen();
+            else
+                _sortListScreenManager.ShowScreen();
         }
 
         private void OnSortModeListChanged()
@@ -191,9 +207,19 @@ namespace HUI.Sort
                 ApplyDefaultSort();
         }
 
-        private void OnSortDirectionChanged() => ApplySortMode(CurrentSortMode, !SortAscending);
+        private void OnSortDirectionChanged()
+        {
+            ApplySortMode(CurrentSortMode, !SortAscending);
 
-        private void OnSortCancelled() => ApplyDefaultSort();
+            _sortListScreenManager.HideScreen();
+        }
+
+        private void OnSortCancelled()
+        {
+            ApplyDefaultSort();
+
+            _sortListScreenManager.HideScreen();
+        }
 
         private void OnSortModeListCellSelected(int index)
         {
@@ -211,7 +237,7 @@ namespace HUI.Sort
             {
                 // reselect the current sort mode if the user clicked on an unavailable sort mode
                 index = SortModes.IndexOf(CurrentSortMode);
-                _sortScreenManager.SelectSortMode(index);
+                _sortListScreenManager.SelectSortMode(index);
             }
         }
 
@@ -223,7 +249,7 @@ namespace HUI.Sort
             PluginConfig.Instance.Sort.LastSortModeID = sortMode.GetIdentifier();
             PluginConfig.Instance.Sort.LastSortModeIsAscending = ascending;
 
-            _sortScreenManager.SelectSortMode(SortModes.IndexOf(sortMode));
+            _sortListScreenManager.SelectSortMode(SortModes.IndexOf(sortMode));
             _sortScreenManager.SortText = sortMode.Name.EscapeTextMeshProTags();
             _sortScreenManager.SortAscending = ascending;
 
