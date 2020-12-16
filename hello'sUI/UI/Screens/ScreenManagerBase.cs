@@ -117,8 +117,14 @@ namespace HUI.UI.Screens
             protected Coroutine _contractAnimation = null;
 
             protected const float StopAnimationEpsilon = 0.0001f;
-            protected const float LocalScale = 0.02f;
+            protected const float DefaultLocalScale = 0.02f;
+            protected const float CollapsedLocalScale = 0.0001f;
             protected static readonly WaitForSeconds CollapseAnimationDelay = new WaitForSeconds(0.8f);
+
+            private void Start()
+            {
+                this.transform.localScale = new Vector3(this.transform.localScale.x, CollapsedLocalScale, this.transform.localScale.z);
+            }
 
             public void OnPointerEnter(PointerEventData eventData)
             {
@@ -145,7 +151,7 @@ namespace HUI.UI.Screens
                 this.gameObject.SetActive(true);
 
                 StopAllAnimations();
-                _revealAnimation = StartCoroutine(RevealAnimationCoroutine(LocalScale));
+                _revealAnimation = StartCoroutine(RevealAnimationCoroutine(DefaultLocalScale));
             }
 
             public void PlayConcealAnimation()
@@ -154,7 +160,7 @@ namespace HUI.UI.Screens
                     return;
 
                 StopAllAnimations();
-                _revealAnimation = StartCoroutine(RevealAnimationCoroutine(0f, false));
+                _revealAnimation = StartCoroutine(RevealAnimationCoroutine(CollapsedLocalScale, true));
             }
 
             public void PlayExpandAnimation()
@@ -207,16 +213,16 @@ namespace HUI.UI.Screens
 
             private void OnAnimationFinished(AnimationType animationType) => this.CallAndHandleAction(AnimationFinished, nameof(AnimationFinished), animationType);
 
-            protected IEnumerator RevealAnimationCoroutine(float destAnimationValue, bool activateOnFinish = true)
+            protected IEnumerator RevealAnimationCoroutine(float destAnimationValue, bool deactivateOnFinish = false)
             {
                 yield return null;
                 yield return null;
 
                 Vector3 localScale = this.transform.localScale;
+                float multiplier = (localScale.y > destAnimationValue) ? 30f : 16f;
                 while (Mathf.Abs(localScale.y - destAnimationValue) > StopAnimationEpsilon)
                 {
-                    float num = (localScale.y > destAnimationValue) ? 30f : 16f;
-                    localScale.y = Mathf.Lerp(localScale.y, destAnimationValue, Time.deltaTime * num);
+                    localScale.y = Mathf.Lerp(localScale.y, destAnimationValue, Time.deltaTime * multiplier);
                     this.transform.localScale = localScale;
 
                     yield return null;
@@ -228,9 +234,11 @@ namespace HUI.UI.Screens
                 // reset size delta as well
                 (this.transform as RectTransform).sizeDelta = DefaultSize;
 
-                this.gameObject.SetActive(activateOnFinish);
+                if (deactivateOnFinish)
+                    this.gameObject.SetActive(false);
+
                 _revealAnimation = null;
-                OnAnimationFinished(activateOnFinish ? AnimationType.Reveal : AnimationType.Conceal);
+                OnAnimationFinished(deactivateOnFinish ? AnimationType.Reveal : AnimationType.Conceal);
             }
 
             protected IEnumerator ExpandAnimationCoroutine()
