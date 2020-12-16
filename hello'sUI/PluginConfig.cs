@@ -42,10 +42,7 @@ namespace HUI
 
             [NonNullable]
             [UseConverter(typeof(DictionaryConverter<ScreensSettingsTab.BackgroundOpacity, EnumConverter<ScreensSettingsTab.BackgroundOpacity>>))]
-            public virtual Dictionary<string, ScreensSettingsTab.BackgroundOpacity> ScreenOpacities { get; set; } = new Dictionary<string, ScreensSettingsTab.BackgroundOpacity>()
-            {
-                { typeof(SearchKeyboardScreenManager).FullName, ScreensSettingsTab.BackgroundOpacity.Translucent }
-            };
+            public virtual Dictionary<string, ScreensSettingsTab.BackgroundOpacity> ScreenOpacities { get; set; } = new Dictionary<string, ScreensSettingsTab.BackgroundOpacity>();
 
             [NonNullable]
             [UseConverter(typeof(DictionaryConverter<Vector3, Vector3Converter>))]
