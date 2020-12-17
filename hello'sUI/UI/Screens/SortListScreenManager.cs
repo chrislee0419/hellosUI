@@ -137,7 +137,9 @@ namespace HUI.UI.Screens
 
         private void OnPointerExited()
         {
-            if (_concealDelayCoroutine != null)
+            if (this._screen.ShowHandle)
+                return;
+            else if (_concealDelayCoroutine != null)
                 this._animationHandler.StopCoroutine(_concealDelayCoroutine);
 
             _concealDelayCoroutine = this._animationHandler.StartCoroutine(ConcealDelayCoroutine());
