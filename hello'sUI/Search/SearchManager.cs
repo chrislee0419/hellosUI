@@ -115,11 +115,17 @@ namespace HUI.Search
             _searchScreenManager.SearchText = searchText;
             _searchKeyboardScreenManager.SearchText = searchText;
             _searchKeyboardScreenManager.SetSuggestedWords(_wordPredictionEngine.GetSuggestedWords(searchText));
+
+            // note: UpdateView is only called when the query has changed,
+            // so we clear the results number text and set it after getting back the search results
+            _searchKeyboardScreenManager.SetResultsNumber(-1);
         }
 
         private void UpdateSearchResults(bool startNewSearch = true)
         {
-            if (startNewSearch)
+            if (_searchText.Length == 0)
+                return;
+            else if (startNewSearch)
                 _wordSearchEngine.StartNewSearch(_originalLevelCollection.beatmapLevelCollection.beatmapLevels, _searchText.ToString(), OnSearchFinished);
             else
                 _wordSearchEngine.StartSearchOnExistingList(_searchText.ToString(), OnSearchFinished);
@@ -127,6 +133,8 @@ namespace HUI.Search
 
         private void OnSearchFinished(IEnumerable<IPreviewBeatmapLevel> levels)
         {
+            _searchKeyboardScreenManager.SetResultsNumber(levels.Count());
+
             RequestLevelCollectionRefresh();
         }
 

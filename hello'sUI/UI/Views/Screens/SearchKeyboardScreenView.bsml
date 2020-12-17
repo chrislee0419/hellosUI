@@ -36,8 +36,16 @@
           anchor-max-x='1' anchor-max-y='1'
           size-delta-x='-4' size-delta-y='0'
           anchor-pos-x='0' anchor-pos-y='-5'
-          font-size='3.8'
+          font-size='4'
           font-align='Center' />
+    <text text='~results-number-text'
+          anchor-min-x='0' anchor-min-y='1'
+          anchor-max-x='0' anchor-max-y='1'
+          size-delta-x='12' size-delta-y='0'
+          anchor-pos-x='3' anchor-pos-y='-8.5'
+          pivot-x='0' pivot-y='1'
+          font-size='3'
+          font-align='Left' />
     
     <bg id='keyboard-container'
         anchor-min-x='0' anchor-min-y='0'

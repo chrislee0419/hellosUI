@@ -48,6 +48,9 @@ namespace HUI.UI.Screens
                 NotifyPropertyChanged();
             }
         }
+        private string _resultsNumberText;
+        [UIValue("results-number-text")]
+        public string ResultsNumberText => _resultsNumberText;
 
         [UIValue("keyboard-height")]
         public float KeyboardHeight => KeyHeight * 4 + KeySpacing * 3;
@@ -365,6 +368,18 @@ namespace HUI.UI.Screens
         public void SetSuggestedWords(IEnumerable<SuggestedWord> suggestedWords)
         {
             _predictionBar.ClearAndSetPredictionButtons(suggestedWords);
+        }
+
+        public void SetResultsNumber(int numOfResults)
+        {
+            if (numOfResults < 0)
+                _resultsNumberText = "";
+            else if (numOfResults == 0)
+                _resultsNumberText = "<color=#FFAAAA>0  <size=65%>results</size></color>";
+            else
+                _resultsNumberText = $"<color=#AADDAA>{numOfResults}  <size=65%>result{(numOfResults == 1 ? "" : "s")}</size></color>";
+
+            NotifyPropertyChanged(nameof(ResultsNumberText));
         }
 
         private void OnLevelSelected(LevelCollectionViewController viewController, IPreviewBeatmapLevel level)
