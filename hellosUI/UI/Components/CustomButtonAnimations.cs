@@ -4,7 +4,7 @@ using HMUI;
 
 namespace HUI.UI.Components
 {
-    internal class CustomButtonAnimations : MonoBehaviour
+    public class CustomButtonAnimations : MonoBehaviour
     {
         protected Color _normalBGColour = new Color(0f, 0f, 0f, 0.5f);
         public Color NormalBGColour
@@ -150,7 +150,7 @@ namespace HUI.UI.Components
         }
     }
 
-    internal class CustomIconButtonAnimations : CustomButtonAnimations
+    public class CustomIconButtonAnimations : CustomButtonAnimations
     {
         private Color _normalIconColour = Color.grey;
         public Color NormalIconColour
