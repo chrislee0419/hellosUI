@@ -13,6 +13,7 @@
           size-delta-x='-10' size-delta-y='0'
           on-click='search-button-clicked' />
   <icon-button id='cancel-search-button'
+               icon='hellosUI:HUI.Assets.cross.png'
                anchor-min-x='1' anchor-min-y='0'
                anchor-max-x='1' anchor-max-y='1'
                anchor-pos-x='0' anchor-pos-y='0'

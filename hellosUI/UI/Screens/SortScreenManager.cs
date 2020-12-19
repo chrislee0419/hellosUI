@@ -35,15 +35,10 @@ namespace HUI.UI.Screens
             }
         }
 
-        private bool _ascending = true;
         public bool SortAscending
         {
-            get => _ascending;
             set
             {
-                if (_ascending == value)
-                    return;
-
                 if (value)
                 {
                     _sortIcon.sprite = AscendingIconSprite;
@@ -58,8 +53,6 @@ namespace HUI.UI.Screens
                     _sortDirectionButtonAnimations.HighlightedBGColour = DescendingIconColour;
                     _sortDirectionButtonAnimations.PressedBGColour = DescendingIconColour;
                 }
-
-                _ascending = value;
             }
         }
 
@@ -75,8 +68,6 @@ namespace HUI.UI.Screens
         private ImageView _sortIcon;
         private CustomIconButtonAnimations _sortDirectionButtonAnimations;
 
-        private static readonly Vector2 DefaultSize = new Vector2(52f, 10f);
-
         private static Sprite AscendingIconSprite;
         private static Sprite DescendingIconSprite;
         private static readonly Color AscendingIconColour = new Color(0.3f, 0.8f, 0.15f, 0.5f);
@@ -88,7 +79,7 @@ namespace HUI.UI.Screens
             PartyFreePlayFlowCoordinator partyFC,
             LevelCollectionNavigationController levelCollectionNC,
             PhysicsRaycasterWithCache physicsRaycaster)
-            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, DefaultSize, new Vector3(-1.05f, 0.45f, 2.235f), Quaternion.Euler(65f, 345f, 0f))
+            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(52f, 10f), new Vector3(-1.05f, 0.45f, 2.235f), Quaternion.Euler(65f, 345f, 0f))
         {
             this._screen.name = "HUISortScreen";
 
@@ -101,10 +92,6 @@ namespace HUI.UI.Screens
                 DescendingIconSprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.descending.png");
 
             _sortIcon = _sortDirectionButton.transform.Find("Content/Icon").GetComponent<ImageView>();
-            _sortIcon.sprite = AscendingIconSprite;
-
-            var icon = _cancelButton.transform.Find("Content/Icon").GetComponent<ImageView>();
-            icon.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.refresh.png");
 
             Object.Destroy(_sortDirectionButton.GetComponent<ContentSizeFitter>());
             Object.Destroy(_cancelButton.GetComponent<ContentSizeFitter>());
@@ -127,9 +114,6 @@ namespace HUI.UI.Screens
 
             _sortDirectionButtonAnimations = _sortDirectionButton.gameObject.AddComponent<CustomIconButtonAnimations>();
             _sortDirectionButtonAnimations.NormalIconColour = Color.white;
-            _sortDirectionButtonAnimations.NormalBGColour = AscendingIconColour;
-            _sortDirectionButtonAnimations.HighlightedBGColour = AscendingIconColour;
-            _sortDirectionButtonAnimations.PressedBGColour = AscendingIconColour;
             _sortDirectionButtonAnimations.HighlightedLocalScale = new Vector3(1.2f, 1.2f, 1.2f);
 
             var iconBtnAnims = _cancelButton.gameObject.AddComponent<CustomIconButtonAnimations>();
@@ -149,6 +133,8 @@ namespace HUI.UI.Screens
 
             slg = _cancelButton.transform.Find("Content").GetComponent<StackLayoutGroup>();
             slg.padding = new RectOffset(0, 0, 2, 2);
+
+            SortAscending = true;
         }
 
         [UIAction("sort-direction-button-clicked")]

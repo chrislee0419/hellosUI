@@ -112,10 +112,6 @@ namespace HUI.UI.Screens
 
             _searchButtonText.transform.SetParent(container, false);
 
-            // cancel search icon
-            icon = _cancelButton.transform.Find("Content/Icon").GetComponent<ImageView>();
-            icon.sprite = UIUtilities.LoadSpriteFromResources("HUI.Assets.cross.png");
-
             // button animations
             Color searchButtonColour = new Color(0.145f, 0.443f, 1f, 0.5f);
             var iconBtnAnims = _searchButton.gameObject.AddComponent<CustomIconButtonAnimations>();

@@ -7,28 +7,29 @@
     bg='round-rect-panel'>
   <!-- top buttons -->
   <icon-button id='sort-direction-button'
-               anchor-min-x='0' anchor-min-y='1'
+               anchor-min-x='0' anchor-min-y='0'
                anchor-max-x='0' anchor-max-y='1'
                anchor-pos-x='0' anchor-pos-y='0'
                pivot-x='0' pivot-y='1'
-               size-delta-x='9' size-delta-y='10'
+               size-delta-x='9' size-delta-y='0'
                on-click='sort-direction-button-clicked' />
   <button id='sort-button'
           text='~sort-text'
-          anchor-min-x='0' anchor-min-y='1'
+          anchor-min-x='0' anchor-min-y='0'
           anchor-max-x='1' anchor-max-y='1'
           anchor-pos-x='0' anchor-pos-y='0'
           pivot-x='0.5' pivot-y='1'
-          size-delta-x='-20' size-delta-y='10'
+          size-delta-x='-20' size-delta-y='0'
           on-click='sort-button-clicked'
           word-wrapping='false'
           align='Center'
           overflow-mode='Truncate' />
   <icon-button id='cancel-sort-button'
-               anchor-min-x='1' anchor-min-y='1'
+               icon='hellosUI:HUI.Assets.refresh.png'
+               anchor-min-x='1' anchor-min-y='0'
                anchor-max-x='1' anchor-max-y='1'
                anchor-pos-x='0' anchor-pos-y='0'
                pivot-x='1' pivot-y='1'
-               size-delta-x='9' size-delta-y='10'
+               size-delta-x='9' size-delta-y='0'
                on-click='cancel-sort-button-clicked' />
 </bg>

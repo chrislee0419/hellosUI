@@ -7,7 +7,6 @@ using System;
 using IPA.Config.Stores.Converters;
 using SiraUtil.Converters;
 using HUI.Converters;
-using HUI.UI.Screens;
 using HUI.UI.Settings;
 using HUI.Utilities;
 using static HUI.Search.WordSearchEngine;
