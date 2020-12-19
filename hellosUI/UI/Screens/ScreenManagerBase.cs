@@ -52,7 +52,7 @@ namespace HUI.UI.Screens
             _animationHandler.DefaultSize = screenSize;
 
             if (!string.IsNullOrEmpty(AssociatedBSMLResource))
-                BSMLParser.instance.Parse(BSMLUtilities.GetResourceContent(Assembly.GetExecutingAssembly(), AssociatedBSMLResource), _screen.gameObject, this);
+                BSMLParser.instance.Parse(BSMLUtilities.GetResourceContent(this.GetType().Assembly, AssociatedBSMLResource), _screen.gameObject, this);
         }
 
         public override void Initialize()
