@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HUI.Attributes;
 using HUI.Interfaces;
 using HUI.Utilities;
 
 namespace SortModeExamplePlugin
 {
+    [AutoInstall]
     public class ExampleSortMode : ISortMode
     {
         public event Action AvailabilityChanged;

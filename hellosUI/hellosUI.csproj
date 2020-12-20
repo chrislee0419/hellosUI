@@ -148,6 +148,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\AutoInstallAttribute.cs" />
     <Compile Include="Converters\QuaternionConverter.cs" />
     <Compile Include="DataFlow\CustomBeatmapLevelPack.cs" />
     <Compile Include="HarmonyPatches\TableViewScrollerHandleJoystickWasNotCenteredThisFramePatch.cs" />

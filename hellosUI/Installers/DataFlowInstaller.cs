@@ -11,8 +11,9 @@ namespace HUI.Installers
         {
             Container.BindInterfacesAndSelfTo<LevelCollectionDataFlowManager>().AsSingle();
 
-            var externalLevelCollectionModifiers = InstallerUtilities.GetDerivativeTypesFromAllAssemblies(typeof(ILevelCollectionModifier));
-            Container.Bind<ILevelCollectionModifier>().To(externalLevelCollectionModifiers).AsCached();
+            var externalLevelCollectionModifiers = InstallerUtilities.GetAutoInstallDerivativeTypesFromAllAssemblies(typeof(ILevelCollectionModifier));
+            foreach (var externalLevelCollectionModifier in externalLevelCollectionModifiers)
+                Container.BindInterfacesAndSelfTo(externalLevelCollectionModifier).AsSingle();
         }
     }
 }

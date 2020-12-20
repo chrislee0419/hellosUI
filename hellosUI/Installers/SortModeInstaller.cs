@@ -18,7 +18,7 @@ namespace HUI.Installers
             Container.Bind(typeof(PPSortMode), typeof(IInitializable), typeof(IDisposable)).To<PPSortMode>().AsSingle();
 
             // get external sort modes
-            var externalSortModes = InstallerUtilities.GetDerivativeTypesFromAllAssemblies(typeof(ISortMode));
+            var externalSortModes = InstallerUtilities.GetAutoInstallDerivativeTypesFromAllAssemblies(typeof(ISortMode));
             foreach (var externalSortMode in externalSortModes)
                 Container.BindInterfacesAndSelfTo(externalSortMode).AsSingle();
         }

@@ -41,7 +41,7 @@ namespace HUI.Installers
             Container.BindInterfacesAndSelfTo<ScreensSettingsTab>().AsSingle();
             Container.BindExecutionOrder<ScreensSettingsTab>(ScreensSettingsInitializationOrder);
 
-            var externalModifiableScreens = InstallerUtilities.GetDerivativeTypesFromAllAssemblies(typeof(IModifiableScreen));
+            var externalModifiableScreens = InstallerUtilities.GetAutoInstallDerivativeTypesFromAllAssemblies(typeof(IModifiableScreen));
             foreach (var externalModifiableScreen in externalModifiableScreens)
                 Container.BindInterfacesAndSelfTo(externalModifiableScreen).AsSingle();
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using IPA.Loader;
+using HUI.Attributes;
 
 namespace HUI.Utilities
 {
@@ -34,6 +35,11 @@ namespace HUI.Utilities
                 .Where(x => x != currentAssembly && x != null)
                 .SelectMany(GetTypesFromAssembly)
                 .Where(x => type.IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
+        }
+
+        public static IEnumerable<Type> GetAutoInstallDerivativeTypesFromAllAssemblies(Type type)
+        {
+            return GetDerivativeTypesFromAllAssemblies(type).Where(x => x.GetCustomAttribute<AutoInstallAttribute>() != null);
         }
     }
 }

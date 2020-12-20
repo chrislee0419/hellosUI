@@ -45,10 +45,9 @@
       <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="hellosUI, Version=0.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <Private>False</Private>
-      <HintPath>$(BeatSaberDir)\Plugins\hellosUI.dll</HintPath>
+    <Reference Include="hellosUI, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\hellosUI\bin\Debug\hellosUI.dll</HintPath>
     </Reference>
     <Reference Include="SiraUtil, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
