@@ -117,13 +117,13 @@ namespace HUI.UI.Screens
             protected Coroutine _contractAnimation = null;
 
             protected const float StopAnimationEpsilon = 0.0001f;
-            protected const float DefaultLocalScale = 0.02f;
+            protected const float DefaultLocalScale = 0.03f;
             protected const float CollapsedLocalScale = 0.0001f;
             protected static readonly WaitForSeconds CollapseAnimationDelay = new WaitForSeconds(0.8f);
 
             private void Start()
             {
-                this.transform.localScale = new Vector3(this.transform.localScale.x, CollapsedLocalScale, this.transform.localScale.z);
+                this.transform.localScale = new Vector3(DefaultLocalScale, CollapsedLocalScale, DefaultLocalScale);
             }
 
             public void OnPointerEnter(PointerEventData eventData)
