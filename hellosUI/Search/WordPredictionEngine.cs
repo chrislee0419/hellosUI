@@ -14,6 +14,7 @@ namespace HUI.Search
 
         private LevelCollectionWordStorage _activeWordStorage = null;
         private Dictionary<string, LevelCollectionWordStorage> _cache = new Dictionary<string, LevelCollectionWordStorage>();
+        private bool _wasDeletingSong = false;
 
         public const int SuggestedWordsCountThreshold = 10;
 
@@ -54,6 +55,14 @@ namespace HUI.Search
 
         private void OnSongCoreLevelPacksRefreshed()
         {
+            // deleting a song will automatically select the Custom Levels pack after the deletion,
+            // so we shouldn't clear the cache in that situation
+            if (_wasDeletingSong)
+            {
+                _wasDeletingSong = false;
+                return;
+            }
+
             CancelTasks();
             ClearCache();
         }
@@ -62,6 +71,8 @@ namespace HUI.Search
         {
             CancelTasks();
             ClearCache();
+
+            _wasDeletingSong = true;
         }
 
         public void SetActiveWordStorageFromLevelCollection(IAnnotatedBeatmapLevelCollection levelCollection)
