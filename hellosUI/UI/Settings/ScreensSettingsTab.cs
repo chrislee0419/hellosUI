@@ -18,9 +18,9 @@ namespace HUI.UI.Settings
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Settings.ScreensSettingsView.bsml";
 
         [UIValue("bg-interactable")]
-        public bool BackgroundSettingsInteractable => _selectedScreen != null && _selectedScreen.Background != null;
+        public bool BackgroundSettingsInteractable => _selectedScreen != null;
         [UIValue("screen-interactable")]
-        public bool ScreenSettingsInteractable => _selectedScreen != null && _selectedScreen.Screen != null;
+        public bool ScreenSettingsInteractable => _selectedScreen != null;
 
         [UIValue("bg-colour-value")]
         public Color BackgroundColour
@@ -47,20 +47,15 @@ namespace HUI.UI.Settings
         [UIValue("enable-movement-value")]
         public bool EnableMovement
         {
-            get => IsScreenSelected() ? _selectedScreen.Screen.ShowHandle : false;
+            get => IsScreenSelected() ? _selectedScreen.AllowMovement : false;
             set
             {
                 if (IsScreenSelected())
                 {
-                    _selectedScreen.Screen.ShowHandle = value;
+                    _selectedScreen.AllowMovement = value;
 
                     if (!value)
-                    {
-                        string id = _selectedScreen.GetIdentifier();
-
-                        PluginConfig.Instance.Screens.ScreenPositions[id] = _selectedScreen.Screen.ScreenPosition;
-                        PluginConfig.Instance.Screens.ScreenRotations[id] = _selectedScreen.Screen.ScreenRotation;
-                    }
+                        _selectedScreen.SavePosition();
                 }
             }
         }
@@ -97,8 +92,6 @@ namespace HUI.UI.Settings
         {
             // set saved background styles/positions/rotations for all screens
             var screenOpacities = PluginConfig.Instance.Screens.ScreenOpacities;
-            var screenPositions = PluginConfig.Instance.Screens.ScreenPositions;
-            var screenRotations = PluginConfig.Instance.Screens.ScreenRotations;
             foreach (var screen in _screens)
             {
                 string id = screen.GetIdentifier();
@@ -108,14 +101,7 @@ namespace HUI.UI.Settings
                 else
                     SetBackgroundColour(screen, BackgroundOpacity.Transparent, false);
 
-                if (screen.Screen != null)
-                {
-                    if (screenPositions.TryGetValue(id, out Vector3 posValue))
-                        screen.Screen.ScreenPosition = posValue;
-                    if (screenRotations.TryGetValue(id, out Quaternion quatValue))
-                        screen.Screen.ScreenRotation = quatValue;
-                }
-
+                screen.LoadPosition();
             }
         }
 
@@ -156,7 +142,7 @@ namespace HUI.UI.Settings
         public override void OnTabHidden()
         {
             if (_selectedScreen != null)
-                _selectedScreen.Screen.ShowHandle = false;
+                _selectedScreen.AllowMovement = false;
         }
 
         private bool IsScreenSelected()
@@ -175,27 +161,24 @@ namespace HUI.UI.Settings
 
         private void SetBackgroundColour(IModifiableScreen screen, BackgroundOpacity bgOpacity, bool save = true, Color? overrideColour = null)
         {
-            if (screen.Background == null)
-                return;
-
             string id = screen.GetIdentifier();
             Color bgColour = overrideColour ?? PluginConfig.Instance.Screens.ScreenBackgroundColour;
             switch (bgOpacity)
             {
                 case BackgroundOpacity.Transparent:
-                    screen.Background.color = Color.clear;
+                    screen.BackgroundColor = Color.clear;
                     if (save)
                         PluginConfig.Instance.Screens.ScreenOpacities.Remove(id);
                     break;
 
                 case BackgroundOpacity.Translucent:
-                    screen.Background.color = new Color(bgColour.r, bgColour.g, bgColour.b, 0.25f);
+                    screen.BackgroundColor = new Color(bgColour.r, bgColour.g, bgColour.b, 0.25f);
                     if (save)
                         PluginConfig.Instance.Screens.ScreenOpacities[id] = bgOpacity;
                     break;
 
                 case BackgroundOpacity.Opaque:
-                    screen.Background.color = bgColour;
+                    screen.BackgroundColor = bgColour;
                     if (save)
                         PluginConfig.Instance.Screens.ScreenOpacities[id] = bgOpacity;
                     break;

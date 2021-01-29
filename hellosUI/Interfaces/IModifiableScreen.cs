@@ -1,5 +1,4 @@
-﻿using UnityEngine.UI;
-using BeatSaberMarkupLanguage.FloatingScreen;
+﻿using UnityEngine;
 
 namespace HUI.Interfaces
 {
@@ -11,26 +10,36 @@ namespace HUI.Interfaces
         string ScreenName { get; }
 
         /// <summary>
-        /// The screen to apply settings to.
+        /// The color of the background for the modifiable screen.
         /// <para>
-        /// This property must be set before or during initialization. Look at the summary of
-        /// <see cref="Installers.UIInstaller.ScreensSettingsInitializationOrder"/> for more information.
+        /// This property's setter must be ready to use after or during initialization. Look at the summary
+        /// of <see cref="Installers.UIInstaller.ScreensSettingsInitializationOrder"/> for more information.
         /// </para>
         /// </summary>
-        FloatingScreen Screen { get; }
+        Color BackgroundColor { get; set; }
 
         /// <summary>
-        /// The background graphic to apply settings to.
+        /// Allow or disallow the user to reposition the modifiable screen.
         /// <para>
-        /// This property must be set before or during initialization. Look at the summary of
-        /// <see cref="Installers.UIInstaller.ScreensSettingsInitializationOrder"/> for more information.
+        /// This property's setter must be ready to use after or during initialization. Look at the summary
+        /// of <see cref="Installers.UIInstaller.ScreensSettingsInitializationOrder"/> for more information.
         /// </para>
         /// </summary>
-        Graphic Background { get; }
+        bool AllowMovement { get; set; }
 
         /// <summary>
         /// Sets the screen's position and rotation to its default values.
         /// </summary>
         void ResetPosition();
+
+        /// <summary>
+        /// Save the screen's position and rotation to the user's config file.
+        /// </summary>
+        void SavePosition();
+
+        /// <summary>
+        /// Load the screen's position and rotation to the user's config file.
+        /// </summary>
+        void LoadPosition();
     }
 }

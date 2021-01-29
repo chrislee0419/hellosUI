@@ -311,8 +311,23 @@ namespace HUI.UI.Screens
     public abstract class ModifiableScreenManagerBase : ScreenManagerBase, IModifiableScreen
     {
         public abstract string ScreenName { get; }
-        public FloatingScreen Screen => _screen;
-        public virtual Graphic Background => _background;
+
+        public virtual Color BackgroundColor
+        {
+            get => _background?.color ?? Color.black;
+            set
+            {
+                if (_background == null)
+                    return;
+
+                _background.color = value;
+            }
+        }
+        public virtual bool AllowMovement
+        {
+            get => _screen.ShowHandle;
+            set => _screen.ShowHandle = value;
+        }
 
 #pragma warning disable CS0649
         [UIComponent("background")]
@@ -343,6 +358,30 @@ namespace HUI.UI.Screens
         {
             _screen.ScreenPosition = _defaultScreenPosition;
             _screen.ScreenRotation = _defaultScreenRotation;
+        }
+
+        public virtual void SavePosition()
+        {
+            string id = this.GetIdentifier();
+
+            PluginConfig.Instance.Screens.ScreenPositions[id] = _screen.ScreenPosition;
+            PluginConfig.Instance.Screens.ScreenRotations[id] = _screen.ScreenRotation;
+        }
+
+        public virtual void LoadPosition()
+        {
+            if (_screen == null)
+            {
+                Plugin.Log.Warn($"Unable to load the screen position for \"{this.GetType().FullName}\" (FloatingScreen not initialized)");
+                return;
+            }
+
+            string id = this.GetIdentifier();
+
+            if (PluginConfig.Instance.Screens.ScreenPositions.TryGetValue(id, out Vector3 pos))
+                _screen.ScreenPosition = pos;
+            if (PluginConfig.Instance.Screens.ScreenRotations.TryGetValue(id, out Quaternion rot))
+                _screen.ScreenRotation = rot;
         }
     }
 }
