@@ -173,13 +173,13 @@ namespace HUI.UI.Settings
             }
         }
 
-        private void SetBackgroundColour(IModifiableScreen screen, BackgroundOpacity bgOpacity, bool save = true)
+        private void SetBackgroundColour(IModifiableScreen screen, BackgroundOpacity bgOpacity, bool save = true, Color? overrideColour = null)
         {
             if (screen.Background == null)
                 return;
 
             string id = screen.GetIdentifier();
-            Color bgColour = PluginConfig.Instance.Screens.ScreenBackgroundColour;
+            Color bgColour = overrideColour ?? PluginConfig.Instance.Screens.ScreenBackgroundColour;
             switch (bgOpacity)
             {
                 case BackgroundOpacity.Transparent:
@@ -203,6 +203,20 @@ namespace HUI.UI.Settings
         }
 
         private void RefreshValues() => base.OnPluginConfigReloaded();
+
+        [UIAction("bg-colour-changed")]
+        private void OnBGColourChanged(Color value)
+        {
+            // set background colour for all non-transparent screens
+            var screenOpacities = PluginConfig.Instance.Screens.ScreenOpacities;
+            foreach (var screen in _screens)
+            {
+                string id = screen.GetIdentifier();
+
+                if (screenOpacities.TryGetValue(id, out BackgroundOpacity opacity))
+                    SetBackgroundColour(screen, opacity, false, value);
+            }
+        }
 
         [UIAction("cell-selected")]
         private void OnCellSelected(TableView tableView, int index)

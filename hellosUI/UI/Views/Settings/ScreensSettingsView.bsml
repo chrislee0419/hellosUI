@@ -6,6 +6,8 @@
                    font-size='3.6'
                    value='bg-colour-value'
                    get-event='refresh-all-values'
+                   on-change='bg-colour-changed'
+                   apply-on-change='true'
                    bind-value='true' />
     <horizontal vertical-fit='Unconstrained'
                 pad='2'>
@@ -21,18 +23,18 @@
         <vertical child-align='UpperCenter'
                   child-expand-height='false'>
           <icon-button id='list-up-button'
-                        icon='hellosUI:HUI.Assets.chevron.png'
-                        preferred-width='6'
-                        preferred-height='12'
-                        click-event='screen-list#PageUp' />
+                       icon='hellosUI:HUI.Assets.chevron.png'
+                       preferred-width='6'
+                       preferred-height='12'
+                       click-event='screen-list#PageUp' />
         </vertical>
         <vertical child-align='LowerCenter'
                   child-expand-height='false'>
           <icon-button id='list-down-button'
-                        icon='hellosUI:HUI.Assets.chevron.png'
-                        preferred-width='6'
-                        preferred-height='12'
-                        click-event='screen-list#PageDown' />
+                       icon='hellosUI:HUI.Assets.chevron.png'
+                       preferred-width='6'
+                       preferred-height='12'
+                       click-event='screen-list#PageDown' />
         </vertical>
       </vertical>
 
