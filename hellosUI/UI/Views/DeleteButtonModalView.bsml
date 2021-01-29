@@ -10,25 +10,25 @@
          click-off-closes='true'>
     <vertical>
       <vertical child-align='UpperCenter'
-                preferred-width='80' preferred-height='26'
-                pad='4'>
+                preferred-width='80' preferred-height='27'
+                pad='3'>
         <text text='~delete-confirmation-text'
               font-size='3.6'
               font-align='Center'
               overflow-mode='Overflow'
               word-wrapping='true' />
       </vertical>
-      <horizontal preferred-width='80' preferred-height='14'
+      <horizontal preferred-width='80' preferred-height='13'
                   spacing='6'
-                  pad-bottom='4' pad-left='4' pad-right='4'>
+                  pad-bottom='3' pad-left='3' pad-right='3'>
         <button id='confirm-delete-button'
                 text='Delete'
                 font-size='4'
-                preferred-width='30'
+                preferred-width='30' preferred-height='11'
                 on-click='confirm-delete-button-clicked' />
         <button text='Cancel'
                 font-size='4'
-                preferred-width='30'
+                preferred-width='30' preferred-height='11'
                 click-event='hide-delete-confirmation-modal' />
       </horizontal>
     </vertical>
