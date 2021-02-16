@@ -103,6 +103,7 @@ namespace HUI.UI.Screens
             _searchSettingsTab = searchSettingsTab;
 
             this._screen.name = "HUISearchKeyboardScreen";
+            this._animationHandler.LocalScale = 0.025f;
             this._animationHandler.UsePointerAnimations = false;
 
             if (!PluginConfig.Instance.Screens.ScreenOpacities.ContainsKey(this.GetIdentifier()))

@@ -108,6 +108,7 @@ namespace HUI.UI.Screens
 
             public Vector2 DefaultSize { get; set; } = Vector2.zero;
             public virtual Vector2 ExpandedSize { get; set; } = Vector2.zero;
+            public float LocalScale { get; set; } = DefaultLocalScale;
             public virtual bool UsePointerAnimations { get; set; } = true;
 
             public bool IsPointedAt { get; private set; } = false;
@@ -116,14 +117,14 @@ namespace HUI.UI.Screens
             protected Coroutine _expandAnimation = null;
             protected Coroutine _contractAnimation = null;
 
+            public const float DefaultLocalScale = 0.03f;
+            public const float CollapsedLocalScale = 0.0001f;
             protected const float StopAnimationEpsilon = 0.0001f;
-            protected const float DefaultLocalScale = 0.03f;
-            protected const float CollapsedLocalScale = 0.0001f;
             protected static readonly WaitForSeconds CollapseAnimationDelay = new WaitForSeconds(0.8f);
 
             private void Start()
             {
-                this.transform.localScale = new Vector3(DefaultLocalScale, CollapsedLocalScale, DefaultLocalScale);
+                this.transform.localScale = new Vector3(LocalScale, LocalScale, LocalScale);
             }
 
             public void OnPointerEnter(PointerEventData eventData)
@@ -151,7 +152,7 @@ namespace HUI.UI.Screens
                 this.gameObject.SetActive(true);
 
                 StopAllAnimations();
-                _revealAnimation = StartCoroutine(RevealAnimationCoroutine(DefaultLocalScale));
+                _revealAnimation = StartCoroutine(RevealAnimationCoroutine(LocalScale));
             }
 
             public void PlayConcealAnimation()
