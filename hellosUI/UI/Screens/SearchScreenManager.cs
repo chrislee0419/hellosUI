@@ -113,7 +113,7 @@ namespace HUI.UI.Screens
             _searchButtonText.transform.SetParent(container, false);
 
             // button animations
-            Color searchButtonColour = new Color(0.145f, 0.443f, 1f, 0.5f);
+            Color searchButtonColour = new Color(0.145f, 0.443f, 1f);
             var iconBtnAnims = _searchButton.gameObject.AddComponent<CustomIconButtonAnimations>();
             iconBtnAnims.HighlightedBGColour = searchButtonColour;
             iconBtnAnims.PressedBGColour = searchButtonColour;
