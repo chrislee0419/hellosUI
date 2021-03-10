@@ -26,6 +26,7 @@ namespace HUI.UI.Screens
         public override string ScreenName => "Search Keyboard";
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.SearchKeyboardScreenView.bsml";
         protected override bool ShowScreenOnSinglePlayerLevelSelectionStarting => false;
+        protected override ScreensSettingsTab.BackgroundOpacity DefaultBGOpacity => ScreensSettingsTab.BackgroundOpacity.Translucent;
 
         public bool IsVisible => this._screen.gameObject.activeSelf;
 
@@ -105,9 +106,6 @@ namespace HUI.UI.Screens
             this._screen.name = "HUISearchKeyboardScreen";
             this._animationHandler.LocalScale = 0.025f;
             this._animationHandler.UsePointerAnimations = false;
-
-            if (!PluginConfig.Instance.Screens.ScreenOpacities.ContainsKey(this.GetIdentifier()))
-                PluginConfig.Instance.Screens.ScreenOpacities[this.GetIdentifier()] = ScreensSettingsTab.BackgroundOpacity.Translucent;
 
             // prediction bar creation
             _predictionBar = new GameObject("PredictionBar").AddComponent<PredictionBar>();

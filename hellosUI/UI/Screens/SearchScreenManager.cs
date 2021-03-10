@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using HMUI;
 using VRUIControls;
-using BS_Utils.Utilities;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using HUI.UI.Components;

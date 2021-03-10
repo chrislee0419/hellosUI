@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +9,7 @@ using VRUIControls;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.FloatingScreen;
+using HUI.UI.Settings;
 using HUI.Interfaces;
 using HUI.Utilities;
 using BSMLUtilities = BeatSaberMarkupLanguage.Utilities;
@@ -329,6 +329,7 @@ namespace HUI.UI.Screens
             get => _screen.ShowHandle;
             set => _screen.ShowHandle = value;
         }
+        protected virtual ScreensSettingsTab.BackgroundOpacity DefaultBGOpacity => ScreensSettingsTab.BackgroundOpacity.Transparent;
 
 #pragma warning disable CS0649
         [UIComponent("background")]
@@ -353,6 +354,9 @@ namespace HUI.UI.Screens
             _defaultScreenRotation = screenRotation;
 
             _screen.HandleSide = FloatingScreen.Side.Bottom;
+
+            if (!PluginConfig.Instance.Screens.ScreenOpacities.ContainsKey(this.GetIdentifier()))
+                PluginConfig.Instance.Screens.ScreenOpacities[this.GetIdentifier()] = DefaultBGOpacity;
         }
 
         public virtual void ResetPosition()

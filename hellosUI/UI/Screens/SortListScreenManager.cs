@@ -22,6 +22,7 @@ namespace HUI.UI.Screens
         public override string ScreenName => "Sort List";
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Screens.SortListScreenView.bsml";
         protected override bool ShowScreenOnSinglePlayerLevelSelectionStarting => false;
+        protected override ScreensSettingsTab.BackgroundOpacity DefaultBGOpacity => ScreensSettingsTab.BackgroundOpacity.Translucent;
 
         public bool IsVisible => this._screen.gameObject.activeSelf;
 
@@ -53,9 +54,6 @@ namespace HUI.UI.Screens
             this._animationHandler.UsePointerAnimations = false;
             this._animationHandler.PointerEntered += OnPointerEntered;
             this._animationHandler.PointerExited += OnPointerExited;
-
-            if (!PluginConfig.Instance.Screens.ScreenOpacities.ContainsKey(this.GetIdentifier()))
-                PluginConfig.Instance.Screens.ScreenOpacities[this.GetIdentifier()] = ScreensSettingsTab.BackgroundOpacity.Translucent;
 
             // BSMLList needs a VRGraphicRaycaster, so we need to fix the PhysicsRaycaster,
             // just like what is done for FloatingScreen in ScreenManagerBase
