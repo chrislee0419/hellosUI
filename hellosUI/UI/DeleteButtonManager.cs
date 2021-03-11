@@ -211,7 +211,7 @@ namespace HUI.UI
                 _levelToDelete = null;
 
                 // scroll back to where we were
-                _levelsTableView.ScrollToCellWithIdx(indexOfTopCell, TableViewScroller.ScrollPositionType.Beginning, false);
+                _levelsTableView.ScrollToCellWithIdx(indexOfTopCell, TableView.ScrollPositionType.Beginning, false);
             }
 
             _parserParams.EmitEvent("hide-delete-confirmation-modal");

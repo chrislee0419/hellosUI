@@ -205,7 +205,7 @@ namespace HUI.UI.Settings
 
             if (_selectedSortMode != null)
             {
-                _sortModeListTableData.tableView.ScrollToCellWithIdx(_selectedSortMode.Index, TableViewScroller.ScrollPositionType.Center, false);
+                _sortModeListTableData.tableView.ScrollToCellWithIdx(_selectedSortMode.Index, TableView.ScrollPositionType.Center, false);
                 _sortModeListTableData.tableView.SelectCellWithIdx(_selectedSortMode.Index);
 
                 NotifyPropertyChanged(nameof(UpButtonsInteractable));

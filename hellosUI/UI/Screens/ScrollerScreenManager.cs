@@ -7,6 +7,7 @@ using HMUI;
 using VRUIControls;
 using IPA.Utilities;
 using BeatSaberMarkupLanguage.Attributes;
+using HUI.HarmonyPatches;
 using HUI.UI.Components;
 using HUI.UI.Settings;
 using HUI.DataFlow;
@@ -76,18 +77,18 @@ namespace HUI.UI.Screens
         private GameObject _randomButton;
 #pragma warning restore CS0649
 
-        private Button _originalUpButton;
-        private Button _originalDownButton;
-        private UnityAction _buttonListener;
+        //private Button _originalUpButton;
+        //private Button _originalDownButton;
+        //private UnityAction _buttonListener;
         private TableView _levelsTableView;
-        private TableViewScroller _scroller;
+        private ScrollView _scrollView;
 
         private LevelCollectionDataFlowManager _levelCollectionDataFlowManager;
         private SettingsModalDispatcher _settingsModalDispatcher;
 
         private Random _rng = new Random();
 
-        private static readonly FieldAccessor<TableViewScroller, float>.Accessor TargetPositionAccessor = FieldAccessor<TableViewScroller, float>.GetAccessor("_targetPosition");
+        private static readonly FieldAccessor<ScrollView, float>.Accessor DestinationPosAccessor = FieldAccessor<ScrollView, float>.GetAccessor("_destinationPos");
         private static readonly FieldAccessor<LevelCollectionTableView, bool>.Accessor ShowLevelPackHeaderAccessor = FieldAccessor<LevelCollectionTableView, bool>.GetAccessor("_showLevelPackHeader");
 
         public ScrollerScreenManager(
@@ -158,8 +159,8 @@ namespace HUI.UI.Screens
             var levelCollectionTableView = FieldAccessor<LevelCollectionViewController, LevelCollectionTableView>.Get(ref levelCollectionViewController, "_levelCollectionTableView");
 
             _levelsTableView = FieldAccessor<LevelCollectionTableView, TableView>.Get(ref levelCollectionTableView, "_tableView");
-            _originalUpButton = FieldAccessor<TableView, Button>.Get(ref _levelsTableView, "_pageUpButton");
-            _originalDownButton = FieldAccessor<TableView, Button>.Get(ref _levelsTableView, "_pageDownButton");
+            //_originalUpButton = FieldAccessor<TableView, Button>.Get(ref _levelsTableView, "_pageUpButton");
+            //_originalDownButton = FieldAccessor<TableView, Button>.Get(ref _levelsTableView, "_pageDownButton");
         }
 
         public override void Initialize()
@@ -168,10 +169,10 @@ namespace HUI.UI.Screens
 
             // page buttons need to be refreshed on the end of the frame, since it isn't guaranteed that
             // the game's callback to change the targetPosition would happen before the refresh occurs
-            _buttonListener = new UnityAction(() => CoroutineUtilities.StartDelayedAction(RefreshPageButtons));
+            //_buttonListener = new UnityAction(() => CoroutineUtilities.StartDelayedAction(RefreshPageButtons));
 
-            _originalUpButton.onClick.AddListener(_buttonListener);
-            _originalDownButton.onClick.AddListener(_buttonListener);
+            //_originalUpButton.onClick.AddListener(_buttonListener);
+            //_originalDownButton.onClick.AddListener(_buttonListener);
 
             _levelCollectionDataFlowManager.LevelCollectionApplied += OnLevelCollectionApplied;
             _levelCollectionDataFlowManager.EmptyLevelCollectionApplied += OnEmptyLevelCollectionApplied;
@@ -181,15 +182,15 @@ namespace HUI.UI.Screens
         {
             base.Dispose();
 
-            if (_buttonListener != null)
-            {
-                if (_originalUpButton?.onClick != null)
-                    _originalUpButton.onClick.RemoveListener(_buttonListener);
-                if (_originalDownButton?.onClick != null)
-                    _originalDownButton.onClick.RemoveListener(_buttonListener);
+            //if (_buttonListener != null)
+            //{
+            //    if (_originalUpButton?.onClick != null)
+            //        _originalUpButton.onClick.RemoveListener(_buttonListener);
+            //    if (_originalDownButton?.onClick != null)
+            //        _originalDownButton.onClick.RemoveListener(_buttonListener);
 
-                _buttonListener = null;
-            }
+            //    _buttonListener = null;
+            //}
 
             if (_levelCollectionDataFlowManager != null)
             {
@@ -197,8 +198,10 @@ namespace HUI.UI.Screens
                 _levelCollectionDataFlowManager.EmptyLevelCollectionApplied -= OnEmptyLevelCollectionApplied;
             }
 
-            if (_scroller != null)
-                _scroller.positionDidChangeEvent -= OnTableViewPositionChanged;
+            if (_scrollView != null)
+            {
+                ScrollViewRefreshButtonsPatch.RemoveHook(_scrollView, RefreshPageButtons);
+            }
         }
 
         protected override void OnSinglePlayerLevelSelectionStarting(bool isSolo)
@@ -207,23 +210,21 @@ namespace HUI.UI.Screens
 
             CoroutineUtilities.StartDelayedAction(delegate ()
             {
-                _scroller = FieldAccessor<TableView, TableViewScroller>.Get(ref _levelsTableView, "scroller");
-                _scroller.positionDidChangeEvent += OnTableViewPositionChanged;
+                _scrollView = FieldAccessor<TableView, ScrollView>.Get(ref _levelsTableView, "_scrollView");
+                ScrollViewRefreshButtonsPatch.InstallHook(_scrollView, RefreshPageButtons);
 
-                RefreshPageButtons();
+                _scrollView.RefreshButtons();
             });
         }
 
-        public void RefreshPageButtons()
+        public void RefreshPageButtons(bool pageUpInteractable, bool pageDownInteractable)
         {
-            DownButtonInteractable = _scroller.targetPosition < _scroller.scrollableSize - 0.01f;
-            UpButtonInteractable = _scroller.targetPosition > 0.01f;
+            DownButtonInteractable = pageDownInteractable;
+            UpButtonInteractable = pageUpInteractable;
         }
 
         private void OnLevelCollectionApplied(IEnumerable<IPreviewBeatmapLevel> levels)
         {
-            RefreshPageButtons();
-
             RandomButtonInteractable = levels.Count() > 0;
         }
 
@@ -234,8 +235,6 @@ namespace HUI.UI.Screens
             RandomButtonInteractable = false;
         }
 
-        private void OnTableViewPositionChanged(TableViewScroller scroller, float position) => RefreshPageButtons();
-
         [UIAction("settings-button-clicked")]
         private void OnSettingsButtonClicked() => _settingsModalDispatcher.ToggleModalVisibility();
 
@@ -243,15 +242,10 @@ namespace HUI.UI.Screens
         private void OnUpButtonClicked()
         {
             float numOfVisibleCells = Mathf.Ceil(_levelsTableView.viewportTransform.rect.height / _levelsTableView.cellSize);
-            float newTargetPosition = _scroller.targetPosition - Mathf.Max(1f, numOfVisibleCells - 1f) * _levelsTableView.cellSize * PluginConfig.Instance.FastScrollSpeed;
-            if (newTargetPosition < 0f)
-                newTargetPosition = 0f;
+            float newDestinationPos = DestinationPosAccessor(ref _scrollView) - Mathf.Max(1f, numOfVisibleCells - 1f) * _levelsTableView.cellSize * PluginConfig.Instance.FastScrollSpeed;
 
-            TargetPositionAccessor.Invoke(ref _scroller) = newTargetPosition;
-            _scroller.enabled = true;
-
-            RefreshPageButtons();
-            _scroller.RefreshScrollBar();
+            // note: clamping is done during the set, so we don't have to do it
+            _scrollView.SetDestinationPos(newDestinationPos);
         }
 
         [UIAction("down-button-clicked")]
@@ -259,15 +253,9 @@ namespace HUI.UI.Screens
         {
             float maxPosition = _levelsTableView.numberOfCells * _levelsTableView.cellSize - _levelsTableView.viewportTransform.rect.height;
             float numOfVisibleCells = Mathf.Ceil(_levelsTableView.viewportTransform.rect.height / _levelsTableView.cellSize);
-            float newTargetPosition = _scroller.targetPosition + Mathf.Max(1f, numOfVisibleCells - 1f) * _levelsTableView.cellSize * PluginConfig.Instance.FastScrollSpeed;
-            if (newTargetPosition > maxPosition)
-                newTargetPosition = maxPosition;
+            float newDestinationPos = DestinationPosAccessor(ref _scrollView) + Mathf.Max(1f, numOfVisibleCells - 1f) * _levelsTableView.cellSize * PluginConfig.Instance.FastScrollSpeed;
 
-            TargetPositionAccessor.Invoke(ref _scroller) = newTargetPosition;
-            _scroller.enabled = true;
-
-            RefreshPageButtons();
-            _scroller.RefreshScrollBar();
+            _scrollView.SetDestinationPos(newDestinationPos);
         }
 
         [UIAction("random-button-clicked")]
@@ -283,8 +271,7 @@ namespace HUI.UI.Screens
             if (index == 0 && ShowLevelPackHeaderAccessor.Invoke(ref levelCollectionTableView))
                 index = _rng.Next(_levelsTableView.numberOfCells);
 
-            _levelsTableView.ScrollToCellWithIdx(index, TableViewScroller.ScrollPositionType.Beginning, false);
-            RefreshPageButtons();
+            _levelsTableView.ScrollToCellWithIdx(index, TableView.ScrollPositionType.Beginning, false);
         }
     }
 }
