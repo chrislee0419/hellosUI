@@ -151,7 +151,7 @@ namespace HUI.UI.Screens
                 for (int j = 0; j < letters[i].Length; ++j)
                 {
                     CustomKeyboardKeyButton newKey = Object.Instantiate(keyPrefab, _keyboardContainer.transform, false).GetComponent<CustomKeyboardKeyButton>();
-                    newKey.name = letters[i][j].ToString().ToUpper();
+                    newKey.name = $"{letters[i][j].ToString().ToUpper()}KeyboardButton";
 
                     newKey.rectTransform.anchorMin = new Vector2(0f, 1f);
                     newKey.rectTransform.anchorMax = new Vector2(0f, 1f);
@@ -185,7 +185,7 @@ namespace HUI.UI.Screens
                         continue;
 
                     CustomKeyboardKeyButton newKey = Object.Instantiate(keyPrefab, _keyboardContainer.transform, false).GetComponent<CustomKeyboardKeyButton>();
-                    newKey.name = numbers[i][j].ToString();
+                    newKey.name = $"{numbers[i][j]}KeyboardButton";
 
                     newKey.rectTransform.anchorMin = Vector2.one;
                     newKey.rectTransform.anchorMax = Vector2.one;
@@ -203,7 +203,7 @@ namespace HUI.UI.Screens
 
             // comma
             CustomKeyboardKeyButton commaButton = Object.Instantiate(keyPrefab, _keyboardContainer.transform, false).GetComponent<CustomKeyboardKeyButton>();
-            commaButton.name = "Comma";
+            commaButton.name = "CommaKeyboardButton";
             commaButton.rectTransform.anchorMin = Vector2.zero;
             commaButton.rectTransform.anchorMax = Vector2.zero;
             commaButton.rectTransform.pivot = Vector2.zero;
@@ -218,7 +218,7 @@ namespace HUI.UI.Screens
 
             // space
             CustomKeyboardKeyButton spaceButton = Object.Instantiate(keyPrefab, _keyboardContainer.transform, false).GetComponent<CustomKeyboardKeyButton>();
-            spaceButton.name = "Space";
+            spaceButton.name = "SpaceKeyboardButton";
             spaceButton.rectTransform.anchorMin = Vector2.zero;
             spaceButton.rectTransform.anchorMax = Vector2.zero;
             spaceButton.rectTransform.pivot = Vector2.zero;
@@ -233,7 +233,7 @@ namespace HUI.UI.Screens
 
             // period
             CustomKeyboardKeyButton periodButton = Object.Instantiate(keyPrefab, _keyboardContainer.transform, false).GetComponent<CustomKeyboardKeyButton>();
-            periodButton.name = "Period";
+            periodButton.name = "PeriodKeyboardButton";
             periodButton.rectTransform.anchorMin = Vector2.zero;
             periodButton.rectTransform.anchorMax = Vector2.zero;
             periodButton.rectTransform.pivot = Vector2.zero;
@@ -252,7 +252,7 @@ namespace HUI.UI.Screens
 
             // delete
             CustomKeyboardActionButton deleteButton = Object.Instantiate(keyPrefab, _keyboardContainer.transform, false).GetComponent<CustomKeyboardActionButton>();
-            deleteButton.name = "Delete";
+            deleteButton.name = "DeleteKeyboardButton";
             deleteButton.rectTransform.anchorMin = Vector2.zero;
             deleteButton.rectTransform.anchorMax = Vector2.zero;
             deleteButton.rectTransform.pivot = Vector2.zero;
@@ -265,7 +265,7 @@ namespace HUI.UI.Screens
 
             // symbols
             _symbolButton = Object.Instantiate(keyPrefab, _keyboardContainer.transform, false).GetComponent<CustomKeyboardActionButton>();
-            _symbolButton.name = "Symbols";
+            _symbolButton.name = "SymbolsKeyboardButton";
             _symbolButton.rectTransform.anchorMin = Vector2.zero;
             _symbolButton.rectTransform.anchorMax = Vector2.zero;
             _symbolButton.rectTransform.pivot = Vector2.zero;
@@ -285,7 +285,7 @@ namespace HUI.UI.Screens
 
             // clear
             CustomKeyboardActionButton clearButton = Object.Instantiate(keyPrefab, _keyboardContainer.transform, false).GetComponent<CustomKeyboardActionButton>();
-            clearButton.name = "Clear";
+            clearButton.name = "ClearKeyboardButton";
             clearButton.rectTransform.anchorMin = Vector2.zero;
             clearButton.rectTransform.anchorMax = Vector2.zero;
             clearButton.rectTransform.pivot = Vector2.zero;
