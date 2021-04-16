@@ -9,7 +9,6 @@ using SiraUtil.Converters;
 using HUI.Converters;
 using HUI.UI.Settings;
 using HUI.Utilities;
-using static HUI.Search.WordSearchEngine;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
 namespace HUI
@@ -70,35 +69,6 @@ namespace HUI
             [NonNullable]
             [UseConverter(typeof(ListConverter<string>))]
             public virtual List<string> SortModeOrdering { get; set; } = new List<string>();
-        }
-
-        [NonNullable]
-        public virtual SearchSettings Search { get; set; } = new SearchSettings();
-
-        public class SearchSettings
-        {
-            public virtual bool CloseScreenOnSelectLevel { get; set; } = CloseScreenOnSelectLevelDefaultValue;
-            public const bool CloseScreenOnSelectLevelDefaultValue = true;
-
-            public virtual bool CloseScreenOnSelectLevelCollection { get; set; } = CloseScreenOnSelectLevelCollectionDefaultValue;
-            public const bool CloseScreenOnSelectLevelCollectionDefaultValue = true;
-
-            public virtual bool ClearQueryOnSelectLevelCollection { get; set; } = ClearQueryOnSelectLevelCollectionDefaultValue;
-            public const bool ClearQueryOnSelectLevelCollectionDefaultValue = false;
-
-            public virtual bool UseOffHandLaserPointer { get; set; } = UseOffHandLaserPointerDefaultValue;
-            public const bool UseOffHandLaserPointerDefaultValue = true;
-
-            public virtual bool StripSymbols { get; set; } = StripSymbolsDefaultValue;
-            public const bool StripSymbolsDefaultValue = false;
-
-            public virtual bool SplitQueryByWords { get; set; } = SplitQueryByWordsDefaultValue;
-            public const bool SplitQueryByWordsDefaultValue = true;
-
-            [UseConverter(typeof(EnumConverter<SearchableSongFields>))]
-            public virtual SearchableSongFields SongFieldsToSearch { get; set; } = SongFieldsToSearchDefaultValue;
-            public const SearchableSongFields SongFieldsToSearchDefaultValue =
-                SearchableSongFields.SongName | SearchableSongFields.SongAuthor | SearchableSongFields.LevelAuthor | SearchableSongFields.Contributors;
         }
 
         /// <summary>

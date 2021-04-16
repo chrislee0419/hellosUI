@@ -7,7 +7,6 @@ using HMUI;
 using IPA.Utilities;
 using SongCore;
 using HUI.Interfaces;
-using HUI.Search;
 using HUI.Sort;
 using HUI.Utilities;
 
@@ -27,7 +26,6 @@ namespace HUI.DataFlow
         private LevelSelectionNavigationController _levelSelectionNavigationController;
         private LevelCollectionViewController _levelCollectionViewController;
 
-        private SearchManager _searchManager;
         private SongSortManager _sortManager;
         private List<ILevelCollectionModifier> _externalModifiers;
 
@@ -53,7 +51,6 @@ namespace HUI.DataFlow
             LevelCollectionNavigationController levelCollectionNavigationController,
             LevelSelectionNavigationController levelSelectionNavigationController,
             LevelCollectionViewController levelCollectionViewController,
-            SearchManager searchManager,
             SongSortManager sortManager,
             List<ILevelCollectionModifier> modifiers)
             : base(mainMenuVC, soloFC, partyFC)
@@ -64,13 +61,11 @@ namespace HUI.DataFlow
             _levelSelectionNavigationController = levelSelectionNavigationController;
             _levelCollectionViewController = levelCollectionViewController;
 
-            _searchManager = searchManager;
             _sortManager = sortManager;
 
             // since the search and sort managers are bound to the ILevelCollectionModifier interface as wel,
             // remove them from the list when assigning to _externalModifiers
             _externalModifiers = new List<ILevelCollectionModifier>(modifiers);
-            _externalModifiers.Remove(_searchManager);
             _externalModifiers.Remove(_sortManager);
         }
 
@@ -78,7 +73,6 @@ namespace HUI.DataFlow
         {
             base.Initialize();
 
-            _searchManager.LevelCollectionRefreshRequested += OnLevelCollectionRefreshRequested;
             _sortManager.LevelCollectionRefreshRequested += OnLevelCollectionRefreshRequested;
 
             foreach (var modifier in _externalModifiers)
@@ -93,9 +87,6 @@ namespace HUI.DataFlow
                 _levelFilteringNavigationController.didSelectAnnotatedBeatmapLevelCollectionEvent -= OnAnnotatedBeatmapLevelCollectionSelected;
 
             Loader.OnLevelPacksRefreshed -= OnLevelPacksRefreshed;
-
-            if (_searchManager != null)
-                _searchManager.LevelCollectionRefreshRequested -= OnLevelCollectionRefreshRequested;
 
             if (_sortManager != null)
                 _sortManager.LevelCollectionRefreshRequested -= OnLevelCollectionRefreshRequested;
@@ -171,7 +162,6 @@ namespace HUI.DataFlow
 
             Plugin.Log.Debug($"{nameof(LevelCollectionDataFlowManager)} storing level collection named \"{levelCollection.collectionName}\"");
 
-            _searchManager.OnLevelCollectionSelected(levelCollection);
             _sortManager.OnLevelCollectionSelected(levelCollection);
             foreach (var externalModifier in _externalModifiers)
                 externalModifier.OnLevelCollectionSelected(levelCollection);
@@ -214,12 +204,7 @@ namespace HUI.DataFlow
             IEnumerable<IPreviewBeatmapLevel> levelCollection = _originalLevelCollection.beatmapLevelCollection.beatmapLevels;
             IEnumerable<IPreviewBeatmapLevel> modifiedLevelCollection;
 
-            // check search manager first, since an ongoing search will set an empty level collection
-            // and request a refresh when it is finished
-            bool hasChanges = _searchManager.ApplyModifications(levelCollection, out modifiedLevelCollection);
-            if (hasChanges)
-                levelCollection = modifiedLevelCollection;
-
+            bool hasChanges = false;
             if (levelCollection.Count() > 0)
             {
                 foreach (var modifier in _externalModifiers.OrderByDescending(x => x.Priority))
@@ -270,7 +255,6 @@ namespace HUI.DataFlow
 
                 levelCollection = _originalLevelCollection.beatmapLevelCollection.beatmapLevels;
             }
-
 
             // when the list of levels is empty, the game just deactivates the levels TableView (doesn't clear the list either)
             // which means it doesn't update the interactable state of this mod's fast page up/down buttons

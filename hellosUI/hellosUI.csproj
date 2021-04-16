@@ -155,22 +155,13 @@
     <Compile Include="HarmonyPatches\VRInputModuleProcessPatch.cs" />
     <Compile Include="Interfaces\ILevelCollectionModifier.cs" />
     <Compile Include="Installers\DataFlowInstaller.cs" />
-    <Compile Include="Installers\SearchInstaller.cs" />
     <Compile Include="Installers\SortModeInstaller.cs" />
     <Compile Include="DataFlow\LevelCollectionDataFlowManager.cs" />
     <Compile Include="Interfaces\IModifiableScreen.cs" />
-    <Compile Include="Search\Data\BKTree.cs" />
-    <Compile Include="Search\Data\Trie.cs" />
-    <Compile Include="Search\LaserPointerManager.cs" />
-    <Compile Include="Search\LevelCollectionWordStorage.cs" />
-    <Compile Include="Search\SearchManager.cs" />
-    <Compile Include="Search\WordSearchEngine.cs" />
-    <Compile Include="Search\WordPredictionEngine.cs" />
     <Compile Include="UI\Screens\SortListScreenManager.cs" />
     <Compile Include="UI\Settings\SettingsModalDispatcher.cs" />
     <Compile Include="UI\Settings\SettingsModalManager.cs" />
     <Compile Include="UI\Settings\ScreensSettingsTab.cs" />
-    <Compile Include="UI\Settings\SearchSettingsTab.cs" />
     <Compile Include="UI\Settings\SortSettingsTab.cs" />
     <Compile Include="Sort\BuiltIn\DefaultSortMode.cs" />
     <Compile Include="Sort\BuiltIn\LengthSortMode.cs" />
@@ -180,11 +171,8 @@
     <Compile Include="Sort\BuiltIn\NewestSortMode.cs" />
     <Compile Include="Sort\BuiltIn\PlayCountSortMode.cs" />
     <Compile Include="Sort\SongSortManager.cs" />
-    <Compile Include="UI\Components\CustomKeyboardButton.cs" />
-    <Compile Include="UI\Components\PredictionBar.cs" />
     <Compile Include="UI\DeleteButtonManager.cs" />
     <Compile Include="SinglePlayerManagerBase.cs" />
-    <Compile Include="UI\Screens\SearchKeyboardScreenManager.cs" />
     <Compile Include="Utilities\BeatmapUtilities.cs" />
     <Compile Include="Utilities\CoroutineUtilities.cs" />
     <Compile Include="Plugin.cs" />
@@ -192,7 +180,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Components\CustomButtonAnimations.cs" />
     <Compile Include="UI\Screens\ScreenManagerBase.cs" />
-    <Compile Include="UI\Screens\SearchScreenManager.cs" />
     <Compile Include="UI\Screens\SortScreenManager.cs" />
     <Compile Include="UI\Screens\ScrollerScreenManager.cs" />
     <Compile Include="Installers\UIInstaller.cs" />
@@ -235,12 +222,6 @@
     <EmbeddedResource Include="Assets\refresh.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\Views\Screens\SearchScreenView.bsml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\Views\Screens\SearchKeyboardScreenView.bsml" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Assets\lock.png" />
   </ItemGroup>
   <ItemGroup>
@@ -251,9 +232,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\Views\SettingsModalView.bsml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\Views\Settings\SearchSettingsView.bsml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\Views\Settings\SortSettingsView.bsml" />

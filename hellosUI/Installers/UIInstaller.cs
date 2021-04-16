@@ -29,15 +29,12 @@ namespace HUI.Installers
 
             Container.BindInterfacesAndSelfTo<SortScreenManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<SortListScreenManager>().AsSingle();
-            Container.BindInterfacesAndSelfTo<SearchScreenManager>().AsSingle();
-            Container.BindInterfacesAndSelfTo<SearchKeyboardScreenManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<ScrollerScreenManager>().AsSingle();
 
             Container.BindInterfacesAndSelfTo<SettingsModalManager>().AsSingle();
             Container.Bind<SettingsModalDispatcher>().AsSingle();
 
             Container.BindInterfacesAndSelfTo<SortSettingsTab>().AsSingle();
-            Container.BindInterfacesAndSelfTo<SearchSettingsTab>().AsSingle();
             Container.BindInterfacesAndSelfTo<ScreensSettingsTab>().AsSingle();
             Container.BindExecutionOrder<ScreensSettingsTab>(ScreensSettingsInitializationOrder);
 

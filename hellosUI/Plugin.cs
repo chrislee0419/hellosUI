@@ -30,7 +30,6 @@ namespace HUI
 
             zenjector.OnMenu<DataFlowInstaller>();
             zenjector.OnMenu<SortModeInstaller>();
-            zenjector.OnMenu<SearchInstaller>();
             zenjector.OnMenu<UIInstaller>();
         }
 
