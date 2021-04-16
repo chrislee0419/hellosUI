@@ -14,6 +14,8 @@ namespace HUI.Search
     {
         public event Action LevelCollectionRefreshRequested;
 
+        public int Priority => 100;
+
         private WordSearchEngine _wordSearchEngine;
         private WordPredictionEngine _wordPredictionEngine;
         private SearchScreenManager _searchScreenManager;

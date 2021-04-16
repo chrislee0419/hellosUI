@@ -222,7 +222,7 @@ namespace HUI.DataFlow
 
             if (levelCollection.Count() > 0)
             {
-                foreach (var modifier in _externalModifiers)
+                foreach (var modifier in _externalModifiers.OrderByDescending(x => x.Priority))
                 {
                     if (modifier.ApplyModifications(levelCollection, out modifiedLevelCollection))
                     {

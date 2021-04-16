@@ -14,6 +14,8 @@ namespace HUI.Sort
     {
         public event Action LevelCollectionRefreshRequested;
 
+        public int Priority => -10;
+
         public IReadOnlyList<ISortMode> SortModes { get; private set; }
         public ISortMode CurrentSortMode { get; private set; }
         public bool SortAscending { get; private set; }

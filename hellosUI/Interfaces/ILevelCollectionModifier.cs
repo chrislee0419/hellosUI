@@ -11,6 +11,26 @@ namespace HUI.Interfaces
         event Action LevelCollectionRefreshRequested;
 
         /// <summary>
+        /// Determines when this modifier will be applied.
+        /// 
+        /// <para>
+        /// Because level collection modifiers will stop being applied when the level collection is empty,
+        /// modifiers that are more likely to result in an empty collection should be given a higher priority.
+        /// </para>
+        /// 
+        /// <para>
+        /// Level collection modifiers that do not remove levels (re-orders the collection) should be given
+        /// a negative priority. Reordering modifiers should be stable (does not change the ordering of equivalent items).
+        /// </para>
+        /// 
+        /// <para>
+        /// NOTE: rather than implementing an <see cref="ILevelCollectionModifier"/> that will reorder the collection,
+        /// consider implementing an <see cref="ISortMode"/> instead.
+        /// </para>
+        /// </summary>
+        int Priority { get; }
+
+        /// <summary>
         /// Perform some action when the user selects a level collection.
         /// </summary>
         /// <param name="annotatedBeatmapLevelCollection">The beatmap level collection selected by the user.</param>
