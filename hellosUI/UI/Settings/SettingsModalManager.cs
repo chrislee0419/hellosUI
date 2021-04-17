@@ -147,7 +147,7 @@ namespace HUI.UI.Settings
             public virtual void SetupView()
             {
                 if (!string.IsNullOrEmpty(AssociatedBSMLResource))
-                    _parserParams = BSMLParser.instance.Parse(BSMLUtilities.GetResourceContent(Assembly.GetExecutingAssembly(), AssociatedBSMLResource), _container, this);
+                    _parserParams = BSMLParser.instance.Parse(BSMLUtilities.GetResourceContent(this.GetType().Assembly, AssociatedBSMLResource), _container, this);
 
                 _container.name = TabName + "Tab";
 
