@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using IPA.Logging;
 
 namespace HUI.Utilities
 {
@@ -55,6 +56,20 @@ namespace HUI.Utilities
                 Plugin.Log.Warn($"Unexpected exception occurred in {obj.GetType().Name}:PropertyChanged");
                 Plugin.Log.Debug(e);
             }
+        }
+
+        public static void DebugOnly(this Logger logger, string message)
+        {
+#if DEBUG
+            Plugin.Log.Debug(message);
+#endif
+        }
+
+        public static void DebugOnly(this Logger logger, Exception exception)
+        {
+#if DEBUG
+            Plugin.Log.Debug(exception);
+#endif
         }
     }
 }

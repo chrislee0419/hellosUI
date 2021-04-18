@@ -193,6 +193,8 @@ namespace HUI.DataFlow
             if (_levelCollectionRefreshing)
                 return;
 
+            Plugin.Log.DebugOnly("Delaying application of custom level collection");
+
             _levelCollectionRefreshing = true;
             CoroutineUtilities.StartDelayedAction(ApplyCustomLevelCollection, framesToWait, waitForEndOfFrame);
         }
@@ -228,9 +230,8 @@ namespace HUI.DataFlow
 
             if (hasChanges)
             {
-#if DEBUG
-                Plugin.Log.Debug($"Applying modified IAnnotatedBeatmapLevelCollection to song list");
-#endif
+                Plugin.Log.DebugOnly($"Applying modified IAnnotatedBeatmapLevelCollection to song list");
+
                 _levelCollectionNavigationController.SetDataForPack(
                     _customLevelPack.SetupFromLevels(_originalLevelCollection, levelCollection),
                     true,
@@ -240,9 +241,8 @@ namespace HUI.DataFlow
             }
             else
             {
-#if DEBUG
-                Plugin.Log.Debug($"Applying unmodified IAnnotatedBeatmapLevelCollection to song list");
-#endif
+                Plugin.Log.DebugOnly($"Applying unmodified IAnnotatedBeatmapLevelCollection to song list");
+
                 _levelCollectionNavigationController.SetData(
                     _originalLevelCollection,
                     true,
@@ -265,6 +265,8 @@ namespace HUI.DataFlow
             }
             else if (_selectLastLevel && !string.IsNullOrEmpty(PluginConfig.Instance.LastLevelID))
             {
+                Plugin.Log.DebugOnly($"Reselecting level \"{PluginConfig.Instance.LastLevelID}\" after modifying song list");
+
                 string[] lastLevelData = PluginConfig.Instance.LastLevelID.Split(PluginConfig.LastLevelIDSeparatorArray, StringSplitOptions.None);
                 if (lastLevelData.Length == 3)
                 {
