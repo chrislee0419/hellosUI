@@ -25,12 +25,15 @@ namespace HUI.DataFlow
         private LevelCollectionNavigationController _levelCollectionNavigationController;
         private LevelSelectionNavigationController _levelSelectionNavigationController;
         private LevelCollectionViewController _levelCollectionViewController;
+        private TableView _levelsTableView;
 
         private SongSortManager _sortManager;
         private List<ILevelCollectionModifier> _externalModifiers;
 
         private bool _levelCollectionRefreshing = false;
         private bool _selectLastLevel = false;
+        private int _scrollToIndexAfterDeletion = -1;
+        private string _customLevelPackIdToShowAfterDeletion = null;
 
         private static readonly FieldAccessor<LevelCollectionNavigationController, bool>.Accessor ShowPlayerStatsAccessor = FieldAccessor<LevelCollectionNavigationController, bool>.GetAccessor("_showPlayerStatsInDetailView");
         private static readonly FieldAccessor<LevelCollectionNavigationController, bool>.Accessor ShowPracticeButtonAccessor = FieldAccessor<LevelCollectionNavigationController, bool>.GetAccessor("_showPracticeButtonInDetailView");
@@ -61,6 +64,9 @@ namespace HUI.DataFlow
             _levelSelectionNavigationController = levelSelectionNavigationController;
             _levelCollectionViewController = levelCollectionViewController;
 
+            var levelCollectionTableView = FieldAccessor<LevelCollectionViewController, LevelCollectionTableView>.Get(ref _levelCollectionViewController, "_levelCollectionTableView");
+            _levelsTableView = FieldAccessor<LevelCollectionTableView, TableView>.Get(ref levelCollectionTableView, "_tableView");
+
             _sortManager = sortManager;
 
             // since the search and sort managers are bound to the ILevelCollectionModifier interface as wel,
@@ -87,6 +93,7 @@ namespace HUI.DataFlow
                 _levelFilteringNavigationController.didSelectAnnotatedBeatmapLevelCollectionEvent -= OnAnnotatedBeatmapLevelCollectionSelected;
 
             Loader.OnLevelPacksRefreshed -= OnLevelPacksRefreshed;
+            Loader.DeletingSong -= OnDeletingSong;
 
             if (_sortManager != null)
                 _sortManager.LevelCollectionRefreshRequested -= OnLevelCollectionRefreshRequested;
@@ -106,6 +113,7 @@ namespace HUI.DataFlow
             _levelFilteringNavigationController.didSelectAnnotatedBeatmapLevelCollectionEvent += OnAnnotatedBeatmapLevelCollectionSelected;
             _levelCollectionViewController.didSelectLevelEvent += OnLevelSelected;
             Loader.OnLevelPacksRefreshed += OnLevelPacksRefreshed;
+            Loader.DeletingSong += OnDeletingSong;
 
             if (!string.IsNullOrEmpty(PluginConfig.Instance.LastLevelPackID))
             {
@@ -188,6 +196,16 @@ namespace HUI.DataFlow
 
         private void OnLevelPacksRefreshed() => ApplyCustomLevelCollectionDelayed();
 
+        private void OnDeletingSong()
+        {
+            Plugin.Log.DebugOnly("Song is going to be deleted, finding index to scroll to after deletion");
+
+            if (_levelsTableView.visibleCells.Count() > 1)
+                _scrollToIndexAfterDeletion = _levelsTableView.GetVisibleCellsIdRange().Item1;
+
+            _customLevelPackIdToShowAfterDeletion = PluginConfig.Instance.LastLevelPackID;
+        }
+
         private void ApplyCustomLevelCollectionDelayed(int framesToWait = 1, bool waitForEndOfFrame = true)
         {
             if (_levelCollectionRefreshing)
@@ -263,6 +281,34 @@ namespace HUI.DataFlow
             {
                 this.CallAndHandleAction(EmptyLevelCollectionApplied, nameof(EmptyLevelCollectionApplied));
             }
+            else if (_scrollToIndexAfterDeletion >= 0)
+            {
+                // when deleting a song from a level pack that isn't "Custom Levels" (ex: different folder or in a playlist)
+                // the game selects the "Custom Levels" pack, instead of the originally selected pack
+                // as such, we reselect the actual original pack here, after the game has selected the "Custom Levels" pack
+                // NOTE: this returns early (clean up can be handled by the subsequent call of this function)
+                if (PluginConfig.Instance.LastLevelCategory == SelectLevelCategoryViewController.LevelCategory.CustomSongs &&
+                    !string.IsNullOrEmpty(_customLevelPackIdToShowAfterDeletion) &&
+                    _customLevelPackIdToShowAfterDeletion != PluginConfig.Instance.LastLevelPackID)
+                {
+                    Plugin.Log.Debug($"Wrong level pack (id = {PluginConfig.Instance.LastLevelPackID}) selected after song deletion, reselecting original custom level pack (id = {_customLevelPackIdToShowAfterDeletion})");
+
+                    CoroutineUtilities.StartDelayedAction(delegate ()
+                    {
+                        FieldAccessor<LevelFilteringNavigationController, string>
+                            .Set(ref _levelFilteringNavigationController, "_levelPackIdToBeSelectedAfterPresent", _customLevelPackIdToShowAfterDeletion);
+
+                        _levelFilteringNavigationController.UpdateSecondChildControllerContent(SelectLevelCategoryViewController.LevelCategory.CustomSongs);
+                    });
+
+                    return;
+                }
+
+                Plugin.Log.DebugOnly($"Scrolling to index = {_scrollToIndexAfterDeletion} after deleting song");
+
+                // scroll back to where we were before deleting the song
+                _levelsTableView.ScrollToCellWithIdx(_scrollToIndexAfterDeletion, TableView.ScrollPositionType.Beginning, false);
+            }
             else if (_selectLastLevel && !string.IsNullOrEmpty(PluginConfig.Instance.LastLevelID))
             {
                 Plugin.Log.DebugOnly($"Reselecting level \"{PluginConfig.Instance.LastLevelID}\" after modifying song list");
@@ -290,6 +336,8 @@ namespace HUI.DataFlow
             }
 
             _selectLastLevel = false;
+            _scrollToIndexAfterDeletion = -1;
+            _customLevelPackIdToShowAfterDeletion = null;
 
             this.CallAndHandleAction(LevelCollectionApplied, nameof(LevelCollectionApplied), levelCollection);
         }

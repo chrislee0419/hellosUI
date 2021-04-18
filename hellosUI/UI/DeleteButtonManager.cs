@@ -180,15 +180,13 @@ namespace HUI.UI
             {
                 Plugin.Log.Info($"Deleting beatmap '{_levelToDelete.songName}' by {_levelToDelete.levelAuthorName}");
 
-                int indexOfTopCell = 0;
-                if (_levelsTableView.visibleCells.Count() > 0)
-                    indexOfTopCell = _levelsTableView.visibleCells.Min(x => x.idx);
-
                 // delete the level and reload the levels
                 IBeatmapLevelPack currentPack = LevelPackAccessor.Invoke(ref _levelCollectionNavigationController);
 
                 if (currentPack == null)
                 {
+                    Plugin.Log.DebugOnly("Deleting song from level collection");
+
                     var tableView = LevelCollectionTableViewAccessor.Invoke(ref _levelCollectionViewController);
                     IPreviewBeatmapLevel[] levels = TableViewLevelsAccessor.Invoke(ref tableView);
                     BeatmapLevelCollection replacementLevels = new BeatmapLevelCollection(levels.Where(x => x.levelID != _levelToDelete.levelID).ToArray());
@@ -204,14 +202,13 @@ namespace HUI.UI
                 }
                 else
                 {
+                    Plugin.Log.DebugOnly($"Deleting song from level pack ({currentPack.packName})");
+
                     // SongCore should automatically reload the pack
                     Loader.Instance.DeleteSong(_levelToDelete.customLevelPath);
                 }
 
                 _levelToDelete = null;
-
-                // scroll back to where we were
-                _levelsTableView.ScrollToCellWithIdx(indexOfTopCell, TableView.ScrollPositionType.Beginning, false);
             }
 
             _parserParams.EmitEvent("hide-delete-confirmation-modal");
