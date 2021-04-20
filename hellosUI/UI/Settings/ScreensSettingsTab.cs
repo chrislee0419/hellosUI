@@ -21,13 +21,6 @@ namespace HUI.UI.Settings
         public bool BackgroundSettingsInteractable => _selectedScreen != null;
         [UIValue("screen-interactable")]
         public bool ScreenSettingsInteractable => _selectedScreen != null;
-
-        [UIValue("bg-colour-value")]
-        public Color BackgroundColour
-        {
-            get => PluginConfig.Instance.Screens.ScreenBackgroundColour;
-            set => PluginConfig.Instance.Screens.ScreenBackgroundColour = value;
-        }
         [UIValue("bg-opacity-value")]
         public object BGOpacity
         {
@@ -60,11 +53,30 @@ namespace HUI.UI.Settings
             }
         }
 
+        private Color BackgroundColour
+        {
+            get => _bgRGBController.color;
+            set
+            {
+                _bgRGBController.color = value;
+                _bgImageView.color = value;
+
+                // apparently there's some issues with assigning a colour with the same hue to the HSV controller
+                // https://github.com/monkeymanboy/BeatSaberMarkupLanguage/blob/47e00b7197c3b1486481fe4bdf91dce727735273/BeatSaberMarkupLanguage/Components/ModalColorPicker.cs#L34
+                if (_bgHSVController.color != value)
+                    _bgHSVController.color = value;
+            }
+        }
+
 #pragma warning disable CS0649
         [UIObject("list-up-button")]
         private GameObject _listUpButton;
         [UIObject("list-down-button")]
         private GameObject _listDownButton;
+        [UIObject("bg-colour-tab")]
+        private GameObject _bgColourTab;
+        [UIObject("bg-colour-preview-image-bg")]
+        private GameObject _bgColourPreviewImageBackground;
 
         [UIValue("data")]
         private List<CustomListTableData.CustomCellInfo> _screenCells;
@@ -72,6 +84,10 @@ namespace HUI.UI.Settings
 
         private List<IModifiableScreen> _screens;
         private IModifiableScreen _selectedScreen;
+
+        private RGBPanelController _bgRGBController;
+        private HSVPanelController _bgHSVController;
+        private ImageView _bgImageView;
 
         [UIValue("bg-opacity-options")]
         private static readonly List<object> BackgroundOpacityOptions = Enum.GetValues(typeof(BackgroundOpacity))
@@ -137,6 +153,51 @@ namespace HUI.UI.Settings
             btnAnims = _listDownButton.AddComponent<CustomIconButtonAnimations>();
             btnAnims.HighlightedBGColour = ListMoveColour;
             btnAnims.PressedBGColour = ListMoveColour;
+
+            // create background colour picker
+            // adapted from: https://github.com/monkeymanboy/BeatSaberMarkupLanguage/blob/47e00b7197c3b1486481fe4bdf91dce727735273/BeatSaberMarkupLanguage/Components/ModalColorPicker.cs
+            _bgRGBController = GameObject.Instantiate(
+                Resources.FindObjectsOfTypeAll<RGBPanelController>().First(x => x.name == "RGBColorPicker"),
+                _bgColourTab.transform,
+                false);
+            _bgRGBController.name = "BackgroundRGBColourPicker";
+            _bgRGBController.colorDidChangeEvent += OnBackgroundColourChanged;
+
+            var rt = _bgRGBController.gameObject.transform as RectTransform;
+            rt.anchoredPosition = Vector2.zero;
+            rt.anchorMin = new Vector2(0f, 0.25f);
+            rt.anchorMax = new Vector2(0f, 0.25f);
+            rt.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+
+            _bgHSVController = GameObject.Instantiate(
+                Resources.FindObjectsOfTypeAll<HSVPanelController>().First(x => x.name == "HSVColorPicker"),
+                _bgColourTab.transform,
+                false);
+            _bgHSVController.name = "BackgroundHSVColourPicker";
+            _bgHSVController.colorDidChangeEvent += OnBackgroundColourChanged;
+
+            GameObject.Destroy(_bgHSVController.transform.Find("ColorPickerButtonPrimary").gameObject);
+
+            rt = _bgHSVController.gameObject.transform as RectTransform;
+            rt.anchoredPosition = new Vector2(0f, 3f);
+            rt.anchorMin = new Vector2(0.75f, 0.5f);
+            rt.anchorMax = new Vector2(0.75f, 0.5f);
+            rt.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+
+            _bgImageView = GameObject.Instantiate(
+                Resources.FindObjectsOfTypeAll<ImageView>().First(x => x.name == "SaberColorA" && x.transform.parent?.name == "ColorSchemeView"),
+                _bgColourPreviewImageBackground.transform,
+                false);
+            _bgImageView.name = "BackgroundCurrentColour";
+
+            rt = _bgImageView.rectTransform;
+            rt.anchorMin = new Vector2(1f, 0.5f);
+            rt.anchorMax = new Vector2(1f, 0.5f);
+            rt.pivot = new Vector2(1f, 0.5f);
+            rt.anchoredPosition = new Vector2(-4f, 0);
+            rt.sizeDelta = new Vector2(6f, 6f);
+
+            BackgroundColour = PluginConfig.Instance.Screens.ScreenBackgroundColour;
         }
 
         public override void OnTabHidden()
@@ -159,10 +220,15 @@ namespace HUI.UI.Settings
             }
         }
 
-        private void SetBackgroundColour(IModifiableScreen screen, BackgroundOpacity bgOpacity, bool save = true, Color? overrideColour = null)
+        private void OnBackgroundColourChanged(Color colour, ColorChangeUIEventType eventType)
+        {
+            BackgroundColour = colour;
+        }
+
+        private void SetBackgroundColour(IModifiableScreen screen, BackgroundOpacity bgOpacity, bool save = true)
         {
             string id = screen.GetIdentifier();
-            Color bgColour = overrideColour ?? PluginConfig.Instance.Screens.ScreenBackgroundColour;
+            Color bgColour = PluginConfig.Instance.Screens.ScreenBackgroundColour;
             switch (bgOpacity)
             {
                 case BackgroundOpacity.Transparent:
@@ -186,20 +252,6 @@ namespace HUI.UI.Settings
         }
 
         private void RefreshValues() => base.OnPluginConfigReloaded();
-
-        [UIAction("bg-colour-changed")]
-        private void OnBGColourChanged(Color value)
-        {
-            // set background colour for all non-transparent screens
-            var screenOpacities = PluginConfig.Instance.Screens.ScreenOpacities;
-            foreach (var screen in _screens)
-            {
-                string id = screen.GetIdentifier();
-
-                if (screenOpacities.TryGetValue(id, out BackgroundOpacity opacity))
-                    SetBackgroundColour(screen, opacity, false, value);
-            }
-        }
 
         [UIAction("cell-selected")]
         private void OnCellSelected(TableView tableView, int index)
@@ -228,6 +280,28 @@ namespace HUI.UI.Settings
         {
             if (IsScreenSelected())
                 _selectedScreen.ResetPosition();
+        }
+
+        [UIAction("bg-colour-apply-button-clicked")]
+        private void OnBackgroundColourApplyButtonClicked()
+        {
+            PluginConfig.Instance.Screens.ScreenBackgroundColour = BackgroundColour;
+
+            // set background colour for all non-transparent screens
+            var screenOpacities = PluginConfig.Instance.Screens.ScreenOpacities;
+            foreach (var screen in _screens)
+            {
+                string id = screen.GetIdentifier();
+
+                if (screenOpacities.TryGetValue(id, out BackgroundOpacity opacity))
+                    SetBackgroundColour(screen, opacity, false);
+            }
+        }
+
+        [UIAction("bg-colour-reset-button-clicked")]
+        private void OnBackgroundColourResetButtonClicked()
+        {
+            BackgroundColour = PluginConfig.Instance.Screens.ScreenBackgroundColour;
         }
 
         public enum BackgroundOpacity

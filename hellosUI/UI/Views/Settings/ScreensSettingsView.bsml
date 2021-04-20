@@ -1,88 +1,129 @@
 ﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
-  <vertical pad='2'>
-    <color-setting text='Screen background colour'
-                   preferred-height='10'
-                   font-size='3.6'
-                   value='bg-colour-value'
-                   get-event='refresh-all-values'
-                   on-change='bg-colour-changed'
-                   apply-on-change='true'
-                   bind-value='true' />
-    <horizontal vertical-fit='Unconstrained'
-                pad='2'>
-      <list id='screen-list'
-            preferred-width='30' list-width='30'
-            data='data'
-            list-style='Simple'
-            cell-size='7'
-            visible-cells='7'
-            select-cell='cell-selected' />
-        
-      <vertical preferred-width='8'>
-        <vertical child-align='UpperCenter'
-                  child-expand-height='false'>
-          <icon-button id='list-up-button'
-                       icon='hellosUI:HUI.Assets.chevron.png'
-                       preferred-width='6'
-                       preferred-height='12'
-                       click-event='screen-list#PageUp' />
-        </vertical>
-        <vertical child-align='LowerCenter'
-                  child-expand-height='false'>
-          <icon-button id='list-down-button'
-                       icon='hellosUI:HUI.Assets.chevron.png'
-                       preferred-width='6'
-                       preferred-height='12'
-                       click-event='screen-list#PageDown' />
-        </vertical>
-      </vertical>
+  <tab-selector tab-tag='screen-settings-tab'
+                size-delta-x='0' size-delta-y='6' />
 
-      <vertical bg='round-rect-panel'
-                bg-color='#00000040'
-                preferred-width='50'
-                vertical-fit='Unconstrained'
-                child-align='UpperCenter'
-                child-expand-height='false'
-                spacing='5'
-                pad='2'>
-        <vertical spacing='1'
-                  child-expand-height='false'>
-          <text text='Set background opacity'
-                italics='true'
-                font-size='3.4'
-                font-align='Center' />
-          <list-setting text=''
-                        interactable='~bg-interactable'
-                        hover-hint='Use an opaque, coloured background for the screen'
-                        preferred-width='40'
-                        preferred-height='6'
-                        value='bg-opacity-value'
-                        options='bg-opacity-options'
-                        get-event='refresh-all-values'
-                        bind-value='true'
-                        apply-on-change='true' />
-        </vertical>
-        <vertical spacing='2'
-                  child-expand-height='false'>
-          <bool-setting text='Allow repositioning'
-                        interactable='~screen-interactable'
-                        hover-hint='Show the repositioning bar, allowing the screen to be moved'
-                        preferred-width='44'
-                        preferred-height='6'
-                        font-size='3.4'
-                        value='enable-movement-value'
-                        get-event='refresh-all-values'
-                        bind-value='true'
-                        apply-on-change='true' />
-          <button text='Reset to Default Position'
-                  interactable='~screen-interactable'
-                  preferred-width='40'
-                  preferred-height='8'
-                  font-size='3.2'
-                  on-click='reset-button-clicked' />
-        </vertical>
-      </vertical>
-    </horizontal>
-  </vertical>
+  <bg anchor-min-x='0' anchor-min-y='0'
+      anchor-max-x='1' anchor-max-y='1'
+      size-delta-x='0' size-delta-y='-8'
+      anchor-pos-x='0' anchor-pos-y='-2'>
+    <tab tags='screen-settings-tab' tab-name='Screen Settings'>
+        <horizontal anchor-min-x='0' anchor-min-y='0'
+                    anchor-max-x='1' anchor-max-y='1'
+                    size-delta-x='0' size-delta-y='0'
+                    anchor-pos-x='0' anchor-pos-y='0'
+                    horizontal-fit='Unconstrained'
+                    vertical-fit='Unconstrained'
+                    pad='2'>
+          <list id='screen-list'
+                preferred-width='30' list-width='30'
+                data='data'
+                list-style='Simple'
+                cell-size='7'
+                visible-cells='7'
+                select-cell='cell-selected' />
+
+          <vertical preferred-width='8'>
+            <vertical child-align='UpperCenter'
+                      child-expand-height='false'>
+              <icon-button id='list-up-button'
+                           icon='hellosUI:HUI.Assets.chevron.png'
+                           preferred-width='6'
+                           preferred-height='12'
+                           click-event='screen-list#PageUp' />
+            </vertical>
+            <vertical child-align='LowerCenter'
+                      child-expand-height='false'>
+              <icon-button id='list-down-button'
+                           icon='hellosUI:HUI.Assets.chevron.png'
+                           preferred-width='6'
+                           preferred-height='12'
+                           click-event='screen-list#PageDown' />
+            </vertical>
+          </vertical>
+
+          <vertical bg='round-rect-panel'
+                    bg-color='#00000040'
+                    preferred-width='50'
+                    vertical-fit='Unconstrained'
+                    child-align='UpperCenter'
+                    child-expand-height='false'
+                    spacing='5'
+                    pad='2'>
+            <vertical spacing='1'
+                      child-expand-height='false'>
+              <text text='Set background opacity'
+                    italics='true'
+                    font-size='3.4'
+                    font-align='Center' />
+              <list-setting text=''
+                            interactable='~bg-interactable'
+                            hover-hint='Use an opaque, coloured background for the screen'
+                            preferred-width='40'
+                            preferred-height='6'
+                            value='bg-opacity-value'
+                            options='bg-opacity-options'
+                            get-event='refresh-all-values'
+                            bind-value='true'
+                            apply-on-change='true' />
+            </vertical>
+            <vertical spacing='2'
+                      child-expand-height='false'>
+              <bool-setting text='Allow repositioning'
+                            interactable='~screen-interactable'
+                            hover-hint='Show the repositioning bar, allowing the screen to be moved'
+                            preferred-width='44'
+                            preferred-height='6'
+                            font-size='3.4'
+                            value='enable-movement-value'
+                            get-event='refresh-all-values'
+                            bind-value='true'
+                            apply-on-change='true' />
+              <button text='Reset to Default Position'
+                      interactable='~screen-interactable'
+                      preferred-width='40'
+                      preferred-height='8'
+                      font-size='3.2'
+                      on-click='reset-button-clicked' />
+            </vertical>
+          </vertical>
+        </horizontal>
+    </tab>
+
+    <tab id='bg-colour-tab' tags='screen-settings-tab' tab-name='Background Color'>
+      <bg id='bg-colour-preview-image-bg'
+          bg='round-rect-panel'
+          bg-color='#00000080'
+          anchor-min-x='0' anchor-min-y='1'
+          anchor-max-x='0' anchor-max-y='1'
+          size-delta-x='30' size-delta-y='8'
+          anchor-pos-x='10' anchor-pos-y='-3.5'
+          pivot-x='0' pivot-y='1'>
+        <text text='Preview'
+              font-size='4.2'
+              anchor-min-x='0' anchor-min-y='0'
+              anchor-max-x='1' anchor-max-y='1'
+              size-delta-x='0' size-delta-y='0'
+              anchor-pos-x='4' anchor-pos-y='0'
+              italics='true'
+              font-align='Left' />
+      </bg>
+      <horizontal anchor-min-x='0' anchor-min-y='0'
+                  anchor-max-x='1' anchor-max-y='0'
+                  size-delta-x='0' size-delta-y='8'
+                  pivot-x='0.5' pivot-y='0'
+                  spacing='5'>
+        <button text='Apply'
+                preferred-width='40'
+                preferred-height='8'
+                font-size='3.2'
+                on-click='bg-colour-apply-button-clicked' />
+        <button text='Reset'
+                preferred-width='40'
+                preferred-height='8'
+                font-size='3.2'
+                on-click='bg-colour-reset-button-clicked' />
+      </horizontal>
+    </tab>
+  </bg>
 </bg>
