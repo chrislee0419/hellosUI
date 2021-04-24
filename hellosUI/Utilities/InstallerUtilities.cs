@@ -7,7 +7,7 @@ using HUI.Attributes;
 
 namespace HUI.Utilities
 {
-    internal static class InstallerUtilities
+    public static class InstallerUtilities
     {
         public static IEnumerable<Type> GetTypesFromAssembly(Assembly assembly)
         {
