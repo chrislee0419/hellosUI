@@ -61,14 +61,14 @@ namespace HUI.Utilities
         public static void DebugOnly(this Logger logger, string message)
         {
 #if DEBUG
-            Plugin.Log.Debug(message);
+            logger.Debug(message);
 #endif
         }
 
         public static void DebugOnly(this Logger logger, Exception exception)
         {
 #if DEBUG
-            Plugin.Log.Debug(exception);
+            logger.Debug(exception);
 #endif
         }
     }
