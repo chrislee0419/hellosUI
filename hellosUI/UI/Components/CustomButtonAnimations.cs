@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using HMUI;
 
 namespace HUI.UI.Components
@@ -86,6 +87,9 @@ namespace HUI.UI.Components
         protected GameObject _underlineGO;
 
         protected static readonly Color TranslucentColour = new Color(1f, 1f, 1f, 0.5f);
+        protected static readonly Color DefaultNormalContentColour = new Color(1f, 1f, 1f, 0.75f);
+        protected static readonly Color DefaultDisabledContentColour = new Color(1f, 1f, 1f, 0.25f);
+        protected static readonly Color DefaultHighlightedContentColour = DefaultNormalContentColour;
 
         protected virtual void Awake()
         {
@@ -150,9 +154,105 @@ namespace HUI.UI.Components
         }
     }
 
+    public class CustomTextButtonAnimations : CustomButtonAnimations
+    {
+        private Color _normalTextColour = DefaultNormalContentColour;
+        public Color NormalTextColour
+        {
+            get => _normalTextColour;
+            set
+            {
+                if (_normalTextColour == value)
+                    return;
+
+                _normalTextColour = value;
+                if (_button != null)
+                    OnSelectionStateChanged(_button.selectionState);
+            }
+        }
+
+        private Color _disabledTextColour = DefaultDisabledContentColour;
+        public Color DisabledTextColour
+        {
+            get => _disabledTextColour;
+            set
+            {
+                if (_disabledTextColour == value)
+                    return;
+
+                _disabledTextColour = value;
+                if (_button != null)
+                    OnSelectionStateChanged(_button.selectionState);
+            }
+        }
+
+        protected Color _highlightedTextColour = DefaultHighlightedContentColour;
+        public Color HighlightedTextColour
+        {
+            get => _highlightedTextColour;
+            set
+            {
+                if (_highlightedTextColour == value)
+                    return;
+
+                _highlightedTextColour = value;
+                if (_button != null)
+                    OnSelectionStateChanged(_button.selectionState);
+            }
+        }
+
+        protected Color _pressedTextColour = DefaultHighlightedContentColour;
+        public Color PressedTextColour
+        {
+            get => _pressedTextColour;
+            set
+            {
+                if (_pressedTextColour == value)
+                    return;
+
+                _pressedTextColour = value;
+                if (_button != null)
+                    OnSelectionStateChanged(_button.selectionState);
+            }
+        }
+
+        private TextMeshProUGUI _text;
+
+        protected override void Awake()
+        {
+            _text = this.transform.Find("Content/Text").GetComponent<TextMeshProUGUI>();
+
+            base.Awake();
+        }
+
+        protected override void OnSelectionStateChanged(NoTransitionsButton.SelectionState selectionState)
+        {
+            base.OnSelectionStateChanged(selectionState);
+
+            switch (selectionState)
+            {
+                case NoTransitionsButton.SelectionState.Disabled:
+                    _text.color = _disabledTextColour;
+                    break;
+
+                case NoTransitionsButton.SelectionState.Normal:
+                    _text.color = _normalTextColour;
+                    break;
+
+                case NoTransitionsButton.SelectionState.Highlighted:
+                    _text.color = _highlightedTextColour;
+                    break;
+
+                case NoTransitionsButton.SelectionState.Pressed:
+                    _text.color = _pressedTextColour;
+                    break;
+            }
+        }
+    }
+
     public class CustomIconButtonAnimations : CustomButtonAnimations
     {
-        private Color _normalIconColour = Color.grey;
+        private Color _normalIconColour = DefaultNormalContentColour;
         public Color NormalIconColour
         {
             get => _normalIconColour;
@@ -167,7 +267,7 @@ namespace HUI.UI.Components
             }
         }
 
-        private Color _disabledIconColour = new Color(1f, 1f, 1f, 0.25f);
+        private Color _disabledIconColour = DefaultDisabledContentColour;
         public Color DisabledIconColour
         {
             get => _disabledIconColour;
@@ -182,7 +282,7 @@ namespace HUI.UI.Components
             }
         }
 
-        protected Color _highlightedIconColour = Color.white;
+        protected Color _highlightedIconColour = DefaultHighlightedContentColour;
         public Color HighlightedIconColour
         {
             get => _highlightedIconColour;
@@ -197,7 +297,7 @@ namespace HUI.UI.Components
             }
         }
 
-        protected Color _pressedIconColour = Color.grey;
+        protected Color _pressedIconColour = DefaultHighlightedContentColour;
         public Color PressedIconColour
         {
             get => _pressedIconColour;
