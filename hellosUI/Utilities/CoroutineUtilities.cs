@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HUI.Utilities
 {
-    internal static class CoroutineUtilities
+    public static class CoroutineUtilities
     {
         private static WaitForEndOfFrame _wait = new WaitForEndOfFrame();
         /// <summary>
