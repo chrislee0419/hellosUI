@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using HMUI;
 using VRUIControls;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
@@ -30,6 +31,14 @@ namespace HUI.UI.Screens
 
         private LevelCollectionNavigationController _levelCollectionNavigationController;
 
+        // for whatever reason, a screen radius of 0 messes up the depth sorting of the raycasts or something
+        // cause it causes masked off interactables/selectables to still be able to be hovered over
+        // maybe there's an issue in VRGraphicRaycaster.RaycastCanvas()?
+        // anyways, because of that, the screen needs to have some radius to actually mask raycasts properly
+        // so, we just use some high radius to make it look flat enough but not too high,
+        // otherwise it messes up some raycast calculations
+        private const float ScreenRadius = 5000f;
+
         public ScreenManagerBase(
             MainMenuViewController mainMenuVC,
             SoloFreePlayFlowCoordinator soloFC,
@@ -45,14 +54,30 @@ namespace HUI.UI.Screens
 
             _levelCollectionNavigationController = levelCollectionNC;
 
-            _screen = FloatingScreen.CreateFloatingScreen(screenSize, false, screenPosition, screenRotation);
+            _screen = FloatingScreen.CreateFloatingScreen(screenSize, false, screenPosition, screenRotation, ScreenRadius);
             _screen.gameObject.FixRaycaster(physicsRaycaster);
 
             _animationHandler = _screen.gameObject.AddComponent<ScreenAnimationHandler>();
             _animationHandler.DefaultSize = screenSize;
 
             if (!string.IsNullOrEmpty(AssociatedBSMLResource))
+            {
                 BSMLParser.instance.Parse(BSMLUtilities.GetResourceContent(this.GetType().Assembly, AssociatedBSMLResource), _screen.gameObject, this);
+
+                // add touchable if necessary to the root element
+                if (_screen.transform.childCount != 0)
+                {
+                    var rootElement = _screen.transform.GetChild(0);
+                    if (rootElement != null)
+                    {
+                        var graphic = rootElement.GetComponent<Graphic>();
+                        if (graphic != null)
+                            graphic.raycastTarget = true;
+                        else
+                            rootElement.gameObject.AddComponent<Touchable>();
+                    }
+                }
+            }
         }
 
         public override void Initialize()
