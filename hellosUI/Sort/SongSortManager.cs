@@ -12,7 +12,7 @@ namespace HUI.Sort
 {
     public class SongSortManager : IInitializable, IDisposable, ILevelCollectionModifier
     {
-        public event Action LevelCollectionRefreshRequested;
+        public event Action<bool> LevelCollectionRefreshRequested;
 
         public int Priority => -10;
 
@@ -260,6 +260,6 @@ namespace HUI.Sort
 
         internal void ApplyDefaultSort() => ApplySortMode(_defaultSortMode, _defaultSortMode.DefaultSortByAscending);
 
-        private void RequestLevelCollectionRefresh() => this.CallAndHandleAction(LevelCollectionRefreshRequested, nameof(LevelCollectionRefreshRequested));
+        private void RequestLevelCollectionRefresh() => this.CallAndHandleAction(LevelCollectionRefreshRequested, nameof(LevelCollectionRefreshRequested), false);
     }
 }

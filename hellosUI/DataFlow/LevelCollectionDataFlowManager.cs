@@ -186,11 +186,12 @@ namespace HUI.DataFlow
             PluginConfig.Instance.LastLevelID = sb.ToString();
         }
 
-        private void OnLevelCollectionRefreshRequested()
+        private void OnLevelCollectionRefreshRequested(bool selectLastLevel)
         {
             if (_originalLevelCollection == null)
                 return;
 
+            _selectLastLevel = selectLastLevel;
             ApplyCustomLevelCollectionDelayed();
         }
 

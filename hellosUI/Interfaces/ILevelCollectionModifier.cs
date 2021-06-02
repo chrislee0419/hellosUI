@@ -6,9 +6,10 @@ namespace HUI.Interfaces
     public interface ILevelCollectionModifier
     {
         /// <summary>
-        /// Used to request a level collection refresh when the settings of this modifier have changed.
+        /// Used to request a level collection refresh when the settings of this modifier have changed, 
+        /// along with whether to reselect the last selected level.
         /// </summary>
-        event Action LevelCollectionRefreshRequested;
+        event Action<bool> LevelCollectionRefreshRequested;
 
         /// <summary>
         /// Determines when this modifier will be applied.
