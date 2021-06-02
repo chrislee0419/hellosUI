@@ -388,6 +388,8 @@ namespace HUI.UI.Screens
         {
             _screen.ScreenPosition = _defaultScreenPosition;
             _screen.ScreenRotation = _defaultScreenRotation;
+
+            SavePosition();
         }
 
         public virtual void SavePosition()
