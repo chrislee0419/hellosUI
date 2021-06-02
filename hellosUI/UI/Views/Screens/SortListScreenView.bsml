@@ -9,8 +9,7 @@
       bg-color='#80808040'
       anchor-min-x='0' anchor-min-y='0'
       anchor-max-x='1' anchor-max-y='1'
-      anchor-pos-x='0' anchor-pos-y='7'
-      pivot-x='0.5' pivot-y='0'
+      anchor-pos-x='0' anchor-pos-y='0'
       size-delta-x='-2' size-delta-y='-16'>
     <list id='sort-mode-list'
           anchor-min-x='0' anchor-min-y='0'
