@@ -11,6 +11,7 @@ using BeatSaberMarkupLanguage.Components;
 using HUI.Interfaces;
 using HUI.Sort.BuiltIn;
 using HUI.UI.Components;
+using HUI.UI.CustomBSML.Components;
 using HUI.Utilities;
 
 namespace HUI.UI.Settings
@@ -69,7 +70,7 @@ namespace HUI.UI.Settings
 
 #pragma warning disable CS0649
         [UIComponent("sort-mode-list")]
-        private CustomCellListTableData _sortModeListTableData;
+        private HUICustomCellListTableData _sortModeListTableData;
 
         [UIObject("top-button")]
         private GameObject _topButton;
@@ -427,33 +428,12 @@ namespace HUI.UI.Settings
 
             public ISortMode SortMode { get; private set; }
 
-#pragma warning disable CS0649
-            [UIObject("hovered-bg")]
-            private GameObject _hoveredBG;
-            [UIObject("selected-bg")]
-            private GameObject _selectedBG;
-#pragma warning restore CS0649
-
-            private bool _initialized = false;
-
             public SortModeListCell(ISortMode sortMode)
             {
                 if (sortMode == null)
                     throw new ArgumentNullException(nameof(sortMode));
 
                 SortMode = sortMode;
-            }
-
-            [UIAction("refresh-visuals")]
-            private void RefreshVisuals(bool selected, bool highlighted)
-            {
-                if (!_initialized)
-                {
-                    _hoveredBG.GetComponent<ImageView>().SetSkew(0f);
-                    _selectedBG.GetComponent<ImageView>().SetSkew(0f);
-
-                    _initialized = true;
-                }
             }
 
             public int CompareTo(SortModeListCell other) => this.Index - other.Index;

@@ -28,16 +28,12 @@
 
   <horizontal preferred-height='40'>
     <vertical preferred-width='62'>
-      <custom-list id='sort-mode-list'
-                   anchor-min-x='0' anchor-min-y='0'
-                   anchor-max-x='1' anchor-max-y='0'
-                   pivot-x='0.5' pivot-y='0'
-                   anchor-pos-x='0' anchor-pos-y='0'
-                   list-width='62'
-                   visible-cells='5'
-                   cell-size='8'
-                   clickable-cells='true'
-                   select-cell='sort-mode-selected'>
+      <hui-custom-list id='sort-mode-list'
+                       list-width='62'
+                       visible-cells='5'
+                       cell-size='8'
+                       clickable-cells='true'
+                       select-cell='sort-mode-selected'>
         <text text='~name-text'
               font-align='Left'
               font-size='3.5'
@@ -54,19 +50,7 @@
               pivot-x='1' pivot-y='0.5'
               anchor-pos-x='-3' anchor-pos-y='0'
               size-delta-x='12' size-delta-y='0' />
-        <bg id='hovered-bg'
-            bg='panel-fade-gradient'
-            bg-color='#00AAFF40'
-            anchor-min-x='0' anchor-min-y='0'
-            anchor-max-x='1' anchor-max-y='1'
-            tags='hovered' />
-        <bg id='selected-bg'
-            bg='panel-fade-gradient'
-            bg-color='#40AAFF80'
-            anchor-min-x='0' anchor-min-y='0'
-            anchor-max-x='1' anchor-max-y='1'
-            tags='selected' />
-      </custom-list>
+      </hui-custom-list>
     </vertical>
     
     <vertical preferred-width='8'>
