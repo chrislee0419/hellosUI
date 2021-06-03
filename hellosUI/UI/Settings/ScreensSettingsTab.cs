@@ -53,6 +53,9 @@ namespace HUI.UI.Settings
             }
         }
 
+        [UIValue("screen-list-data")]
+        public List<object> ScreenListData => _screens.Select(x => (object)new ScreenListCell(x)).ToList();
+
         private Color BackgroundColour
         {
             get => _bgRGBController.color;
@@ -77,9 +80,6 @@ namespace HUI.UI.Settings
         private GameObject _bgColourTab;
         [UIObject("bg-colour-preview-image-bg")]
         private GameObject _bgColourPreviewImageBackground;
-
-        [UIValue("data")]
-        private List<CustomListTableData.CustomCellInfo> _screenCells;
 #pragma warning restore CS0649
 
         private List<IModifiableScreen> _screens;
@@ -98,10 +98,6 @@ namespace HUI.UI.Settings
         public ScreensSettingsTab(List<IModifiableScreen> screens)
         {
             _screens = screens;
-
-            _screenCells = new List<CustomListTableData.CustomCellInfo>(screens.Count);
-            foreach (var screen in screens)
-                _screenCells.Add(new CustomListTableData.CustomCellInfo(screen.ScreenName));
         }
 
         public void Initialize()
@@ -254,11 +250,11 @@ namespace HUI.UI.Settings
         private void RefreshValues() => base.OnPluginConfigReloaded();
 
         [UIAction("cell-selected")]
-        private void OnCellSelected(TableView tableView, int index)
+        private void OnCellSelected(TableView tableView, ScreenListCell screenListCell)
         {
             EnableMovement = false;
 
-            _selectedScreen = _screens[index];
+            _selectedScreen = screenListCell.Screen;
 
             NotifyPropertyChanged(nameof(BackgroundSettingsInteractable));
             NotifyPropertyChanged(nameof(ScreenSettingsInteractable));
@@ -309,6 +305,19 @@ namespace HUI.UI.Settings
             Transparent,
             Translucent,
             Opaque
+        }
+
+        private class ScreenListCell
+        {
+            [UIValue("name-text")]
+            public string NameText => Screen.ScreenName.EscapeTextMeshProTags();
+
+            public IModifiableScreen Screen { get; private set; }
+
+            public ScreenListCell(IModifiableScreen screen)
+            {
+                Screen = screen;
+            }
         }
     }
 }

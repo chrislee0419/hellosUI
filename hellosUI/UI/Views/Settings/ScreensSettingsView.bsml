@@ -15,13 +15,24 @@
                     horizontal-fit='Unconstrained'
                     vertical-fit='Unconstrained'
                     pad='2'>
-          <list id='screen-list'
-                preferred-width='30' list-width='30'
-                data='data'
-                list-style='Simple'
-                cell-size='7'
-                visible-cells='7'
-                select-cell='cell-selected' />
+          <hui-custom-list id='screen-list'
+                           data='screen-list-data'
+                           list-width='30'
+                           cell-size='7'
+                           visible-cells='7'
+                           select-cell='cell-selected'>
+            <scrolling-text text='~name-text'
+                            anchor-min-x='0' anchor-min-y='0'
+                            anchor-max-x='1' anchor-max-y='1'
+                            size-delta-x='-2' size-delta-y='0'
+                            font-size='3.6'
+                            font-align='Center'
+                            italics='true'
+                            movement-type='ByDuration'
+                            animation-type='ForwardAndReverse'
+                            pause-duration='3'
+                            scroll-duration='4' />
+          </hui-custom-list>
 
           <vertical preferred-width='8'>
             <vertical child-align='UpperCenter'
