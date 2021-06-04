@@ -158,6 +158,7 @@
     <Compile Include="Installers\SortModeInstaller.cs" />
     <Compile Include="DataFlow\LevelCollectionDataFlowManager.cs" />
     <Compile Include="Interfaces\IModifiableScreen.cs" />
+    <Compile Include="Interfaces\ISettingsModalTab.cs" />
     <Compile Include="UI\CustomBSML\Components\HUICustomCellListTableData.cs" />
     <Compile Include="UI\CustomBSML\Tags\HUICustomListTag.cs" />
     <Compile Include="UI\CustomBSML\TypeHandlers\HUICustomCellListTableDataTypeHandler.cs" />

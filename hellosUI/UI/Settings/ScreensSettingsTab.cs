@@ -12,7 +12,7 @@ using HUI.Utilities;
 
 namespace HUI.UI.Settings
 {
-    public class ScreensSettingsTab : SettingsModalManager.SettingsModalTabBase, IInitializable
+    public class ScreensSettingsTab : SettingsModalTabBase, IInitializable
     {
         public override string TabName => "Screens";
         protected override string AssociatedBSMLResource => "HUI.UI.Views.Settings.ScreensSettingsView.bsml";
