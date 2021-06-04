@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using HMUI;
 using VRUIControls;
 using IPA.Utilities;
@@ -24,5 +25,8 @@ namespace HUI.Utilities
             FieldAccessor<ImageView, float>.Set(ref image, "_skew", skew);
             image.SetVerticesDirty();
         }
+
+        private static readonly FieldAccessor<TableView, HashSet<int>>.Accessor SelectedCellsAccessor = FieldAccessor<TableView, HashSet<int>>.GetAccessor("_selectedCellIdxs");
+        public static HashSet<int> GetSelectedIndices(this TableView tableView) => SelectedCellsAccessor(ref tableView);
     }
 }
