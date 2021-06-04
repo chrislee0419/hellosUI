@@ -189,8 +189,6 @@ namespace HUI.UI.Screens
                 _scrollView = FieldAccessor<TableView, ScrollView>.Get(ref _levelsTableView, "_scrollView");
                 ScrollViewRefreshButtonsPatch.InstallHook(_scrollView, RefreshPageButtons);
             }
-
-            //CoroutineUtilities.StartDelayedAction(() => _scrollView.RefreshButtons());
         }
 
         public void RefreshPageButtons(bool pageUpInteractable, bool pageDownInteractable)
