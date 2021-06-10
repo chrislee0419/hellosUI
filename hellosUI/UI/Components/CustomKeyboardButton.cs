@@ -33,7 +33,7 @@ namespace HUI.UI.Components
             _button = this.GetComponent<NoTransitionsButton>();
             _button.onClick.RemoveAllListeners();
 
-            _text = this.GetComponentInChildren<TextMeshProUGUI>();
+            _text = this.GetComponentInChildren<TextMeshProUGUI>(true);
 
             Color bgColour = new Color(0.116f, 0.354f, 0.8f);
             _btnAnims = this.gameObject.GetComponent<CustomButtonAnimations>();
