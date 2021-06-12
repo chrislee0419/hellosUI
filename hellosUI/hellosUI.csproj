@@ -163,8 +163,11 @@
     <Compile Include="Interfaces\ISettingsModalTab.cs" />
     <Compile Include="UI\Components\CustomKeyboardButton.cs" />
     <Compile Include="UI\CustomBSML\Components\HUICustomCellListTableData.cs" />
+    <Compile Include="UI\CustomBSML\Components\HUIScrollingText.cs" />
     <Compile Include="UI\CustomBSML\Tags\HUICustomListTag.cs" />
+    <Compile Include="UI\CustomBSML\Tags\HUIScrollingTextTag.cs" />
     <Compile Include="UI\CustomBSML\TypeHandlers\HUICustomCellListTableDataTypeHandler.cs" />
+    <Compile Include="UI\CustomBSML\TypeHandlers\HUIScrollingTextTypeHandler.cs" />
     <Compile Include="UI\Screens\SortListScreenManager.cs" />
     <Compile Include="UI\Settings\SettingsModalDispatcher.cs" />
     <Compile Include="UI\Settings\SettingsModalManager.cs" />
