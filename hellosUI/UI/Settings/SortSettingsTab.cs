@@ -16,7 +16,7 @@ using HUI.Utilities;
 
 namespace HUI.UI.Settings
 {
-    public class SortSettingsTab : SettingsModalTabBase, IDisposable
+    public class SortSettingsTab : SettingsModalTabBase
     {
         public event Action SortModeListSettingChanged;
 
