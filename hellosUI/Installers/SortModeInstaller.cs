@@ -14,8 +14,10 @@ namespace HUI.Installers
             Container.BindInterfacesAndSelfTo<SongSortManager>().AsSingle();
             Container.Bind<PlayCountSortMode>().AsSingle();
 
-            // don't bind ISortMode to PPSortMode, otherwise it will be grouped with the external sort groups
+            // don't bind ISortMode to PPSortMode and StarRatingSortMode,
+            // otherwise it will be grouped with the external sort groups
             Container.Bind(typeof(PPSortMode), typeof(IInitializable), typeof(IDisposable)).To<PPSortMode>().AsSingle();
+            Container.Bind(typeof(StarRatingSortMode), typeof(IInitializable), typeof(IDisposable)).To<StarRatingSortMode>().AsSingle();
 
             // get external sort modes
             var externalSortModes = InstallerUtilities.GetAutoInstallDerivativeTypesFromAllAssemblies(typeof(ISortMode));

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Zenject;
 using IPA.Loader;
 using HUI.Interfaces;
@@ -25,10 +27,7 @@ namespace HUI.Sort.BuiltIn
         public void Initialize()
         {
             if (PluginLoaded)
-            {
-                // InstallEvents needs to run after SongDataCore creates the Songs object, hence the wait here
-                CoroutineUtilities.StartDelayedAction(InstallEvents, 1, false);
-            }
+                CoroutineUtilities.Start(TryInstallEvents());
         }
 
         public void Dispose()
@@ -37,9 +36,18 @@ namespace HUI.Sort.BuiltIn
                 RemoveEvents();
         }
 
-        private void InstallEvents()
+        private IEnumerator TryInstallEvents()
         {
-            SDCPlugin.Songs.OnDataFinishedProcessing += OnDataFinishedProcessing;
+            var wait = new WaitForSeconds(0.1f);
+            int tries = 0;
+
+            while (SDCPlugin.Songs == null && tries++ < 10)
+                yield return wait;
+
+            if (SDCPlugin.Songs != null)
+                SDCPlugin.Songs.OnDataFinishedProcessing += OnDataFinishedProcessing;
+            else
+                Plugin.Log.Warn("PP sort mode failed to install listener to SongDataCore, sort mode may not work correctly");
         }
 
         private void RemoveEvents()

@@ -31,6 +31,7 @@ namespace HUI.Sort
         private List<ISortMode> _externalSortModes;
 
         private bool _isBaseGamePlaylist = false;
+        private bool _hasSortModeAvailabilityChanged = false;
 
         [Inject]
         public SongSortManager(
@@ -39,6 +40,7 @@ namespace HUI.Sort
             SortSettingsTab sortSettingsTab,
             PlayCountSortMode playCountSort,
             PPSortMode ppSort,
+            StarRatingSortMode starRatingSort,
             List<ISortMode> externalSortModes)
         {
             _sortScreenManager = sortScreenManager;
@@ -53,7 +55,7 @@ namespace HUI.Sort
                 playCountSort,
                 new SongLengthSortMode(),
                 ppSort,
-                new StarRatingSortMode()
+                starRatingSort
             };
             _externalSortModes = externalSortModes;
         }
@@ -90,7 +92,7 @@ namespace HUI.Sort
             _sortSettingsTab.SortModeListSettingChanged += OnSortModeListChanged;
 
             foreach (var sortMode in _builtInSortModes.Concat(_externalSortModes))
-                sortMode.AvailabilityChanged += OnSortModeListChanged;
+                sortMode.AvailabilityChanged += OnSortModeAvailabilityChanged;
         }
 
         public void Dispose()
@@ -117,7 +119,7 @@ namespace HUI.Sort
             foreach (var sortMode in sortModes)
             {
                 if (sortMode != null)
-                    sortMode.AvailabilityChanged -= OnSortModeListChanged;
+                    sortMode.AvailabilityChanged -= OnSortModeAvailabilityChanged;
             }
         }
 
@@ -240,6 +242,19 @@ namespace HUI.Sort
                 // reselect the current sort mode if the user clicked on an unavailable sort mode
                 index = SortModes.IndexOf(CurrentSortMode);
                 _sortListScreenManager.SelectSortMode(index);
+            }
+        }
+
+        private void OnSortModeAvailabilityChanged()
+        {
+            if (!_hasSortModeAvailabilityChanged)
+            {
+                _hasSortModeAvailabilityChanged = true;
+                CoroutineUtilities.StartDelayedAction(delegate ()
+                {
+                    _hasSortModeAvailabilityChanged = false;
+                    OnSortModeListChanged();
+                }, 1, false);
             }
         }
 
