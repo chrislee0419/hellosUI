@@ -190,6 +190,7 @@ namespace HUI.UI.Settings
 
             _selectedSortMode = null;
 
+            NotifyPropertyChanged(nameof(AnyChanges));
             NotifyPropertyChanged(nameof(UpButtonsInteractable));
             NotifyPropertyChanged(nameof(DownButtonsInteractable));
             NotifyPropertyChanged(nameof(HideButtonInteractable));
