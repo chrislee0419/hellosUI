@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SortModeExamplePlugin")]
-[assembly: AssemblyCopyright("Copyright © chrislee0419 2020")]
+[assembly: AssemblyCopyright("Copyright © chrislee0419 2020-2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
