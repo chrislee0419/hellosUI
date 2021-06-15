@@ -187,6 +187,7 @@ namespace HUI.UI.Settings
 
             _sortModeListTableData.data = _sortModeListCells.Select(x => (object)x).ToList();
             _sortModeListTableData.tableView.ReloadData();
+            _sortModeListTableData.tableView.ClearSelection();
 
             _selectedSortMode = null;
 
