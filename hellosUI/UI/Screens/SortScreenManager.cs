@@ -79,7 +79,7 @@ namespace HUI.UI.Screens
             PartyFreePlayFlowCoordinator partyFC,
             LevelCollectionNavigationController levelCollectionNC,
             PhysicsRaycasterWithCache physicsRaycaster)
-            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(52f, 10f), new Vector3(-1.5f, 0.15f, 2.9f), Quaternion.Euler(65f, 345f, 0f))
+            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(52f, 10f), new Vector3(-1.5f, 0.15f, 3.4f), Quaternion.Euler(65f, 345f, 0f))
         {
             this._screen.name = "HUISortScreen";
 

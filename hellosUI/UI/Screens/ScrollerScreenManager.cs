@@ -97,7 +97,7 @@ namespace HUI.UI.Screens
             LevelCollectionViewController levelCollectionViewController,
             LevelCollectionDataFlowManager levelCollectionDataFlowManager,
             SettingsModalDispatcher settingsModalDispatcher)
-            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(9f, 58f), new Vector3(-2.26f, 1.2f, 3.05f), Quaternion.Euler(0f, 325f, 0f))
+            : base(mainMenuVC, soloFC, partyFC, levelCollectionNC, physicsRaycaster, new Vector2(9f, 58f), new Vector3(-2.35f, 1.2f, 3.6f), Quaternion.Euler(0f, 325f, 0f))
         {
             _levelCollectionDataFlowManager = levelCollectionDataFlowManager;
             _settingsModalDispatcher = settingsModalDispatcher;
