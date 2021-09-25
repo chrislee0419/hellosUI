@@ -15,6 +15,7 @@ namespace HUI.DataFlow
         public string collectionName => shortPackName;
 
         public Sprite coverImage { get; private set; }
+        public Sprite smallCoverImage => coverImage;
 
         private BeatmapLevelCollection _beatmapLevelCollection = new BeatmapLevelCollection(Array.Empty<IPreviewBeatmapLevel>());
         public IBeatmapLevelCollection beatmapLevelCollection => _beatmapLevelCollection;

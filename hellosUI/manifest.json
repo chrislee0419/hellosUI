@@ -5,7 +5,7 @@
   "author": "hello",
   "version": "0.2.0",
   "description": "hello's assorted UI additions",
-  "gameVersion": "1.17.1",
+  "gameVersion": "1.18.0",
   "dependsOn": {
     "BSIPA": "^4.2.0",
     "SongCore": "^3.7.0",
